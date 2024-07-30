@@ -1,0 +1,7 @@
+<?php
+
+class MainController{
+    public function index(){
+        include __DIR__ . '/../Views/others/page_dashboard.php';
+    }
+}
