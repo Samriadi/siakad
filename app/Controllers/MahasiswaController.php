@@ -31,7 +31,29 @@ class MahasiswaController{
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         }
     }
-    
 
-    
+    public function ortu() {
+        $data = $this->MahasiswaModel->getOrtu();
+
+        include __DIR__ . '/../Views/others/page_ortu.php';
+    }
+
+    public function importDataOrtu() {
+        try {
+            ob_start();
+            
+            $this->MahasiswaModel->importDataOrtu();
+            
+            ob_end_clean();
+            
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            
+            error_log($e->getMessage());
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
