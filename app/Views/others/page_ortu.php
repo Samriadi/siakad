@@ -52,7 +52,7 @@
                         <?php foreach ($data as $key => $value) : ?>
                             <tr>
                                 <th scope="row"><?= ++$key ?></th>
-                                <td><?= $value->maba_id ?></td>
+                                <td><?= $value->NamaLengkap ?></td>
                                 <td><?= $value->nama_ayah ?></td>
                                 <td><?= $value->nama_ibu ?></td>
                             </tr>
