@@ -14,4 +14,24 @@ class MahasiswaController{
 
         include __DIR__ . '/../Views/others/page_mahasiswa.php';
     }
+    public function importData() {
+        try {
+            ob_start();
+            
+            $this->MahasiswaModel->importData();
+            
+            ob_end_clean();
+            
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            
+            error_log($e->getMessage());
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+    
+
+    
 }
