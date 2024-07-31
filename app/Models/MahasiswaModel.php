@@ -23,12 +23,6 @@ class MahasiswaModel{
         $stmt = $this->db->prepare($selectMahasiswaIncludeNim);
         $stmt->execute();
         $dataMahasiswaList = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-        // Convert data to JSON
-        $jsonData = json_encode($dataMahasiswaList);
-
-        // Output JSON data
-        echo $jsonData;
     
         $insertDataMahasiswa = "INSERT INTO mhs_mahasiswa (
             ID, Nim, NamaLengkap, Agama, NamaAsalSekolah, AsalKampus,
@@ -94,7 +88,69 @@ class MahasiswaModel{
             return false;
         }
     }
+
+    public function getOrtu()
+    {
+        $query = "SELECT * FROM mhs_ortu";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
     
+    public function importDataOrtu() {
+        $selectOrtuFromPmbOrtu = "SELECT * FROM pmb_ortu";
+        $stmt = $this->db->prepare($selectOrtuFromPmbOrtu);
+        $stmt->execute();
+        $dataOrtu = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        // // Convert data to JSON
+        // $jsonData = json_encode($dataOrtu);
+
+        // // Output JSON data
+        // echo $jsonData;
     
+        $insertDataOrtu = "INSERT INTO mhs_ortu (maba_id, nama_ayah, t4lahir_ayah, tglahir_ayah, pend_ayah, agama_ayah, phone_ayah, job_ayah, salary_ayah, alamat_ayah, nik_ayah,
+                                nama_ibu, t4lahir_ibu, tglahir_ibu, pend_ibu, agama_ibu, phone_ibu, job_ibu, salary_ibu, alamat_ibu, nik_ibu, id_lama
+                            ) VALUES (:maba_id, :nama_ayah, :t4lahir_ayah, :tglahir_ayah, :pend_ayah, :agama_ayah, :phone_ayah, :job_ayah, :salary_ayah, :alamat_ayah, :nik_ayah,
+                                :nama_ibu, :t4lahir_ibu, :tglahir_ibu, :pend_ibu, :agama_ibu, :phone_ibu, :job_ibu, :salary_ibu, :alamat_ibu, :nik_ibu, :id_lama
+                            )";
+
+        $stmtInsert = $this->db->prepare($insertDataOrtu);
+    
+        try {
+            foreach ($dataOrtu as $data) {
+                $stmtInsert->execute([
+                    ':maba_id' => $data->maba_id,
+                    ':nama_ayah' => $data->nama_ayah,
+                    ':t4lahir_ayah' => $data->t4lahir_ayah,
+                    ':tglahir_ayah' => $data->tglahir_ayah,
+                    ':pend_ayah' => $data->pend_ayah,
+                    ':agama_ayah' => $data->agama_ayah,
+                    ':phone_ayah' => $data->phone_ayah,
+                    ':job_ayah' => $data->job_ayah,
+                    ':salary_ayah' => $data->salary_ayah,
+                    ':alamat_ayah' => $data->alamat_ayah,
+                    ':nik_ayah' => $data->nik_ayah,
+                    ':nama_ibu' => $data->nama_ibu,
+                    ':t4lahir_ibu' => $data->t4lahir_ibu,
+                    ':tglahir_ibu' => $data->tglahir_ibu,
+                    ':pend_ibu' => $data->pend_ibu,
+                    ':agama_ibu' => $data->agama_ibu,
+                    ':phone_ibu' => $data->phone_ibu,
+                    ':job_ibu' => $data->job_ibu,
+                    ':salary_ibu' => $data->salary_ibu,
+                    ':alamat_ibu' => $data->alamat_ibu,
+                    ':nik_ibu' => $data->nik_ibu,
+                    ':id_lama' => $data->id_lama,
+                ]);
+            }
+            return true;
+    
+        } catch (PDOException $e) {
+            
+            error_log($e->getMessage());
+            return false;
+        }
+    }
     
 }
