@@ -34,6 +34,9 @@
                     <div class="card">
                     <div class="card-header">
                         <h4>Data Mahasiswa</h4>
+                        <div class="card-header-action">
+                            <a href="#" class="btn btn-primary" id="importData">Import Data</a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-hover">
@@ -69,6 +72,33 @@
 
         <!-- Footer -->
         <?php include '../app/Views/others/layouts/footer.php'; ?>
+
+        <script>
+                $(document).ready(function() {
+
+                    $('#importData').click(function() {
+                        $.ajax({
+                            url: '/siakad/mahasiswa/import',
+                            method: 'GET',
+                            dataType: 'json', // Specify that you expect JSON data in response
+                            success: function(data) {
+                                console.log('Response:', data);
+                                if (data.success) {
+                                    console.log('Import successful');
+                                } else {
+                                    console.error('Import failed:', data.error);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                                console.log('Response Text:', xhr.responseText); // Log the response text for debugging
+                            }
+                        });
+                    });
+
+
+                });
+        </script>
       
     </body>
 </html>
