@@ -2,9 +2,25 @@
 
 class MahasiswaModel{
     private $db;
+    private $mhs_mahasiswa ='mhs_mahasiswa';
+    private $pmb_mahasiswa ='pmb_mahasiswa';
+    private $mhs_ortu ='mhs_ortu';
+    private $pmb_ortu ='pmb_ortu';
+    private $pmb_nim ='pmb_nim';
 
     public function __construct()
     {
+        global $mhs_mahasiswa;
+        global $pmb_mahasiswa;
+        global $mhs_ortu;
+        global $pmb_ortu;
+        global $pmb_nim;
+
+        $this->mhs_mahasiswa = $mhs_mahasiswa;
+        $this->pmb_mahasiswa = $pmb_mahasiswa;
+        $this->mhs_ortu = $mhs_ortu;
+        $this->pmb_ortu = $pmb_ortu;
+        $this->pmb_nim = $pmb_nim;
       
         $this->db = Database::getInstance();
     }
@@ -13,18 +29,18 @@ class MahasiswaModel{
         $query = "SELECT 
                     *
                     FROM 
-                    mhs_mahasiswa";
+                    $this->mhs_mahasiswa";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
     public function importData() {
-        $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM pmb_mahasiswa a INNER JOIN pmb_nim b ON b.member_id = a.ID";
+        $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM $this->pmb_mahasiswa a INNER JOIN $this->pmb_nim b ON b.member_id = a.ID";
         $stmt = $this->db->prepare($selectMahasiswaIncludeNim);
         $stmt->execute();
         $dataMahasiswaList = $stmt->fetchAll(PDO::FETCH_OBJ);
     
-        $insertDataMahasiswa = "INSERT INTO mhs_mahasiswa (
+        $insertDataMahasiswa = "INSERT INTO $this->mhs_mahasiswa (
             ID, Nim, NamaLengkap, Agama, NamaAsalSekolah, AsalKampus,
             TahunLulus, AsalProvinsi, NIS, UserName, UserPass, Email,
             WANumber, SumberReferensi, berkas, jenkel, tempat_lahir,
@@ -91,25 +107,19 @@ class MahasiswaModel{
 
     public function getOrtu()
     {
-        $query = "SELECT a.*, b.ID, b.NamaLengkap FROM mhs_ortu a LEFT JOIN mhs_mahasiswa b ON b.ID = a.maba_id";
+        $query = "SELECT a.*, b.ID, b.NamaLengkap FROM $this->mhs_ortu a LEFT JOIN $this->mhs_mahasiswa b ON b.ID = a.maba_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function importDataOrtu() {
-        $selectOrtuFromPmbOrtu = "SELECT * FROM pmb_ortu";
+        $selectOrtuFromPmbOrtu = "SELECT * FROM $this->pmb_ortu";
         $stmt = $this->db->prepare($selectOrtuFromPmbOrtu);
         $stmt->execute();
         $dataOrtu = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        // // Convert data to JSON
-        // $jsonData = json_encode($dataOrtu);
-
-        // // Output JSON data
-        // echo $jsonData;
-    
-        $insertDataOrtu = "INSERT INTO mhs_ortu (maba_id, nama_ayah, t4lahir_ayah, tglahir_ayah, pend_ayah, agama_ayah, phone_ayah, job_ayah, salary_ayah, alamat_ayah, nik_ayah,
+        $insertDataOrtu = "INSERT INTO $this->mhs_ortu (maba_id, nama_ayah, t4lahir_ayah, tglahir_ayah, pend_ayah, agama_ayah, phone_ayah, job_ayah, salary_ayah, alamat_ayah, nik_ayah,
                                 nama_ibu, t4lahir_ibu, tglahir_ibu, pend_ibu, agama_ibu, phone_ibu, job_ibu, salary_ibu, alamat_ibu, nik_ibu, id_lama
                             ) VALUES (:maba_id, :nama_ayah, :t4lahir_ayah, :tglahir_ayah, :pend_ayah, :agama_ayah, :phone_ayah, :job_ayah, :salary_ayah, :alamat_ayah, :nik_ayah,
                                 :nama_ibu, :t4lahir_ibu, :tglahir_ibu, :pend_ibu, :agama_ibu, :phone_ibu, :job_ibu, :salary_ibu, :alamat_ibu, :nik_ibu, :id_lama
