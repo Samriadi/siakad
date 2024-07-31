@@ -22,6 +22,11 @@ $router->add('/login', 'AuthController', 'login');
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
 $router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
 
+$router->add('/ortu', 'MahasiswaController', 'ortu');
+$router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
+
+
+
 
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
 
