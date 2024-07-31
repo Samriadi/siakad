@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Dashboard</title>
+  <title>SIAKAD - Ortu</title>
     <?php include '../app/Views/others/layouts/header.php'; ?>
 
     <body>
