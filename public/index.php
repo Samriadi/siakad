@@ -18,7 +18,9 @@ require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 $router = new Router();
 $router->add('/', 'MainController', 'index');
 $router->add('/login', 'AuthController', 'login');
+
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
+$router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
 
 
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
