@@ -91,7 +91,7 @@ class MahasiswaModel{
 
     public function getOrtu()
     {
-        $query = "SELECT * FROM mhs_ortu";
+        $query = "SELECT a.*, b.ID, b.NamaLengkap FROM mhs_ortu a LEFT JOIN mhs_mahasiswa b ON b.ID = a.maba_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
