@@ -19,6 +19,7 @@
               <a href="" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
               <ul class="dropdown-menu">
                 <li><a class="nav-link" href="/siakad/mahasiswa">Mahasiswa</a></li>
+                <li><a class="nav-link" href="/siakad/ortu">Orang Tua</a></li>
                 
               </ul>
             </li>
