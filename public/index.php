@@ -22,6 +22,8 @@ $router->add('/login', 'AuthController', 'login');
 
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
 $router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
+$router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
+$router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
 
 $router->add('/ortu', 'MahasiswaController', 'ortu');
 $router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
