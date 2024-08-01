@@ -35,7 +35,7 @@
                     <div class="card-header">
                         <h4>Data Mahasiswa</h4>
                         <div class="card-header-action">
-                            <button class="btn btn-primary" id="confirmButton">Import</button>
+                            <button class="btn btn-primary" id="confirmButton">Import Data</button>
 
 
                         </div>
@@ -48,6 +48,7 @@
                             <th scope="col">Nama Lengkap</th>
                             <th scope="col">Nim</th>
                             <th scope="col">Wa Number</th>
+                            <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,8 +58,11 @@
                                 <td><?= $value->NamaLengkap ?></td>
                                 <td><?= $value->Nim ?></td>
                                 <td><?= $value->WANumber ?></td>
+                                <td>
+                                    <a class="btn btn-primary btn-action mr-1"><i class="fas fa-pencil-alt"></i></a>
+                                    <a class="btn btn-danger btn-action"><i class="fas fa-trash"></i></a>
+                                </td>   
                             </tr>
-                            <tr>
                         <?php endforeach ?>
                         </tbody>
                         </table>
@@ -75,8 +79,9 @@
         <!-- Footer -->
         <?php include '../app/Views/others/layouts/footer.php'; ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
         <script>
-                       $(document).ready(function() {
+            $(document).ready(function() {
             $('#confirmButton').click(function() {
                 Swal.fire({
                     text: "Do you want to proceed with the import?",
@@ -109,6 +114,10 @@
                                         text: 'Your data has been imported.',
                                         icon: 'success',
                                         confirmButtonText: 'OK'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload(); // Reload halaman setelah menekan OK
+                                        }
                                     });
                                 } else {
                                     Swal.fire({
@@ -132,7 +141,7 @@
             });
         });
 
-        </script>
+    </script>
       
     </body>
 </html>
