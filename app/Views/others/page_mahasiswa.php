@@ -35,7 +35,9 @@
                     <div class="card-header">
                         <h4>Data Mahasiswa</h4>
                         <div class="card-header-action">
-                            <a href="#" class="btn btn-primary" id="importData">Import Data</a>
+                            <button class="btn btn-primary" id="confirmButton">Import</button>
+
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -72,32 +74,64 @@
 
         <!-- Footer -->
         <?php include '../app/Views/others/layouts/footer.php'; ?>
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-                $(document).ready(function() {
+                       $(document).ready(function() {
+            $('#confirmButton').click(function() {
+                Swal.fire({
+                    text: "Do you want to proceed with the import?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, import it!',
+                    cancelButtonText: 'No, cancel!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show a processing alert
+                        Swal.fire({
+                            text: 'Please wait while we process your request.',
+                            icon: 'info',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
-                    $('#importData').click(function() {
+                        // Perform AJAX request
                         $.ajax({
                             url: '/siakad/mahasiswa/import',
                             method: 'GET',
-                            dataType: 'json', // Specify that you expect JSON data in response
+                            dataType: 'json',
                             success: function(data) {
-                                console.log('Response:', data);
+                                Swal.close(); // Close the processing alert
                                 if (data.success) {
-                                    console.log('Import successful');
+                                    Swal.fire({
+                                        text: 'Your data has been imported.',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
                                 } else {
-                                    console.error('Import failed:', data.error);
+                                    Swal.fire({
+                                        text: data.error || 'An error occurred during import.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
                             },
                             error: function(xhr, status, error) {
-                                console.error('Error:', error);
-                                console.log('Response Text:', xhr.responseText); // Log the response text for debugging
+                                Swal.close(); // Close the processing alert
+                                Swal.fire({
+                                    text: 'An error occurred during the import: ' + error,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
                             }
                         });
-                    });
-
-
+                    }
                 });
+            });
+        });
+
         </script>
       
     </body>
