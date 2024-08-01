@@ -162,5 +162,23 @@ class MahasiswaModel{
             return false;
         }
     }
+
+    public function updateData($data) {
+        try {
+            $query = "UPDATE $this->mhs_mahasiswa SET alamat = :alamat WHERE ID = :id";
+            $stmt = $this->db->prepare($query);
+            $result = $stmt->execute([
+                ':alamat' => $data['alamat'],
+                ':id' => $data['id']
+            ]);
+    
+            return $result;
+        }
+        catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
     
 }
