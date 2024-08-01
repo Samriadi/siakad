@@ -78,6 +78,8 @@
         
         <script>
             $(document).ready(function() {
+            checkProgressClassOnLoad('confirmButton');
+
             $('#confirmButton').click(function() {
                 Swal.fire({
                     text: "Do you want to proceed with the import?",
@@ -95,6 +97,8 @@
                             allowOutsideClick: false,
                             didOpen: () => {
                                 Swal.showLoading();
+                                addProgressClass('confirmButton');
+
                             }
                         });
 
@@ -105,16 +109,17 @@
                             dataType: 'json',
                             success: function(data) {
                                 Swal.close(); // Close the processing alert
+                                removeProgressClass('confirmButton')
+
                                 if (data.success) {
                                     Swal.fire({
-                                        text: 'Your data has been imported.',
-                                        icon: 'success',
-                                        confirmButtonText: 'OK'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.reload(); // Reload halaman setelah menekan OK
-                                        }
-                                    });
+                                            text: 'Your data has been imported.',
+                                            icon: 'success',
+                                            showConfirmButton: false, // Menyembunyikan tombol konfirmasi
+                                            willClose: () => {
+                                                window.location.reload(); // Reload halaman setelah modal ditutup
+                                            }
+                                        });
                                 } else {
                                     Swal.fire({
                                         text: data.error || 'An error occurred during import.',
