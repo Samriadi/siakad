@@ -228,7 +228,7 @@
                                     Swal.fire({
                                         text: 'Your data has been updated.',
                                         icon: 'success',
-                                        showConfirmButton: false, // Menyembunyikan tombol konfirmasi
+                                        showConfirmButton: false,
                                         willClose: () => {
                                             window.location.reload(); // Reload halaman setelah modal ditutup
                                         }
