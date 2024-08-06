@@ -1,6 +1,7 @@
 <?php
 
-class MahasiswaController{
+class MahasiswaController
+{
 
     private $MahasiswaModel;
     private $dataMahasiswa;
@@ -10,31 +11,34 @@ class MahasiswaController{
         $this->MahasiswaModel = new MahasiswaModel();
         $this->dataMahasiswa = $this->MahasiswaModel->getAll();
     }
-    public function index(){
+    public function index()
+    {
 
-        $this->dataMahasiswa;
+        $data = $this->dataMahasiswa;
 
         include __DIR__ . '/../Views/others/page_mahasiswa.php';
     }
-    public function importData() {
+    public function importData()
+    {
         try {
             ob_start();
-            
+
             $this->MahasiswaModel->importData();
-            
+
             ob_end_clean();
-            
+
             header('Content-Type: application/json');
             echo json_encode(['success' => true]);
         } catch (Exception $e) {
-            
+
             error_log($e->getMessage());
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 
-    public function fetchData() {
+    public function fetchData()
+    {
         $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         // Menemukan data berdasarkan ID
@@ -54,56 +58,58 @@ class MahasiswaController{
         ]);
     }
 
-   public function updateData() {
-    // Get and decode the JSON input
-    $dataArray = json_decode(file_get_contents('php://input'), true);
-    
-    if ($dataArray === null) {
-        // Invalid JSON
-        $response = [
-            'success' => false,
-            'message' => 'Invalid JSON input'
-        ];
-    } else {
-        $request = $this->MahasiswaModel->updateData($dataArray[0]);
-        
-        // Prepare success response
-        $response = [
-            'success' => $request,
-            'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
-        ];
+    public function updateData()
+    {
+        // Get and decode the JSON input
+        $dataArray = json_decode(file_get_contents('php://input'), true);
+
+        if ($dataArray === null) {
+            // Invalid JSON
+            $response = [
+                'success' => false,
+                'message' => 'Invalid JSON input'
+            ];
+        } else {
+            $request = $this->MahasiswaModel->updateData($dataArray[0]);
+
+            // Prepare success response
+            $response = [
+                'success' => $request,
+                'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
+            ];
+        }
+
+        // Set response header and echo JSON response
+        header('Content-Type: application/json');
+        echo json_encode($response);
     }
 
-    // Set response header and echo JSON response
-    header('Content-Type: application/json');
-    echo json_encode($response);
-}
 
-    
-    
 
-    public function ortu() {
+
+    public function ortu()
+    {
         $data = $this->MahasiswaModel->getOrtu();
 
         include __DIR__ . '/../Views/others/page_ortu.php';
     }
 
-    public function importDataOrtu() {
+    public function importDataOrtu()
+    {
         try {
             ob_start();
-            
+
             $this->MahasiswaModel->importDataOrtu();
-            
+
             ob_end_clean();
-            
+
             header('Content-Type: application/json');
             echo json_encode(['success' => true]);
         } catch (Exception $e) {
-            
+
             error_log($e->getMessage());
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         }
     }
-
 }
