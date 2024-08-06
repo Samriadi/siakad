@@ -1,12 +1,13 @@
 <?php
 
-class MahasiswaModel{
+class MahasiswaModel
+{
     private $db;
-    private $mhs_mahasiswa ='mhs_mahasiswa';
-    private $pmb_mahasiswa ='pmb_mahasiswa';
-    private $mhs_ortu ='mhs_ortu';
-    private $pmb_ortu ='pmb_ortu';
-    private $pmb_nim ='pmb_nim';
+    private $mhs_mahasiswa = 'mhs_mahasiswa';
+    private $pmb_mahasiswa = 'pmb_mahasiswa';
+    private $mhs_ortu = 'mhs_ortu';
+    private $pmb_ortu = 'pmb_ortu';
+    private $pmb_nim = 'pmb_nim';
 
     public function __construct()
     {
@@ -21,7 +22,7 @@ class MahasiswaModel{
         $this->mhs_ortu = $mhs_ortu;
         $this->pmb_ortu = $pmb_ortu;
         $this->pmb_nim = $pmb_nim;
-      
+
         $this->db = Database::getInstance();
     }
     public function getAll()
@@ -34,12 +35,13 @@ class MahasiswaModel{
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-    public function importData() {
+    public function importData()
+    {
         $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM $this->pmb_mahasiswa a INNER JOIN $this->pmb_nim b ON b.member_id = a.ID";
         $stmt = $this->db->prepare($selectMahasiswaIncludeNim);
         $stmt->execute();
         $dataMahasiswaList = $stmt->fetchAll(PDO::FETCH_OBJ);
-    
+
         $insertDataMahasiswa = "INSERT INTO $this->mhs_mahasiswa (
             ID, Nim, NamaLengkap, Agama, NamaAsalSekolah, AsalKampus,
             TahunLulus, AsalProvinsi, NIS, UserName, UserPass, Email,
@@ -55,9 +57,9 @@ class MahasiswaModel{
             :tanggal_daftar, :verifikasi, :nik, :id_lama, :rtrw, :kelurahan,
             :kecamatan, :kabupaten, :propinsi, :negara
         )";
-    
+
         $stmtInsert = $this->db->prepare($insertDataMahasiswa);
-    
+
         try {
             foreach ($dataMahasiswaList as $dataMahasiswa) {
                 $stmtInsert->execute([
@@ -97,9 +99,8 @@ class MahasiswaModel{
                 ]);
             }
             return true;
-    
         } catch (PDOException $e) {
-            
+
             error_log($e->getMessage());
             return false;
         }
@@ -112,8 +113,9 @@ class MahasiswaModel{
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-    
-    public function importDataOrtu() {
+
+    public function importDataOrtu()
+    {
         $selectOrtuFromPmbOrtu = "SELECT * FROM $this->pmb_ortu";
         $stmt = $this->db->prepare($selectOrtuFromPmbOrtu);
         $stmt->execute();
@@ -126,7 +128,7 @@ class MahasiswaModel{
                             )";
 
         $stmtInsert = $this->db->prepare($insertDataOrtu);
-    
+
         try {
             foreach ($dataOrtu as $data) {
                 $stmtInsert->execute([
@@ -155,15 +157,15 @@ class MahasiswaModel{
                 ]);
             }
             return true;
-    
         } catch (PDOException $e) {
-            
+
             error_log($e->getMessage());
             return false;
         }
     }
 
-    public function updateData($data) {
+    public function updateData($data)
+    {
         try {
             $query = "UPDATE $this->mhs_mahasiswa SET alamat = :alamat WHERE ID = :id";
             $stmt = $this->db->prepare($query);
@@ -171,14 +173,29 @@ class MahasiswaModel{
                 ':alamat' => $data['alamat'],
                 ':id' => $data['id']
             ]);
-    
+
             return $result;
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
         }
     }
-    
-    
+
+    public function updateDataOrtu($data)
+    {
+        try {
+            $query = "UPDATE $this->mhs_ortu SET nama_ayah = :nama_ayah, nama_ibu = :nama_ibu WHERE recid = :recid";
+            $stmt = $this->db->prepare($query);
+            $result = $stmt->execute([
+                ':nama_ayah' => $data['namaAyah'],
+                ':nama_ibu' => $data['namaIbu'],
+                ':recid' => $data['recid']
+            ]);
+
+            return $result;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
 }

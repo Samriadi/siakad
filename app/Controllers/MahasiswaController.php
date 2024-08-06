@@ -50,7 +50,27 @@ class MahasiswaController
             }
         }
 
-        // Mengirimkan respons kembali ke JavaScript
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $selectedData !== null,
+            'data' => $selectedData,
+        ]);
+    }
+
+    public function fetchDataOrtu()
+    {
+        $recid = isset($_POST['recid']) ? intval($_POST['recid']) : 0;
+
+        $dataOrtu = $this->MahasiswaModel->getOrtu();
+
+        $selectedData = null;
+        foreach ($dataOrtu as $item) {
+            if ($item->recid == $recid) {
+                $selectedData = $item;
+                break;
+            }
+        }
+
         header('Content-Type: application/json');
         echo json_encode([
             'success' => $selectedData !== null,
@@ -60,11 +80,9 @@ class MahasiswaController
 
     public function updateData()
     {
-        // Get and decode the JSON input
         $dataArray = json_decode(file_get_contents('php://input'), true);
 
         if ($dataArray === null) {
-            // Invalid JSON
             $response = [
                 'success' => false,
                 'message' => 'Invalid JSON input'
@@ -72,14 +90,34 @@ class MahasiswaController
         } else {
             $request = $this->MahasiswaModel->updateData($dataArray[0]);
 
-            // Prepare success response
             $response = [
                 'success' => $request,
                 'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
             ];
         }
 
-        // Set response header and echo JSON response
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+
+    public function updateDataOrtu()
+    {
+        $dataArray = json_decode(file_get_contents('php://input'), true);
+
+        if ($dataArray === null) {
+            $response = [
+                'success' => false,
+                'message' => 'Invalid JSON input'
+            ];
+        } else {
+            $request = $this->MahasiswaModel->updateDataOrtu($dataArray[0]);
+
+            $response = [
+                'success' => $request,
+                'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
+            ];
+        }
+
         header('Content-Type: application/json');
         echo json_encode($response);
     }

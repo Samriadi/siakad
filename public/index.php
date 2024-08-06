@@ -2,7 +2,7 @@
 session_start();
 date_default_timezone_set('Asia/Makassar');
 
-require_once __DIR__ . '/../app/Core/Router.php';   
+require_once __DIR__ . '/../app/Core/Router.php';
 require_once __DIR__ . '/../app/Core/Database.php';
 require_once __DIR__ . '/../app/Core/Table.php';
 // require_once __DIR__ . '/../app/Helpers/Function.php';
@@ -26,6 +26,10 @@ $router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
 $router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
 
 $router->add('/ortu', 'MahasiswaController', 'ortu');
+$router->add('/ortu/fetch', 'MahasiswaController', 'fetchDataOrtu');
+$router->add('/ortu/update', 'MahasiswaController', 'updateDataOrtu');
+
+
 $router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
 
 
