@@ -11,8 +11,10 @@ require_once __DIR__ . '/../app/Core/Table.php';
 require_once __DIR__ . '/../app/Controllers/MainController.php';
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Controllers/MahasiswaController.php';
+require_once __DIR__ . '/../app/Controllers/DosenController.php';
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
+require_once __DIR__ . '/../app/Models/DosenModel.php';
 
 
 
@@ -28,9 +30,10 @@ $router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
 $router->add('/ortu', 'MahasiswaController', 'ortu');
 $router->add('/ortu/fetch', 'MahasiswaController', 'fetchDataOrtu');
 $router->add('/ortu/update', 'MahasiswaController', 'updateDataOrtu');
-
-
 $router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
+
+$router->add('/dosen', 'DosenController', 'index');
+
 
 
 
