@@ -33,6 +33,11 @@ $router->add('/ortu/update', 'MahasiswaController', 'updateDataOrtu');
 $router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
 
 $router->add('/dosen', 'DosenController', 'index');
+$router->add('/dosen/fetch', 'DosenController', 'fetchData');
+$router->add('/dosen/add', 'DosenController', 'addData');
+$router->add('/dosen/update', 'DosenController', 'updateData');
+$router->add('/dosen/delete', 'DosenController', 'deleteData');
+
 
 
 
