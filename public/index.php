@@ -6,15 +6,16 @@ require_once __DIR__ . '/../app/Core/Router.php';
 require_once __DIR__ . '/../app/Core/Database.php';
 require_once __DIR__ . '/../app/Core/Table.php';
 // require_once __DIR__ . '/../app/Helpers/Function.php';
-// require_once __DIR__ . '/../app/Core/Table.php';
 
 require_once __DIR__ . '/../app/Controllers/MainController.php';
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Controllers/MahasiswaController.php';
 require_once __DIR__ . '/../app/Controllers/DosenController.php';
+require_once __DIR__ . '/../app/Controllers/StaffController.php';
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 require_once __DIR__ . '/../app/Models/DosenModel.php';
+require_once __DIR__ . '/../app/Models/StaffModel.php';
 
 
 
@@ -37,6 +38,12 @@ $router->add('/dosen/fetch', 'DosenController', 'fetchData');
 $router->add('/dosen/add', 'DosenController', 'addData');
 $router->add('/dosen/update', 'DosenController', 'updateData');
 $router->add('/dosen/delete', 'DosenController', 'deleteData');
+
+$router->add('/staff', 'StaffController', 'index');
+$router->add('/staff/fetch', 'StaffController', 'fetchData');
+$router->add('/staff/add', 'StaffController', 'addData');
+$router->add('/staff/update', 'StaffController', 'updateData');
+$router->add('/staff/delete', 'StaffController', 'deleteData');
 
 
 
