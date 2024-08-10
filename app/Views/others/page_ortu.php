@@ -142,7 +142,7 @@
 
                             // Perform AJAX request
                             $.ajax({
-                                url: '/siakad/mahasiswa/import-ortu',
+                                url: '/admin/siakad/mahasiswa/import-ortu',
                                 method: 'GET',
                                 dataType: 'json',
                                 success: function(data) {
@@ -184,7 +184,7 @@
                     var recid = $(this).data('recid');
 
                     $.ajax({
-                        url: '/siakad/ortu/fetch',
+                        url: '/admin/siakad/ortu/fetch',
                         type: 'POST',
                         data: {
                             recid: recid
@@ -211,7 +211,7 @@
                         // console.log("🚀 ~ $ ~ arrayData:", arrayData)
 
                         $.ajax({
-                            url: '/siakad/ortu/update',
+                            url: '/admin/siakad/ortu/update',
                             type: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify(arrayData),
