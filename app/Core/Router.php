@@ -15,9 +15,19 @@ class Router
 
   public function dispatch($url)
   {
+    // Pastikan $url dimulai dengan /admin/ dan hapus jika ada
+    $basePath = '/admin/';
+    if (strpos($url, $basePath) === 0) {
+      $url = substr($url, strlen($basePath));
+    }
+
     foreach ($this->routes as $route => $target) {
+      // Tambahkan /admin/ di awal pattern route
       $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $route);
-      if (preg_match("#^$pattern$#", $url, $matches)) {
+      $pattern = str_replace('/', '\/', $pattern);
+      $pattern = "^" . str_replace('/admin/', '', $pattern) . "$";
+
+      if (preg_match("#$pattern#", $url, $matches)) {
         array_shift($matches); // Remove the full match
         $controllerName = $target['controller'];
         $actionName = $target['action'];
