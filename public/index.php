@@ -31,11 +31,14 @@ $router->add('/mahasiswa', 'MahasiswaController', 'index');
 $router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
 $router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
 $router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
+$router->add('/mahasiswa/delete', 'MahasiswaController', 'deleteData');
+
 
 $router->add('/ortu', 'MahasiswaController', 'ortu');
 $router->add('/ortu/fetch', 'MahasiswaController', 'fetchDataOrtu');
 $router->add('/ortu/update', 'MahasiswaController', 'updateDataOrtu');
-$router->add('/mahasiswa/import-ortu', 'MahasiswaController', 'importDataOrtu');
+$router->add('/ortu/delete', 'MahasiswaController', 'deleteDataOrtu');
+
 
 $router->add('/dosen', 'DosenController', 'index');
 $router->add('/dosen/fetch', 'DosenController', 'fetchData');
