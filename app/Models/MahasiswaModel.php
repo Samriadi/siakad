@@ -35,6 +35,24 @@ class MahasiswaModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
+
+
+    public function checkData()
+    {
+        $query = "SELECT p.ID
+                    FROM $this->pmb_mahasiswa p
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM $this->mhs_mahasiswa m
+                        WHERE p.ID = m.ID
+                    )
+                    ";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public function importData()
     {
         $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM $this->pmb_mahasiswa a INNER JOIN $this->pmb_nim b ON b.member_id = a.ID";
@@ -195,6 +213,32 @@ class MahasiswaModel
             return $result;
         } catch (PDOException $e) {
             error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    public function deleteData($id)
+    {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM $this->mhs_mahasiswa WHERE ID = :id");
+            $stmt->execute([
+                ':id' => $id
+            ]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function deleteDataOrtu($id)
+    {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM $this->mhs_ortu WHERE maba_id = :id");
+            $stmt->execute([
+                ':id' => $id
+            ]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
             return false;
         }
     }
