@@ -36,9 +36,10 @@
                                 <div class="card-header">
                                     <h4>Data Mahasiswa</h4>
                                     <div class="card-header-action">
-                                        <button class="btn btn-primary" id="confirmButton">Import Data</button>
 
-
+                                        <?php if ($isData) : ?>
+                                            <button class="btn btn-primary" id="confirmButton">Import Data</button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -62,8 +63,10 @@
                                                     <td><?= $value->WANumber ?></td>
                                                     <td><?= $value->alamat ?></td>
                                                     <td>
-                                                        <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-id="<?= $value->ID ?>"><i class="fas fa-pencil-alt"></i></a>
-                                                        <a class="btn btn-danger btn-action"><i class="fas fa-trash"></i></a>
+                                                        <!-- <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-id="<?= $value->ID ?>"><i class="fas fa-pencil-alt"></i></a> -->
+                                                        <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             <?php endforeach ?>
@@ -249,6 +252,54 @@
             });
 
         });
+
+        function confirmDelete(element) {
+            const id = element.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/admin/siakad/mahasiswa/delete',
+                        type: 'POST',
+                        data: {
+                            id: id
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            if (response.success) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'The record has been deleted.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'There was an issue deleting the record.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function() {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to send request.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
     </script>
 
 </body>

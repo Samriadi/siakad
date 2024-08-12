@@ -36,7 +36,7 @@
                                     <div class="card-header">
                                         <h4>Data Ortu</h4>
                                         <div class="card-header-action">
-                                            <button class="btn btn-primary" id="confirmButton">Import Data</button>
+                                            <!-- <buttson class="btn btn-primary" id="confirmButton">Import Data</buttson> -->
 
                                         </div>
                                     </div>
@@ -48,7 +48,6 @@
                                                     <th scope="col">Mahasiswa</th>
                                                     <th scope="col">Ayah</th>
                                                     <th scope="col">Ibu</th>
-                                                    <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -58,10 +57,7 @@
                                                         <td><?= $value->NamaLengkap ?></td>
                                                         <td><?= $value->nama_ayah ?></td>
                                                         <td><?= $value->nama_ibu ?></td>
-                                                        <td>
-                                                            <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-recid="<?= $value->recid ?>"><i class="fas fa-pencil-alt"></i></a>
-                                                            <a class="btn btn-danger btn-action"><i class="fas fa-trash"></i></a>
-                                                        </td>
+
                                                     </tr>
                                                     <tr>
                                                     <?php endforeach ?>
