@@ -5,16 +5,19 @@ class MahasiswaController
 
     private $MahasiswaModel;
     private $dataMahasiswa;
+    private $checkData;
 
     public function __construct()
     {
         $this->MahasiswaModel = new MahasiswaModel();
         $this->dataMahasiswa = $this->MahasiswaModel->getAll();
+        $this->checkData = $this->MahasiswaModel->checkData();
     }
     public function index()
     {
 
         $data = $this->dataMahasiswa;
+        $isData = $this->checkData;
 
         include __DIR__ . '/../Views/others/page_mahasiswa.php';
     }
@@ -24,6 +27,8 @@ class MahasiswaController
             ob_start();
 
             $this->MahasiswaModel->importData();
+            $this->MahasiswaModel->importDataOrtu();
+
 
             ob_end_clean();
 
@@ -132,22 +137,21 @@ class MahasiswaController
         include __DIR__ . '/../Views/others/page_ortu.php';
     }
 
-    public function importDataOrtu()
+    public function deleteData()
     {
-        try {
-            ob_start();
+        header('Content-Type: application/json');
 
-            $this->MahasiswaModel->importDataOrtu();
-
-            ob_end_clean();
-
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-
-            error_log($e->getMessage());
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        if (!isset($_POST['id']) || empty($_POST['id'])) {
+            echo json_encode(['success' => false, 'message' => 'Invalid ID']);
+            return;
         }
+
+        $id = intval($_POST['id']);
+
+        $success = $this->MahasiswaModel->deleteData($id);
+        $success = $this->MahasiswaModel->deleteDataOrtu($id);
+
+
+        echo json_encode(['success' => $success]);
     }
 }
