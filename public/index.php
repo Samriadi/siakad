@@ -29,6 +29,7 @@ $router->add('/login', 'AuthController', 'login');
 
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
 $router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
+$router->add('/mahasiswa/importCSV', 'MahasiswaController', 'importDataCSV');
 $router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
 $router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
 $router->add('/mahasiswa/delete', 'MahasiswaController', 'deleteData');

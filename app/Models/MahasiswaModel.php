@@ -53,6 +53,40 @@ class MahasiswaModel
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public function saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat)
+    {
+        $data = [
+            'NamaLengkap' => $NamaLengkap,
+            'Nim' => $Nim,
+            'WANumber' => $WANumber,
+            'alamat' => $alamat
+        ];
+
+        $insertDataMahasiswa = "INSERT INTO $this->mhs_mahasiswa (
+            Nim, NamaLengkap, WANumber, alamat
+        ) VALUES (
+            :Nim, :NamaLengkap, :WANumber, :alamat
+        )";
+
+        $stmtInsert = $this->db->prepare($insertDataMahasiswa);
+
+        try {
+            foreach ($data as $dataMahasiswa) {
+                $stmtInsert->execute([
+                    ':Nim' => $dataMahasiswa->nim,
+                    ':NamaLengkap' => $dataMahasiswa->NamaLengkap,
+                    ':WANumber' => $dataMahasiswa->WANumber,
+                    ':alamat' => $dataMahasiswa->alamat
+                ]);
+            }
+            return true;
+        } catch (PDOException $e) {
+
+            error_log($e->getMessage());
+            return false;
+        }
+
+    }
     public function importData()
     {
         $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM $this->pmb_mahasiswa a INNER JOIN $this->pmb_nim b ON b.member_id = a.ID";
@@ -131,6 +165,8 @@ class MahasiswaModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
+   
 
     public function importDataOrtu()
     {

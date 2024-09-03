@@ -40,6 +40,9 @@
                                         <?php if ($isData) : ?>
                                             <button class="btn btn-primary" id="confirmButton">Import Data</button>
                                         <?php endif; ?>
+
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#importCSVModal">Import CSV</button>
+
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -118,6 +121,30 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="importCSVModal" tabindex="-1" role="dialog" aria-labelledby="importCSVModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importCSVModalLabel">Import CSV</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="csvUploadForm" action="/admin/siakad/mahasiswa/importCSV" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="csvFile">Choose CSV File</label>
+                            <input type="file" class="form-control" id="csvFile" name="file" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload CSV</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Footer -->
     <?php include '../app/Views/others/layouts/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -125,6 +152,32 @@
     <script>
         $(document).ready(function() {
             checkProgressClassOnLoad('confirmButton');
+
+            //import csv
+            $('#csvUploadForm').on('submit', function(e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Menampilkan pesan sukses atau error
+                        alert('CSV Imported Successfully');
+                        // Menutup modal setelah sukses
+                        $('#importCSVModal').modal('hide');
+                        // Reload halaman atau update tabel
+                        location.reload(); // Atau gunakan AJAX untuk update tabel tanpa reload
+                    },
+                    error: function(response) {
+                        alert('Failed to import CSV');
+                    }
+                });
+            });
 
             //import data
             $('#confirmButton').click(function() {
