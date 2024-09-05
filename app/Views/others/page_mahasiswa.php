@@ -37,9 +37,6 @@
                                     <h4>Data Mahasiswa</h4>
                                     <div class="card-header-action">
 
-                                        <?php if ($isData) : ?>
-                                            <button class="btn btn-primary" id="confirmButton">Import Data</button>
-                                        <?php endif; ?>
 
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#importCSVModal">Import CSV</button>
 
@@ -135,6 +132,7 @@
                     <form id="csvUploadForm" action="/admin/siakad/mahasiswa/importCSV" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="csvFile">Choose CSV File</label>
+                            <input type="hidden" name="importCSV" value="true">
                             <input type="file" class="form-control" id="csvFile" name="file" accept=".csv" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload CSV</button>
@@ -159,6 +157,8 @@
 
                 var formData = new FormData(this);
 
+                console.log(formData);
+
                 $.ajax({
                     url: $(this).attr('action'),
                     type: 'POST',
@@ -167,11 +167,10 @@
                     processData: false,
                     success: function(response) {
                         // Menampilkan pesan sukses atau error
-                        alert('CSV Imported Successfully');
+                        console.log(response);
                         // Menutup modal setelah sukses
                         $('#importCSVModal').modal('hide');
                         // Reload halaman atau update tabel
-                        location.reload(); // Atau gunakan AJAX untuk update tabel tanpa reload
                     },
                     error: function(response) {
                         alert('Failed to import CSV');
