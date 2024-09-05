@@ -50,7 +50,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">Nama Lengkap</th>
+                                                <th scope="col">NamaLengkap</th>
                                                 <th scope="col">Nim</th>
                                                 <th scope="col">Wa Number</th>
                                                 <th scope="col">Alamat</th>
