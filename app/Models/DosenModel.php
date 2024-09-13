@@ -25,7 +25,6 @@ class DosenModel
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
-
   public function addData($data)
   {
     try {
