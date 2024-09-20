@@ -24,6 +24,7 @@ require_once __DIR__ . '/../app/Models/DosenModel.php';
 require_once __DIR__ . '/../app/Models/StaffModel.php';
 require_once __DIR__ . '/../app/Models/MatkulModel.php';
 require_once __DIR__ . '/../app/Models/PerkuliahanModel.php';
+require_once __DIR__ . '/../app/Models/KrsModel.php';
 
 
 
