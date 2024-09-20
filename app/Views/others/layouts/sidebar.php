@@ -25,6 +25,16 @@
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li>
         </ul>
       </li>
+      <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>KRS</span></a>
+        <ul class="dropdown-menu">
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/krs">Kartu Rencana Studi</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KRS</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Persetujuan KRS</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Kartu Hasil Studi</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KHS</a></li>
+        </ul>
+      </li>
 
       <li class="menu-header">Pages</li>
       <li class="dropdown">
