@@ -66,6 +66,9 @@ $router->add('/perkuliahan/update', 'PerkuliahanController', 'updateData');
 $router->add('/perkuliahan/delete', 'PerkuliahanController', 'deleteData');
 $router->add('/perkuliahan/include', 'PerkuliahanController', 'includeData');
 
+$router->add('/krs', 'KrsController', 'krs');
+
+
 
 
 
