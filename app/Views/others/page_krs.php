@@ -58,46 +58,18 @@
                 </div>
                 <div class="card-body">
                   <ul class="list-unstyled list-unstyled-border">
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-1">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Informatika</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-2">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Sistem Informasi</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-3">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Algoritma Pemrograman</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-4">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Sistem Basis Data</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
+                    <?php foreach ($dataMatkul1 as $key => $value) : ?>
+                      <li class="media">
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="cbx-1">
+                          <label class="custom-control-label" for="cbx-1"></label>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="media-title"><a href="#"><?= $value->course_name ?></a></h6>
+                          <div class="text-small text-muted"><?= $value->course_code ?><div class="bullet"></div> <span class="text-primary"><?= $value->credits ?> SKS</span></div>
+                        </div>
+                      </li>
+                    <?php endforeach ?>
                   </ul>
                 </div>
               </div>
@@ -110,46 +82,18 @@
                 </div>
                 <div class="card-body">
                   <ul class="list-unstyled list-unstyled-border">
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-5">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Informatika</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-6">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Sistem Informasi</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-7">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Algoritma Pemrograman</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="cbx-8">
-                        <label class="custom-control-label" for="cbx-1"></label>
-                      </div>
-                      <div class="media-body">
-                        <h6 class="media-title"><a href="#">Sistem Basis Data</a></h6>
-                        <div class="text-small text-muted">IT303 <div class="bullet"></div> <span class="text-primary">2 SKS</span></div>
-                      </div>
-                    </li>
+                    <?php foreach ($dataMatkul2 as $key => $value) : ?>
+                      <li class="media">
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="cbx-1">
+                          <label class="custom-control-label" for="cbx-1"></label>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="media-title"><a href="#"><?= $value->course_name ?></a></h6>
+                          <div class="text-small text-muted"><?= $value->course_code ?><div class="bullet"></div> <span class="text-primary"><?= $value->credits ?> SKS</span></div>
+                        </div>
+                      </li>
+                    <?php endforeach ?>
                   </ul>
                 </div>
               </div>
@@ -204,6 +148,11 @@
   <!-- Footer -->
   <?php include '../app/Views/others/layouts/footer.php'; ?>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    data = <?php echo json_encode($dataMatkul1) ?>;
+    console.log(data);
+  </script>
 </body>
 
 </html>
