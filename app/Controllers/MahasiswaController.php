@@ -155,53 +155,59 @@ class MahasiswaController
         echo json_encode(['success' => $success]);
     }
 
-    public function importCSV()
+    public function importDataCSV()
     {
-        if (isset($_POST['importCSV'])) {
-            if ($_FILES['file']['name']) {
-                $filename = explode(".", $_FILES['file']['name']);
-                if (end($filename) == "csv") {
-                    $handle = fopen($_FILES['file']['tmp_name'], "r");
-                    if ($handle !== FALSE) {
-                        try {
-                            // Skip the first line if CSV has headers
-                            fgetcsv($handle);
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $filename = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
-                            while ($data = fgetcsv($handle)) {
-                                if ($data !== FALSE) {
-                                    // Data mapping, sesuai dengan urutan kolom di CSV
-                                    $NamaLengkap = $data[0];
-                                    $Nim = $data[1];
-                                    $WANumber = $data[2];
-                                    $alamat = $data[3];
+            if ($filename === "csv") {
+                $handle = fopen($_FILES['file']['tmp_name'], "r");
+                if ($handle !== FALSE) {
+                    try {
+                        // Skip the first line (header)
+                        fgetcsv($handle);
+                        
+                        // Set your CSV delimiter here
+                        $delimiter = ";"; // Change this if your CSV uses a different delimiter
+                        
+                        while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
+                            // Log the raw row for debugging
+                            error_log("Raw CSV row: " . print_r($data, true));
 
-                                    // Simpan data ke dalam database menggunakan model
-                                    $this->MahasiswaModel->saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat);
-                                } else {
-                                    // Log the error if a line can't be parsed
-                                    error_log("Error parsing CSV line: " . print_r($data, true));
-                                }
+                            if (count($data) >= 4) {
+                                $NamaLengkap = isset($data[0]) ? trim($data[0]) : null;
+                                $Nim = isset($data[1]) ? trim($data[1]) : null;
+                                $WANumber = isset($data[2]) ? trim($data[2]) : null;
+                                $alamat = isset($data[3]) ? trim($data[3]) : null;
+
+                                // Log data being processed
+                                error_log("Processing: $NamaLengkap, $Nim, $WANumber, $alamat");
+
+                                // Save the data
+                                $this->MahasiswaModel->saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat);
+                            } else {
+                                // Log invalid rows with specific details
+                                error_log("Invalid CSV row or missing columns: " . print_r($data, true));
                             }
-                            fclose($handle);
-                        } catch (Exception $e) {
-                            // Log any exceptions that occur during processing
-                            error_log("Exception caught during CSV import: " . $e->getMessage());
                         }
-                    } else {
-                        // Log error if file can't be opened
-                        error_log("Error opening CSV file: " . $_FILES['file']['tmp_name']);
+
+                        fclose($handle);
+                    } catch (Exception $e) {
+                        error_log("Exception caught during CSV import: " . $e->getMessage());
                     }
                 } else {
-                    // Log error if file is not a CSV
-                    error_log("Uploaded file is not a CSV: " . $_FILES['file']['name']);
+                    error_log("Error opening CSV file: " . $_FILES['file']['tmp_name']);
                 }
             } else {
-                // Log error if no file was uploaded
-                error_log("No file uploaded for CSV import.");
+                error_log("Uploaded file is not a CSV: " . $_FILES['file']['name']);
             }
         } else {
-            // Log error if importCSV was not set
-            error_log("importCSV was not set in POST request.");
+            error_log("No file uploaded or file upload error.");
         }
     }
+
+
+
+    
+    
 }

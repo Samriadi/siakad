@@ -55,13 +55,13 @@ class MahasiswaModel
 
     public function saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat)
     {
-        $data = [
-            'NamaLengkap' => $NamaLengkap,
-            'Nim' => $Nim,
-            'WANumber' => $WANumber,
-            'alamat' => $alamat
-        ];
+        // Validate input values
+        if (empty($Nim) || empty($NamaLengkap) || empty($WANumber) || empty($alamat)) {
+            error_log("Validation failed: One or more required fields are empty.");
+            return false;
+        }
 
+        // Prepare SQL statement
         $insertDataMahasiswa = "INSERT INTO $this->mhs_mahasiswa (
             Nim, NamaLengkap, WANumber, alamat
         ) VALUES (
@@ -71,22 +71,22 @@ class MahasiswaModel
         $stmtInsert = $this->db->prepare($insertDataMahasiswa);
 
         try {
-            foreach ($data as $dataMahasiswa) {
-                $stmtInsert->execute([
-                    ':Nim' => $dataMahasiswa->nim,
-                    ':NamaLengkap' => $dataMahasiswa->NamaLengkap,
-                    ':WANumber' => $dataMahasiswa->WANumber,
-                    ':alamat' => $dataMahasiswa->alamat
-                ]);
-            }
+            // Execute statement with parameter binding
+            $stmtInsert->execute([
+                ':Nim' => $Nim,
+                ':NamaLengkap' => $NamaLengkap,
+                ':WANumber' => $WANumber,
+                ':alamat' => $alamat
+            ]);
             return true;
         } catch (PDOException $e) {
-
-            error_log($e->getMessage());
+            // Log detailed error message
+            error_log("Error inserting mahasiswa: " . $e->getMessage());
             return false;
         }
-
     }
+
+
     public function importData()
     {
         $selectMahasiswaIncludeNim = "SELECT a.*, b.nim FROM $this->pmb_mahasiswa a INNER JOIN $this->pmb_nim b ON b.member_id = a.ID";
