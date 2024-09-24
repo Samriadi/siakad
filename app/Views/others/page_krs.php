@@ -32,10 +32,11 @@
             <div class="col-12">
                 <div class="card">
                 <div class="card-header">
-                    <form method="POST" action="#">
+                    <form id="myForm" method="POST" action="#">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                         <label for="name">Nama</label>
+                        <input type="hidden" class="form-control" id="student_id" value="6661">
                         <input type="text" class="form-control" id="name" value="bass">
                         </div>
                         <div class="form-group col-md-4">
@@ -99,8 +100,8 @@
                             <br>
                             <h6>Total SKS: <span class="text-danger" id="total-sks">0</span> <span class="text-danger">SKS</span></h6>
                             <br>
-                            <button class="btn btn-primary">Input</button>
-                            <button class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
+                            <button type="submit" class="btn btn-primary">Kirim</button>
+                            <button  type="button" class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
                         </div>
                     </div>
                 </div>
@@ -136,9 +137,12 @@
   <!-- Footer -->
   <?php include '../app/Views/others/layouts/footer.php'; ?>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
    let selectedCourses = JSON.parse(localStorage.getItem('selectedCourses')) || [];
+   let valcredits = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     displaySelectedCourses();
@@ -198,6 +202,9 @@ function displaySelectedCourses() {
         selectedCoursesList.appendChild(courseItem);
         totalCredits += course.credits;
 
+        valcredits=totalCredits;
+        
+
     });
     
     document.getElementById('total-sks').textContent = totalCredits;
@@ -215,6 +222,84 @@ document.querySelector('form').addEventListener('submit', () => {
     localStorage.removeItem('selectedCourses');
 });
 
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#myForm').on('submit', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            // Mengambil data dari form
+            var name = $('#name').val();
+
+            var student_id = $('#student_id').val();
+            var semester = $('#semester').val();
+            var academic_year = $('#academic_year').val();
+
+            const selectedCourseIds = selectedCourses.map(course => course.id);
+            
+            var studentData = [];
+
+            // Membuat objek untuk menyimpan data
+            var studentObject = {
+                student_id: student_id,
+                semester: semester,
+                academic_year: academic_year,
+                total_credits: valcredits,
+                selected_course_ids: selectedCourseIds
+            };
+
+            // Menambahkan objek ke dalam array
+            studentData.push(studentObject);
+
+            // Contoh untuk menampilkan isi array
+            console.log('student data' , studentData);
+
+          
+        Swal.fire({
+            title: "Konfirmasi Pengiriman",
+            text: "Apakah Anda yakin ingin?",
+            icon: "question", // Icon for the confirmation prompt
+            showCancelButton: true,
+            confirmButtonText: 'Kirim',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/admin/siakad/krs/add',
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure JSON is correctly set
+                    data: JSON.stringify(studentData), // Send data as JSON string
+                    success: function(response) {
+                        console.log('Response from server:', response);
+                        Swal.fire({
+                            text: 'Data berhasil dikirim.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX Error:', textStatus, errorThrown);
+                        Swal.fire({
+                            title: 'Kesalahan',
+                            text: 'Terjadi kesalahan: ' + errorThrown + ' (' + jqXHR.status + ')',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    text: 'Pengiriman krs dibatalkan',
+                    icon: 'info',
+                    confirmButtonText: 'OK',
+                    showCancelButton: false
+                });
+            }
+        });
+        });
+    });
 </script>
 </body>
 
