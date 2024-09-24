@@ -28,27 +28,30 @@
         </div>
 
         <div class="section-body">
-          <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-              <div class="card">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
                 <div class="card-header">
-                  <form method="POST" action="#">
-                    <div class="form-group">
-                      <label for="name">Nama</label>
-                      <input type="text" class="form-control" id="name" value="bass">
-                    </div>
-                    <div class="form-group">
-                      <label for="semester">Semester</label>
-                      <input type="number" class="form-control" id="semester" value="7">
-                    </div>
-                    <div class="form-group">
-                      <label for="academic_year">Tahun Akademik</label>
-                      <input type="text" class="form-control" id="academic_year" value="2024/2025">
+                    <form method="POST" action="#">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                        <label for="name">Nama</label>
+                        <input type="text" class="form-control" id="name" value="bass">
+                        </div>
+                        <div class="form-group col-md-4">
+                        <label for="semester">Semester</label>
+                        <input type="number" class="form-control" id="semester" value="7">
+                        </div>
+                        <div class="form-group col-md-4">
+                        <label for="academic_year">Tahun Akademik</label>
+                        <input type="text" class="form-control" id="academic_year" value="2024/2025">
+                        </div>
                     </div>
                 </div>
-              </div>
+                </div>
             </div>
-          </div>
+            </div>
+
           <?php
 // Get the current semester from the query string or default to 1
             $currentSemester = isset($_GET['semester']) ? intval($_GET['semester']) : 1;
@@ -59,7 +62,7 @@
             ?>
 
             <div class="row">
-                <div class="col-lg-12 col-md-12 col-12">
+                <div class="col-lg-6 col-md-6 col-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="d-inline">Mata Kuliah Semester <?= $currentSemester ?></h4>
@@ -67,20 +70,37 @@
                         <div class="card-body">
                             <ul class="list-unstyled list-unstyled-border">
                                 <?php foreach ($dataMatkul as $key => $value) : ?>
-                                    <li class="media">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="cbx-<?= $currentSemester ?>-<?= $key ?>"
+                                    <li class="media d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <input type="checkbox" id="cbx-<?= $currentSemester ?>-<?= $key ?>" 
                                                 onchange="updateSelectedCourses(this,'<?= $value->course_id ?>', '<?= $value->course_name ?>', '<?= $value->course_code ?>', <?= $value->credits ?>)">
-                                            <label class="custom-control-label" for="cbx-<?= $currentSemester ?>-<?= $key ?>"></label>
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="media-title"><a href="#"><?= $value->course_name ?></a></h6>
-                                            <div class="text-small text-muted"><?= $value->course_code ?><div class="bullet"></div> 
-                                                <span class="text-primary"><?= $value->credits ?> SKS</span></div>
+                                            <label for="cbx-<?= $currentSemester ?>-<?= $key ?>" class="ml-1"></label>
+                                            <span class="font-weight-bold fs-5 ml-1 mr-3"><?= $value->course_name ?></span>
+                                            <span><?= $value->course_code ?></span>
+                                            <span class="bullet mx-1"></span>
+                                            <span class="font-weight-bold text-danger"><?= $value->credits ?> SKS</span>
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="d-inline">Mata Kuliah Yang Dipilih</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled list-unstyled-border" id="selected-courses">
+                                <!-- Selected courses will be displayed here -->
+                            </ul>
+                            <br>
+                            <h6>Total SKS: <span class="text-danger" id="total-sks">0</span> <span class="text-danger">SKS</span></h6>
+                            <br>
+                            <button class="btn btn-primary">Input</button>
+                            <button class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
                         </div>
                     </div>
                 </div>
@@ -106,28 +126,6 @@
                     </nav>
                 </div>
             </div>
-
-          <div class="row">
-              <div class="col-lg-12 col-md-6 col-12">
-                  <div class="card">
-                      <div class="card-header">
-                          <h4 class="d-inline">Mata Kuliah Yang Dipilih</h4>
-                      </div>
-                      <div class="card-body">
-                          <ul class="list-unstyled list-unstyled-border" id="selected-courses">
-                              <!-- Selected courses will be displayed here -->
-                          </ul>
-                          <br>
-                          <h6>Total SKS: <span id="total-sks">0</span> SKS</h6>
-                          <br>
-                          <button class="btn btn-primary">Input</button>
-                          <button class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-
 
         </form>
         </div>
@@ -186,9 +184,16 @@ function displaySelectedCourses() {
         courseItem.className = 'media';
         courseItem.innerHTML = `
             <div class="media-body">
-                <h6 class="media-title"><a href="#">${course.name}</a></h6>
-                <div class="text-small text-muted">${course.code} <div class="bullet"></div> <span class="text-primary">${course.credits} SKS</span></div>
-            </div>`;
+                <li class="media d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <span class="font-weight-bold  fs-5 ml-1 mr-3">${course.name}</span>
+                        <span>${course.code}</span>
+                        <span class="bullet mx-1"></span>
+                        <span class="font-weight-bold text-danger">${course.credits} SKS</span>
+                    </div>
+                </li>
+            </div>
+            `;
         
         selectedCoursesList.appendChild(courseItem);
         totalCredits += course.credits;
