@@ -3,7 +3,7 @@ session_start();
 date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(0);
 
 
 require_once __DIR__ . '/../app/Core/Router.php';
@@ -18,6 +18,7 @@ require_once __DIR__ . '/../app/Controllers/DosenController.php';
 require_once __DIR__ . '/../app/Controllers/StaffController.php';
 require_once __DIR__ . '/../app/Controllers/MatkulController.php';
 require_once __DIR__ . '/../app/Controllers/PerkuliahanController.php';
+require_once __DIR__ . '/../app/Controllers/KrsController.php';
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 require_once __DIR__ . '/../app/Models/DosenModel.php';
@@ -48,7 +49,7 @@ $router->add('/ortu/delete', 'MahasiswaController', 'deleteDataOrtu');
 
 $router->add('/dosen', 'DosenController', 'index');
 $router->add('/dosen/fetch', 'DosenController', 'fetchData');
-$router->add('/dosen/add', 'DosenController', 'addData');
+$router->add('/dosen/add', 'DosenController', 'add');
 $router->add('/dosen/update', 'DosenController', 'updateData');
 $router->add('/dosen/delete', 'DosenController', 'deleteData');
 
@@ -72,11 +73,7 @@ $router->add('/perkuliahan/delete', 'PerkuliahanController', 'deleteData');
 $router->add('/perkuliahan/include', 'PerkuliahanController', 'includeData');
 
 $router->add('/krs', 'KrsController', 'krs');
-
-
-
-
-
+$router->add('/krs/add', 'KrsController', 'addData');
 
 
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
