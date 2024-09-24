@@ -9,3 +9,5 @@ $mhs_dosen = "mhs_dosen";
 $mhs_staff = "mhs_staff";
 $mhs_matakuliah = "mhs_matakuliah";
 $mhs_perkuliahan = "mhs_perkuliahan";
+$mhs_krs = "mhs_krs";
+$mhs_krs_courses = "mhs_krs_courses";
