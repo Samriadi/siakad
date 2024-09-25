@@ -63,7 +63,7 @@
             ?>
 
             <div class="row">
-                <div class="col-lg-6 col-md-6 col-12">
+                <div class="col-lg-5 col-md-6 col-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="d-inline">Mata Kuliah Semester <?= $currentSemester ?></h4>
@@ -88,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 col-md-6 col-12">
+                <div class="col-lg-7 col-md-6 col-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="d-inline">Mata Kuliah Yang Dipilih</h4>
@@ -185,7 +185,7 @@
       
         <!-- Status Approval di bawah tabel -->
         <div class="mt-3">
-            <h5>Status Approval:</h5>
+            <h6>Approval Status :</h6>
             <span class="badge badge-warning">Pending</span>
             <!-- Ubah status di atas sesuai dengan data Anda -->
         </div>
