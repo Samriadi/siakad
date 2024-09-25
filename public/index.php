@@ -4,7 +4,10 @@ date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(0);
+// Memulai session
 
+// Contoh data pengguna yang disimpan dalam session
+$_SESSION['student_id'] = 6661;
 
 require_once __DIR__ . '/../app/Core/Router.php';
 require_once __DIR__ . '/../app/Core/Database.php';
@@ -74,6 +77,8 @@ $router->add('/perkuliahan/include', 'PerkuliahanController', 'includeData');
 
 $router->add('/krs', 'KrsController', 'krs');
 $router->add('/krs/add', 'KrsController', 'addData');
+$router->add('/krs/delete', 'KrsController', 'deleteData');
+
 
 
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';

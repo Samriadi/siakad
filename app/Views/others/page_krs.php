@@ -94,17 +94,27 @@
                             <h4 class="d-inline">Mata Kuliah Yang Dipilih</h4>
                         </div>
                         <div class="card-body">
-                            <ul class="list-unstyled list-unstyled-border" id="selected-courses">
-                                <!-- Selected courses will be displayed here -->
-                            </ul>
+                            <div class="row">
+                                <div class="col-6">
+                                    <ul class="list-unstyled list-unstyled-border" id="selected-courses-left">
+                                        <!-- Selected courses will be displayed here -->
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <ul class="list-unstyled list-unstyled-border" id="selected-courses-right">
+                                        <!-- Additional courses will be displayed here -->
+                                    </ul>
+                                </div>
+                            </div>
                             <br>
                             <h6>Total SKS: <span class="text-danger" id="total-sks">0</span> <span class="text-danger">SKS</span></h6>
                             <br>
                             <button type="submit" class="btn btn-primary">Kirim</button>
-                            <button  type="button" class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
+                            <button type="button" class="btn btn-danger" onclick="clearLocalStorage()">Hapus Semua</button>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Pagination Controls -->
@@ -130,6 +140,59 @@
 
         </form>
         </div>
+
+        <div class="card">
+    <div class="card-header">
+        <h4>Data KRS</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Mata Kuliah</th>
+                        <th>Kode</th>
+                        <th>SKS</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="krsData">
+                    <?php 
+                    foreach ($DetailKRS as $key => $value) : ?>
+                    <tr>
+                        <td><?=$key+1?></td>
+                        <td><?=$value->course_name?></td>
+                        <td><?=$value->course_code?></td>
+                        <td><?=$value->credits?></td>
+                        <td>
+                        <a class="btn btn-danger btn-action mr-1" data-course-id="<?=$value->course_id?>" data-id="<?= $value->krs_course_id ?>" onclick="confirmDelete(this)">
+                                <i class="fas fa-trash-alt"></i>
+                              </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+            <tr>
+                <th colspan="3" class="text-right">Total SKS</th>
+                <th colspan="2" id="totalSKS">0</th>
+            </tr>
+        </tfoot>
+            </table>
+            <div id="noDataMessage" class="alert alert-info d-none">Tidak ada data KRS, lakukan penginputan KRS terlebih dahulu!.</div>
+        </div>
+      
+        <!-- Status Approval di bawah tabel -->
+        <div class="mt-3">
+            <h5>Status Approval:</h5>
+            <span class="badge badge-warning">Pending</span>
+            <!-- Ubah status di atas sesuai dengan data Anda -->
+        </div>
+    </div>
+</div>
+
+
       </section>
     </div>
   </div>
@@ -144,17 +207,19 @@
    let selectedCourses = JSON.parse(localStorage.getItem('selectedCourses')) || [];
    let valcredits = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-    displaySelectedCourses();
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        displaySelectedCourses();
 
     // Check already selected courses when the page loads
     selectedCourses.forEach(course => {
         const checkbox = document.getElementById(`cbx-${course.semester}-${course.key}`);
-        if (checkbox) {
-            checkbox.checked = true;
-        }
-    });
-});
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        });
 
 function updateSelectedCourses(checkbox, courseId, courseName, courseCode, credits) {
     const courseData = {
@@ -178,42 +243,52 @@ function updateSelectedCourses(checkbox, courseId, courseName, courseCode, credi
 }
 
 function displaySelectedCourses() {
-    const selectedCoursesList = document.getElementById('selected-courses');
-    selectedCoursesList.innerHTML = '';
+    const selectedCoursesListLeft = document.getElementById('selected-courses-left');
+    const selectedCoursesListRight = document.getElementById('selected-courses-right');
+    
+    // Clear previous content
+    selectedCoursesListLeft.innerHTML = '';
+    selectedCoursesListRight.innerHTML = '';
     
     let totalCredits = 0;
     
-    selectedCourses.forEach(course => {
+    selectedCourses.forEach((course, index) => {
         const courseItem = document.createElement('li');
         courseItem.className = 'media';
         courseItem.innerHTML = `
             <div class="media-body">
                 <li class="media d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <span class="font-weight-bold  fs-5 ml-1 mr-3">${course.name}</span>
+                        <span class="font-weight-bold fs-5 ml-1 mr-3">${index + 1}. ${course.name}</span>
                         <span>${course.code}</span>
                         <span class="bullet mx-1"></span>
                         <span class="font-weight-bold text-danger">${course.credits} SKS</span>
                     </div>
                 </li>
             </div>
-            `;
-        
-        selectedCoursesList.appendChild(courseItem);
+        `;
+
+        // Append to the left column if index < 6, otherwise to the right column
+        if (index < 6) {
+            selectedCoursesListLeft.appendChild(courseItem);
+        } else {
+            selectedCoursesListRight.appendChild(courseItem);
+        }
+
         totalCredits += course.credits;
-
-        valcredits=totalCredits;
-        
-
     });
     
+    // Update the total credits
     document.getElementById('total-sks').textContent = totalCredits;
 }
+
 
 function clearLocalStorage() {
     localStorage.removeItem('selectedCourses');
     selectedCourses = {};
+    location.reload();
     displaySelectedCourses();
+
 }
 
 
@@ -272,11 +347,13 @@ document.querySelector('form').addEventListener('submit', () => {
                     contentType: 'application/json', // Ensure JSON is correctly set
                     data: JSON.stringify(studentData), // Send data as JSON string
                     success: function(response) {
-                        console.log('Response from server:', response);
                         Swal.fire({
                             text: 'Data berhasil dikirim.',
                             icon: 'success',
-                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -301,6 +378,129 @@ document.querySelector('form').addEventListener('submit', () => {
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        // Function to calculate total SKS
+        function updateTotalSKS() {
+            let totalSKS = 0;
+            $('tbody tr').each(function() {
+                const sks = parseInt($(this).find('td:eq(3)').text());
+                totalSKS += sks;
+            });
+            $('#totalSKS').text(totalSKS);
+        }
+
+        // Check if there are any KRS data and update total SKS
+        if ($('tbody tr').length === 0) {
+            $('#noDataMessage').removeClass('d-none'); // Show no data message
+            $('#totalSKS').text(0); // Set total SKS to 0
+        } else {
+            $('#noDataMessage').addClass('d-none'); // Hide no data message
+            updateTotalSKS(); // Update total SKS if there are rows
+        }
+
+        // Handle delete button click
+        $('.btn-delete').on('click', function() {
+            const row = $(this).closest('tr');
+
+            // Confirm deletion
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data mata kuliah ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Remove the row
+                    row.remove();
+
+                    // Update total SKS
+                    updateTotalSKS();
+
+                    // Check if there are any rows left
+                    if ($('tbody tr').length === 0) {
+                        $('#noDataMessage').removeClass('d-none'); // Show no data message
+                    }
+
+                    // Show success notification
+                    Swal.fire(
+                        'Terhapus!',
+                        'Data mata kuliah telah dihapus.',
+                        'success'
+                    );
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    
+    function confirmDelete(element) {
+        const id = element.getAttribute('data-id');
+        const course_id = element.getAttribute('data-course-id');
+
+       
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '/admin/siakad/krs/delete',
+              type: 'POST',
+              data: {
+                id: id
+              },
+              success: function(response) {
+                console.log(response);
+                if (response.success) {
+                  Swal.fire(
+                    'Deleted!',
+                    'The record has been deleted.',
+                    'success'
+                  ).then(() => {
+                            let selectedCourses = JSON.parse(localStorage.getItem('selectedCourses')) || [];
+
+                            // Filter array untuk menghapus item dengan ID tertentu
+                            const updatedCourses = selectedCourses.filter(course => course.id !== course_id);
+
+                            // Simpan kembali ke localStorage
+                            localStorage.setItem('selectedCourses', JSON.stringify(updatedCourses));
+
+                            console.log(id)
+
+                    location.reload();
+                  });
+                } else {
+                  Swal.fire(
+                    'Error!',
+                    'There was an issue deleting the record.',
+                    'error'
+                  );
+                }
+              },
+              error: function() {
+                Swal.fire(
+                  'Error!',
+                  'Failed to send request.',
+                  'error'
+                );
+              }
+            });
+          }
+        });
+      }
+</script>
+
 </body>
 
 </html>

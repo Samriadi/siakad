@@ -84,5 +84,25 @@ class KrsModel
     }
 }
 
+public function getDetailKRS($x){
+    $query = "SELECT mkc.krs_course_id, mkc.course_id, mk.krs_id, mk.student_id, mk.semester AS krs_semester, mk.academic_year, mk.total_credits, mk.submission_date, mk.approval_status, mk.advisor_id, mm.course_code, mm.course_name, mm.credits, mm.semester AS course_semester FROM $this->mhs_krs_courses mkc JOIN $this->mhs_krs mk ON mkc.krs_id = mk.krs_id JOIN $this->mhs_matakuliah mm ON mkc.course_id = mm.course_id WHERE mk.student_id = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute([$x]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+public function deleteData($id)
+{
+  try {
+    $stmt = $this->db->prepare("DELETE FROM $this->mhs_krs_courses WHERE krs_course_id = :id");
+    $stmt->execute([
+      ':id' => $id
+    ]);
+    return $stmt->rowCount() > 0;
+  } catch (PDOException $e) {
+    return false;
+  }
+}
+
 
 }
