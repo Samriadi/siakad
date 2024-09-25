@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 class KrsController
 {
@@ -9,6 +10,7 @@ class KrsController
   public function __construct()
   {
     $this->KrsModel = new KrsModel();
+    
     $this->matkul1 = $this->KrsModel->getMatakuliah(1);
     $this->matkul2 = $this->KrsModel->getMatakuliah(2);
     $this->matkul3 = $this->KrsModel->getMatakuliah(3);
@@ -17,6 +19,9 @@ class KrsController
     $this->matkul6 = $this->KrsModel->getMatakuliah(6);
     $this->matkul7 = $this->KrsModel->getMatakuliah(7);
     $this->matkul8 = $this->KrsModel->getMatakuliah(8);
+
+
+    $this->student_id = $_SESSION['student_id'];
   }
   public function krs()
   {
@@ -29,6 +34,9 @@ class KrsController
     $dataMatkul6 = $this->matkul6;
     $dataMatkul7 = $this->matkul7;
     $dataMatkul8 = $this->matkul8;
+
+    $DetailKRS = $this->KrsModel->getDetailKRS($this->student_id);
+    // error_log(print_r($DetailKRS, true));
 
     include __DIR__ . '/../Views/others/page_krs.php';
   }
@@ -70,6 +78,22 @@ class KrsController
       }
       header('Content-Type: application/json');
       echo json_encode($response);
+  }
+
+  public function deleteData()
+  {
+    header('Content-Type: application/json');
+
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+      echo json_encode(['success' => false, 'message' => 'Invalid ID']);
+      return;
+    }
+
+    $id = intval($_POST['id']);
+
+    $success = $this->KrsModel->deleteData($id);
+
+    echo json_encode(['success' => $success]);
   }
         
 }
