@@ -30,27 +30,47 @@ class KrsModel
     $stmt->execute([$x]);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
-
   public function addData($student_id, $semester, $academic_year, $total_credits, $submission_date)
   {
-    try {
-      $query = "INSERT INTO $this->mhs_krs (student_id, semester, academic_year, total_credits, submission_date) 
-                    VALUES (?, ?, ?, ?, ?)";
-      $stmt = $this->db->prepare($query);
-      $result = $stmt->execute([
-        $student_id,
-        $semester,
-        $academic_year,
-        $total_credits,
-        $submission_date
-      ]);
-
-      return $result;
-    } catch (PDOException $e) {
-      error_log($e->getMessage());
-      return false;
-    }
+      try {
+          // First, check if a record with the same student_id, semester, and academic_year exists
+          $checkQuery = "SELECT krs_id FROM $this->mhs_krs WHERE student_id = ? AND semester = ? AND academic_year = ?";
+          $checkStmt = $this->db->prepare($checkQuery);
+          $checkStmt->execute([$student_id, $semester, $academic_year]);
+          $existingKRSId = $checkStmt->fetchColumn();
+  
+          if ($existingKRSId) {
+              // If a record exists, update it
+              $updateQuery = "UPDATE $this->mhs_krs 
+                              SET total_credits = ?, submission_date = ? 
+                              WHERE krs_id = ?";
+              $updateStmt = $this->db->prepare($updateQuery);
+              $result = $updateStmt->execute([
+                  $total_credits,
+                  $submission_date,
+                  $existingKRSId
+              ]);
+          } else {
+              // If no record exists, insert a new record
+              $insertQuery = "INSERT INTO $this->mhs_krs (student_id, semester, academic_year, total_credits, submission_date) 
+                              VALUES (?, ?, ?, ?, ?)";
+              $insertStmt = $this->db->prepare($insertQuery);
+              $result = $insertStmt->execute([  
+                  $student_id,
+                  $semester,
+                  $academic_year,
+                  $total_credits,
+                  $submission_date
+              ]);
+          }
+  
+          return $result;
+      } catch (PDOException $e) {
+          error_log($e->getMessage());
+          return false;
+      }
   }
+  
 
   public function addDataKrsCourses($student_id, $selected_course_ids) {
     try {
@@ -70,7 +90,11 @@ class KrsModel
 
             // Loop through selected course IDs and insert into mhs_krs_courses
             foreach ($selected_course_ids as $course_id) {
-                $insertStmt->execute([$krs_id, $course_id]);
+                // Use the correct variable names
+                $checkCourseExists = $this->checkCourseExists($student_id, $course_id);
+                if ($checkCourseExists === false) {
+                    $insertStmt->execute([$krs_id, $course_id]);
+                }
             }
 
             return true; // Return true if successful
@@ -84,12 +108,64 @@ class KrsModel
     }
 }
 
-public function getDetailKRS($x){
-    $query = "SELECT mkc.krs_course_id, mkc.course_id, mk.krs_id, mk.student_id, mk.semester AS krs_semester, mk.academic_year, mk.total_credits, mk.submission_date, mk.approval_status, mk.advisor_id, mm.course_code, mm.course_name, mm.credits, mm.semester AS course_semester FROM $this->mhs_krs_courses mkc JOIN $this->mhs_krs mk ON mkc.krs_id = mk.krs_id JOIN $this->mhs_matakuliah mm ON mkc.course_id = mm.course_id WHERE mk.student_id = ?";
+private function checkCourseExists($student_id, $course_id) {
+    $query = "SELECT COUNT(*) AS course_count 
+              FROM $this->mhs_krs_courses mkc 
+              JOIN $this->mhs_krs mk ON mkc.krs_id = mk.krs_id 
+              WHERE mk.student_id = ? AND mkc.course_id = ?";
+    
     $stmt = $this->db->prepare($query);
-    $stmt->execute([$x]);
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    $stmt->execute([$student_id, $course_id]);
+    
+    $result = $stmt->fetch(PDO::FETCH_OBJ);
+    
+    return $result->course_count > 0;
 }
+
+private function getCourseCountByKrsId($krs_id) {
+  $query = "SELECT COUNT(*) AS course_count 
+            FROM $this->mhs_krs_courses 
+            WHERE krs_id = ?";
+
+  try {
+      $stmt = $this->db->prepare($query);
+      $stmt->execute([$krs_id]);
+      
+      $result = $stmt->fetch(PDO::FETCH_OBJ);
+      
+      return (int)$result->course_count; // Return the count as an integer
+  } catch (PDOException $e) {
+      // Handle the error (log it, rethrow it, etc.)
+      error_log("Database error: " . $e->getMessage());
+      return 0; // Return 0 if there is an error
+  }
+}
+
+private function getAllCourseIds() {
+  $query = "SELECT course_id FROM $this->mhs_krs_courses";
+
+  try {
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      
+      // Fetch all Course IDs as an associative array
+      $result = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+      
+      return $result; // Return an array of Course IDs
+  } catch (PDOException $e) {
+      // Handle the error (log it, rethrow it, etc.)
+      error_log("Database error: " . $e->getMessage());
+      return []; // Return an empty array in case of an error
+  }
+}
+
+public function getDetailKRS($x){
+  $query = "SELECT mkc.krs_course_id, mkc.course_id, mk.krs_id, mk.student_id, mk.semester AS krs_semester, mk.academic_year, mk.total_credits, mk.submission_date, mk.approval_status, mk.advisor_id, mm.course_code, mm.course_name, mm.credits, mm.semester AS course_semester FROM $this->mhs_krs_courses mkc JOIN $this->mhs_krs mk ON mkc.krs_id = mk.krs_id JOIN $this->mhs_matakuliah mm ON mkc.course_id = mm.course_id WHERE mk.student_id = ?";
+  $stmt = $this->db->prepare($query);
+  $stmt->execute([$x]);
+  return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
 
 public function deleteData($id)
 {
