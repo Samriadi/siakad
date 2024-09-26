@@ -22,6 +22,7 @@ require_once __DIR__ . '/../app/Controllers/StaffController.php';
 require_once __DIR__ . '/../app/Controllers/MatkulController.php';
 require_once __DIR__ . '/../app/Controllers/PerkuliahanController.php';
 require_once __DIR__ . '/../app/Controllers/KrsController.php';
+require_once __DIR__ . '/../app/Controllers/KhsController.php';
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 require_once __DIR__ . '/../app/Models/DosenModel.php';
@@ -82,6 +83,7 @@ $router->add('/krs/delete', 'KrsController', 'deleteData');
 $router->add('/persetujuan-krs', 'KrsController', 'indexPersetujuan');
 $router->add('/persetujuan-krs/detail', 'KrsController', 'detailPersetujuan');
 
+$router->add('/khs', 'KhsController', 'khs');
 
 
 
