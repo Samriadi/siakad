@@ -141,7 +141,7 @@
         </form>
         </div>
 
-        <div class="card">
+  <div class="card">
     <div class="card-header">
         <h4>Data KRS</h4>
     </div>
@@ -158,36 +158,39 @@
                     </tr>
                 </thead>
                 <tbody id="krsData">
-                    <?php 
-                    foreach ($DetailKRS as $key => $value) : ?>
+                    <?php foreach ($DetailKRS as $key => $value) : ?>
                     <tr>
-                        <td><?=$key+1?></td>
-                        <td><?=$value->course_name?></td>
-                        <td><?=$value->course_code?></td>
-                        <td><?=$value->credits?></td>
+                        <td><?= $key + 1 ?></td>
+                        <td><?= $value->course_name ?></td>
+                        <td><?= $value->course_code ?></td>
+                        <td><?= $value->credits ?></td>
                         <td>
-                        <a class="btn btn-danger btn-action mr-1" data-course-id="<?=$value->course_id?>" data-id="<?= $value->krs_course_id ?>" onclick="confirmDelete(this)">
+                            <a class="btn btn-danger btn-action mr-1" data-course-id="<?= $value->course_id ?>" data-id="<?= $value->krs_course_id ?>" onclick="confirmDelete(this)">
                                 <i class="fas fa-trash-alt"></i>
-                              </a>
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
-            <tr>
-                <th colspan="3" class="text-right">Total SKS</th>
-                <th colspan="2" id="totalSKS">0</th>
-            </tr>
-        </tfoot>
+                    <tr>
+                        <th colspan="3" class="text-right">Total SKS</th>
+                        <th colspan="2" id="totalSKS">0</th>
+                    </tr>
+                    <tr>
+                    <td colspan="5" style="padding: 0;">
+                        <div class="alert alert-warning mb-0" role="alert" style="margin: 0;">
+                            <strong>Pending...</strong>
+                            <p style="margin: 0;">Pengisian KRS Anda masih dalam proses. Silakan tunggu konfirmasi dari pihak administrasi.</p>
+                            <!-- Ubah status di atas sesuai dengan data Anda -->
+                        </div>
+                    </td>
+
+
+                    </tr>
+                </tfoot>
             </table>
             <div id="noDataMessage" class="alert alert-info d-none">Tidak ada data KRS, lakukan penginputan KRS terlebih dahulu!.</div>
-        </div>
-      
-        <!-- Status Approval di bawah tabel -->
-        <div class="mt-3">
-            <h6>Approval Status :</h6>
-            <span class="badge badge-warning">Pending</span>
-            <!-- Ubah status di atas sesuai dengan data Anda -->
         </div>
     </div>
 </div>
