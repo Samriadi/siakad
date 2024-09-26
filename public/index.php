@@ -79,6 +79,10 @@ $router->add('/krs', 'KrsController', 'krs');
 $router->add('/krs/add', 'KrsController', 'addData');
 $router->add('/krs/delete', 'KrsController', 'deleteData');
 
+$router->add('/persetujuan-krs', 'KrsController', 'indexPersetujuan');
+$router->add('/persetujuan-krs/detail', 'KrsController', 'detailPersetujuan');
+
+
 
 
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
