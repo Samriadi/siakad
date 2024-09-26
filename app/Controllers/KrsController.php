@@ -45,7 +45,6 @@ class KrsController
   {
     // Mengambil input JSON
       $data = json_decode(file_get_contents('php://input'), true);
-      error_log(print_r($data, true));
 
       // Validasi data
       $academic_year = $data[0]['academic_year'] ?? null;
@@ -94,6 +93,29 @@ class KrsController
     $success = $this->KrsModel->deleteData($id);
 
     echo json_encode(['success' => $success]);
+  }
+
+  //persetujuan krs
+
+  public function indexPersetujuan(){
+
+    $dataKRS = $this->KrsModel->getAllDataPersetujuan();
+
+    include __DIR__ . '/../Views/others/page_persetujuanKrs.php';
+
+  }
+
+  public function detailPersetujuan(){
+    $krs_id = $_GET['krs_id'] ?? '';
+
+    $detailProfil = $this->KrsModel->getDetailProfilKrsPersetujuan($krs_id);
+    $detailMatkul = $this->KrsModel->getDetailMatkulKrsPersetujuan($krs_id);
+
+    $response = array_merge($detailProfil, ['courses' => $detailMatkul]);
+    // error_log(print_r($detailMatkul, true));
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
   }
         
 }
