@@ -76,22 +76,23 @@
     </section>
 
 
-<!-- Modal untuk menampilkan detail KRS mahasiswa -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">Detail KRS Mahasiswa</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="detail-content">
-        <!-- Data detail KRS akan ditampilkan di sini -->
-      </div>
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document"> <!-- Use modal-lg for larger width -->
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Detail KRS Mahasiswa</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="detail-content">
+            <!-- Data detail KRS akan ditampilkan di sini -->
+        </div>
+        </div>
     </div>
-  </div>
-</div>
+    </div>
+
+
 
 
     <!-- Footer -->
