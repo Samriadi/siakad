@@ -180,5 +180,45 @@ public function deleteData($id)
   }
 }
 
+//persetujuan krs
+public function getAllDataPersetujuan()
+{
+    $query = "SELECT 
+                    m.NamaLengkap,
+                    m.Nim,
+                    k.krs_id,
+                    k.semester,
+                    k.approval_status
+              FROM 
+                    mhs_mahasiswa AS m
+              JOIN 
+                    mhs_krs AS k ON m.ID = k.student_id";
+                    
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+public function getDetailProfilKrsPersetujuan($x){
+  $query = "SELECT m.NamaLengkap, m.Nim, k.semester, k.approval_status FROM mhs_krs AS k JOIN mhs_mahasiswa AS m ON k.student_id = m.ID WHERE k.krs_id = ?";
+
+  $stmt = $this->db->prepare($query);
+  $stmt->execute([$x]);
+
+  return $stmt->fetch(PDO::FETCH_ASSOC);
+
+}
+
+public function getDetailMatkulKrsPersetujuan($x){
+  $query = "SELECT kc.course_id, mk.course_code, mk.course_name, mk.credits FROM mhs_krs_courses AS kc JOIN mhs_matakuliah AS MK ON kc.course_id = mk.course_id WHERE kc.krs_id = ?";
+
+  $stmt = $this->db->prepare($query);
+  $stmt->execute([$x]);
+
+  return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+}
+
+
 
 }
