@@ -219,6 +219,47 @@ public function getDetailMatkulKrsPersetujuan($x){
 
 }
 
+public function updateApprovalStatus($krs_id, $approval_status)
+{
+  // error_log(print_r($krs_id, true));
+
+    try {
+        // Prepare the SQL statement
+        $query = "UPDATE mhs_krs SET approval_status = ? WHERE krs_id = ?";
+        $stmt = $this->db->prepare($query);
+
+        // Execute the query
+        $req = $stmt->execute([$approval_status, $krs_id]);
+
+        return $req; // Return the result of the execution
+    } catch (PDOException $e) {
+        // Log error or handle it appropriately
+        error_log("Error updating approval status: " . $e->getMessage());
+        return false;
+    }
+}
+
+public function addApprovalRecord($krs_id, $approval_date, $approval_status, $comments, $advisor_id)
+{
+
+    try {
+        // Prepare the SQL statement
+        $query = "INSERT INTO mhs_krs_approvals (krs_id, approval_date, approval_status, comments, advisor_id) 
+                  VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+
+        // Execute the query
+        $req = $stmt->execute([$krs_id, $approval_date, $approval_status, $comments, $advisor_id]);
+
+        return $req; // Return the result of the execution
+    } catch (PDOException $e) {
+        // Log error or handle it appropriately
+        error_log("Error adding approval record: " . $e->getMessage());
+        return false;
+    }
+}
+
+
 
 
 }
