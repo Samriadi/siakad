@@ -180,6 +180,27 @@ public function deleteData($id)
   }
 }
 
+public function getApprovalStatus($student_id)
+{
+  try {
+    // Prepare the SQL statement
+    $query = "SELECT approval_status FROM mhs_krs WHERE student_id = ?";
+    $stmt = $this->db->prepare($query);
+
+    // Execute the query
+    $stmt->execute([$student_id]);
+
+    // Fetch the result
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result ? $result['approval_status'] : null;
+} catch (PDOException $e) {
+    // Log error or handle it appropriately
+    error_log("Error retrieving approval status: " . $e->getMessage());
+    return false; // Return false in case of error
+}
+}
+
 //persetujuan krs
 public function getAllDataPersetujuan()
 {
@@ -219,17 +240,16 @@ public function getDetailMatkulKrsPersetujuan($x){
 
 }
 
-public function updateApprovalStatus($krs_id, $approval_status)
+public function updateApprovalStatus($krs_id, $approval_status, $advisor_id)
 {
-  // error_log(print_r($krs_id, true));
 
     try {
         // Prepare the SQL statement
-        $query = "UPDATE mhs_krs SET approval_status = ? WHERE krs_id = ?";
+        $query = "UPDATE mhs_krs SET approval_status = ?, advisor_id = ? WHERE krs_id = ?";
         $stmt = $this->db->prepare($query);
 
         // Execute the query
-        $req = $stmt->execute([$approval_status, $krs_id]);
+        $req = $stmt->execute([$approval_status,$advisor_id, $krs_id]);
 
         return $req; // Return the result of the execution
     } catch (PDOException $e) {
@@ -239,25 +259,36 @@ public function updateApprovalStatus($krs_id, $approval_status)
     }
 }
 
-public function addApprovalRecord($krs_id, $approval_date, $approval_status, $comments, $advisor_id)
+public function addOrUpdateApprovalRecord($krs_id, $approval_date, $approval_status, $comments, $advisor_id)
 {
-
     try {
-        // Prepare the SQL statement
-        $query = "INSERT INTO mhs_krs_approvals (krs_id, approval_date, approval_status, comments, advisor_id) 
-                  VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
+        // Check if the record exists
+        $checkQuery = "SELECT COUNT(*) FROM mhs_krs_approvals WHERE krs_id = ?";
+        $checkStmt = $this->db->prepare($checkQuery);
+        $checkStmt->execute([$krs_id]);
+        $exists = $checkStmt->fetchColumn() > 0;
 
-        // Execute the query
-        $req = $stmt->execute([$krs_id, $approval_date, $approval_status, $comments, $advisor_id]);
-
-        return $req; // Return the result of the execution
+        if ($exists) {
+            // Update the existing record
+            $updateQuery = "UPDATE mhs_krs_approvals 
+                            SET approval_date = ?, approval_status = ?, comments = ?, advisor_id = ?
+                            WHERE krs_id = ?";
+            $updateStmt = $this->db->prepare($updateQuery);
+            return $updateStmt->execute([$approval_date, $approval_status, $comments, $advisor_id, $krs_id]);
+        } else {
+            // Insert a new record
+            $insertQuery = "INSERT INTO mhs_krs_approvals (krs_id, approval_date, approval_status, comments, advisor_id) 
+                            VALUES (?, ?, ?, ?, ?)";
+            $insertStmt = $this->db->prepare($insertQuery);
+            return $insertStmt->execute([$krs_id, $approval_date, $approval_status, $comments, $advisor_id]);
+        }
     } catch (PDOException $e) {
         // Log error or handle it appropriately
-        error_log("Error adding approval record: " . $e->getMessage());
+        error_log("Error adding/updating approval record: " . $e->getMessage());
         return false;
     }
 }
+
 
 
 
