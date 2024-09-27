@@ -180,7 +180,7 @@
                         <th colspan="2" id="totalSKS">0</th>
                     </tr>
                     <?php if (!empty($DetailKRS)) : ?>
-                        <?php if($StatusKRS === 'Pending') { ?>
+                        <?php if($approval['approval_status'] === 'Pending') { ?>
                             <tr>
                                 <td colspan="5" style="padding: 0;">
                                     <div class="alert alert-warning mb-0" role="alert" style="margin: 0;">
@@ -188,19 +188,19 @@
                                     </div>
                                 </td>
                             </tr>
-                        <?php } elseif($StatusKRS === 'Approved') { ?>
+                        <?php } elseif($approval['approval_status'] === 'Approved') { ?>
                             <tr>
                                 <td colspan="5" style="padding: 0;">
                                     <div class="alert alert-success mb-0" role="alert" style="margin: 0;">
-                                        <p style="margin: 0;">KRS disetujui.</p>
+                                        <p style="margin: 0;">KRS disetujui. <?=$approval['comments']?></p>
                                     </div>
                                 </td>
                             </tr>
-                        <?php } elseif($StatusKRS === 'Rejected') { ?>
+                        <?php } elseif($approval['approval_status'] === 'Rejected') { ?>
                             <tr>
                                 <td colspan="5" style="padding: 0;">
                                     <div class="alert alert-danger mb-0" role="alert" style="margin: 0;">
-                                        <p style="margin: 0;">KRS ditolak, silahkan revisi dan input ulang.</p>
+                                        <p style="margin: 0;">KRS ditolak. <?=$approval['comments']?></p>
                                     </div>
                                 </td>
                             </tr>
