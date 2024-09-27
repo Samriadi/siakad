@@ -156,7 +156,46 @@
             });
         });
 
-    </script>
-</body>
+      </script>
+
+      <script>
+        function updateApprovalStatus(status, krsId) {
+
+          console.log(krsId)
+            $.ajax({
+                url: '/admin/siakad/persetujuan-krs/update', // Ganti dengan URL endpoint PHP Anda untuk update
+                type: 'POST',
+                data: { krs_id: krsId, approval_status: status },
+                dataType: 'json',
+                success: function(response) {
+                  console.log(response)
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Status Updated',
+                            text: `Status has been updated to ${status}.`,
+                        });
+                        // Optionally refresh or update the displayed data here
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update status.',
+                    });
+                }
+            });
+        }
+
+      </script>
+  </body>
 
 </html>
