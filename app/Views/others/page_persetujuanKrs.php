@@ -111,7 +111,6 @@
     data: { krs_id: krsId },
     dataType: 'json',
     success: function(response) {
-        console.log(response);
         // Membuat konten detail dari response
         let content = `
             <p><strong>Nama:</strong> ${response.NamaLengkap}</p>
@@ -160,12 +159,12 @@
 
       <script>
         function updateApprovalStatus(status, krsId) {
+          var comment = $('#comment').val();
 
-          console.log(krsId)
             $.ajax({
                 url: '/admin/siakad/persetujuan-krs/update', // Ganti dengan URL endpoint PHP Anda untuk update
                 type: 'POST',
-                data: { krs_id: krsId, approval_status: status },
+                data: { krs_id: krsId, approval_status: status, comments: comment },
                 dataType: 'json',
                 success: function(response) {
                   console.log(response)
