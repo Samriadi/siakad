@@ -180,15 +180,34 @@
                         <th colspan="2" id="totalSKS">0</th>
                     </tr>
                     <?php if (!empty($DetailKRS)) : ?>
-                    <tr>
-                        <td colspan="5" style="padding: 0;">
-                            <div class="alert alert-warning mb-0" role="alert" style="margin: 0;">
-                                <p style="margin: 0;">Pengisian KRS Anda masih dalam proses. Silakan tunggu konfirmasi dari pihak administrasi.</p>
-                            </div>
-                        </td>
-                    </tr>
+                        <?php if($StatusKRS === 'Pending') { ?>
+                            <tr>
+                                <td colspan="5" style="padding: 0;">
+                                    <div class="alert alert-warning mb-0" role="alert" style="margin: 0;">
+                                        <p style="margin: 0;">Pengisian KRS Anda masih dalam proses. Silakan tunggu konfirmasi dari pihak administrasi.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } elseif($StatusKRS === 'Approved') { ?>
+                            <tr>
+                                <td colspan="5" style="padding: 0;">
+                                    <div class="alert alert-success mb-0" role="alert" style="margin: 0;">
+                                        <p style="margin: 0;">KRS disetujui.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } elseif($StatusKRS === 'Rejected') { ?>
+                            <tr>
+                                <td colspan="5" style="padding: 0;">
+                                    <div class="alert alert-danger mb-0" role="alert" style="margin: 0;">
+                                        <p style="margin: 0;">KRS ditolak, silahkan revisi dan input ulang.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     <?php endif; ?>
                 </tfoot>
+
             </table>
             <div id="noDataMessage" class="alert alert-info d-none">Tidak ada data KRS, lakukan penginputan KRS terlebih dahulu!.</div>
         </div>
@@ -280,6 +299,8 @@ function displaySelectedCourses() {
         }
 
         totalCredits += course.credits;
+
+        valcredits=totalCredits;
     });
     
     // Update the total credits
@@ -317,7 +338,7 @@ document.querySelector('form').addEventListener('submit', () => {
             var academic_year = $('#academic_year').val();
 
             const selectedCourseIds = selectedCourses.map(course => course.id);
-            
+            console.log(valcredits);
             var studentData = [];
 
             // Membuat objek untuk menyimpan data
