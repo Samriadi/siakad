@@ -22,6 +22,7 @@ class KrsController
 
 
     $this->student_id = $_SESSION['student_id'];
+    $this->advisor_id = $_SESSION['advisor_id'];
   }
   public function krs()
   {
@@ -36,6 +37,9 @@ class KrsController
     $dataMatkul8 = $this->matkul8;
 
     $DetailKRS = $this->KrsModel->getDetailKRS($this->student_id);
+    $StatusKRS = $this->KrsModel->getApprovalStatus($this->student_id);
+    error_log(print_r($StatusKRS, true));
+
 
     include __DIR__ . '/../Views/others/page_krs.php';
   }
@@ -51,7 +55,6 @@ class KrsController
       $student_id = $data[0]['student_id'] ?? null;
       $total_credits = $data[0]['total_credits'] ?? null;
       $selected_course_ids = $data[0]['selected_course_ids'] ?? null;
-      error_log(print_r($selected_course_ids, true));
 
       $submission_date = date('Y-m-d');
 
@@ -125,7 +128,8 @@ public function updatePersetujuan()
         // Retrieve the data sent via AJAX
         $krs_id = $_POST['krs_id'];
         $approval_status = $_POST['approval_status'];
-        $comment = $_POST['comment'] ?? ''; 
+        $comments = $_POST['comments'] ?? ''; 
+        error_log(print_r($_POST['comments'], true));
 
         // Validate the input data
         if (empty($krs_id) || empty($approval_status)) {
@@ -133,7 +137,7 @@ public function updatePersetujuan()
             return;
         }
 
-        $result = $this->KrsModel->updateApprovalStatus($krs_id, $approval_status);
+        $result = $this->KrsModel->updateApprovalStatus($krs_id, $approval_status, $this->advisor_id);
 
         // echo json_encode(['success' => true, 'krs id' => $approval_status]);
 
@@ -142,7 +146,7 @@ public function updatePersetujuan()
         if ($result) {
 
 
-             $this->KrsModel->addApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, 30);
+             $this->KrsModel->addOrUpdateApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, $this->advisor_id);
 
             echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
         } else {
