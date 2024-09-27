@@ -82,6 +82,7 @@ $router->add('/krs/delete', 'KrsController', 'deleteData');
 
 $router->add('/persetujuan-krs', 'KrsController', 'indexPersetujuan');
 $router->add('/persetujuan-krs/detail', 'KrsController', 'detailPersetujuan');
+$router->add('/persetujuan-krs/update', 'KrsController', 'updatePersetujuan');
 
 $router->add('/khs', 'KhsController', 'khs');
 
