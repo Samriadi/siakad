@@ -37,8 +37,8 @@ class KrsController
     $dataMatkul8 = $this->matkul8;
 
     $DetailKRS = $this->KrsModel->getDetailKRS($this->student_id);
-    $StatusKRS = $this->KrsModel->getApprovalStatus($this->student_id);
-    error_log(print_r($StatusKRS, true));
+
+    $approval = $this->KrsModel->getApprovalStatusAndComments($this->student_id);
 
 
     include __DIR__ . '/../Views/others/page_krs.php';
@@ -114,7 +114,6 @@ class KrsController
     $detailMatkul = $this->KrsModel->getDetailMatkulKrsPersetujuan($krs_id);
 
     $response = array_merge($detailProfil, ['courses' => $detailMatkul]);
-    // error_log(print_r($detailMatkul, true));
 
     header('Content-Type: application/json');
     echo json_encode($response);
