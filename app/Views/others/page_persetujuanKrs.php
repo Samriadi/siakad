@@ -119,7 +119,7 @@
                 const krsId = $(this).data('id'); // Mengambil nilai krs_id dari data-id
 
                 $.ajax({
-                    url: '/admin/siakad/persetujuan-krs/detail', // Ganti dengan URL endpoint PHP Anda
+                    url: '/admin/siakad/persetujuan-krs/detail', 
                     type: 'GET',
                     data: { krs_id: krsId },
                     dataType: 'json',
@@ -176,7 +176,7 @@
     
 
             $.ajax({
-                url: '/admin/siakad/persetujuan-krs/update', // Ganti dengan URL endpoint PHP Anda untuk update
+                url: '/admin/siakad/persetujuan-krs/update', 
                 type: 'POST',
                 data: { krs_id: krsId, approval_status: status, comments: comment },
                 dataType: 'json',
@@ -255,7 +255,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/admin/siakad/persetujuan-krs/update-general', // Ganti dengan URL endpoint PHP Anda untuk update
+                            url: '/admin/siakad/persetujuan-krs/update-general', 
                             type: 'POST',
                             data: { krs_id: selectedKRS, approval_status: status },
                             dataType: 'json',
