@@ -307,6 +307,38 @@ public function addOrUpdateApprovalRecord($krs_id, $approval_date, $approval_sta
     }
 }
 
+public function updateApprovalStatusByGeneral($krs_ids, $approval_status, $advisor_id)
+{
+    try {
+        error_log("krs id model: " . print_r($krs_ids, true));
+
+        // Memeriksa apakah $krs_ids adalah array
+        if (!is_array($krs_ids)) {
+            $krs_ids = [$krs_ids]; // Mengubah menjadi array jika hanya satu ID
+        }
+
+        // Buat placeholder untuk ID (misalnya ?, ?, ?)
+        $placeholders = implode(',', array_fill(0, count($krs_ids), '?'));
+
+        // Siapkan SQL dengan IN untuk menangani banyak ID
+        $query = "UPDATE mhs_krs SET approval_status = ?, advisor_id = ? WHERE krs_id IN ($placeholders)";
+        $stmt = $this->db->prepare($query);
+
+        // Gabungkan nilai-nilai parameter
+        $params = array_merge([$approval_status, $advisor_id], $krs_ids);
+
+        // Jalankan query
+        $req = $stmt->execute($params);
+
+        return $req; // Mengembalikan hasil eksekusi
+    } catch (PDOException $e) {
+        // Log error atau tangani sesuai kebutuhan
+        error_log("Error updating approval status: " . $e->getMessage());
+        return false;
+    }
+}
+
+
 
 
 
