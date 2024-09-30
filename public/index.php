@@ -3,7 +3,7 @@ session_start();
 date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(0);
+error_reporting(E_ALL);  
 // Memulai session
 
 // Contoh data pengguna yang disimpan dalam session
@@ -84,6 +84,7 @@ $router->add('/krs/delete', 'KrsController', 'deleteData');
 $router->add('/persetujuan-krs', 'KrsController', 'indexPersetujuan');
 $router->add('/persetujuan-krs/detail', 'KrsController', 'detailPersetujuan');
 $router->add('/persetujuan-krs/update', 'KrsController', 'updatePersetujuan');
+$router->add('/persetujuan-krs/update-general', 'KrsController', 'updatePersetujuanByGeneral');
 
 $router->add('/khs', 'KhsController', 'khs');
 
