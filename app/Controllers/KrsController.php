@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 class KrsController
 {
@@ -159,6 +158,38 @@ public function updatePersetujuan()
         echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
         exit;
     }
+}
+
+public function updatePersetujuanByGeneral(){
+  // Make sure the request method is POST
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Retrieve the data sent via AJAX
+    $krs_id = $_POST['krs_id'];
+    $approval_status = $_POST['approval_status'];
+
+    $result = $this->KrsModel->updateApprovalStatusByGeneral($krs_id, $approval_status, $this->advisor_id);
+
+
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+
+    // if ($result) {
+
+
+    //      $this->KrsModel->addOrUpdateApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, $this->advisor_id);
+
+    //     echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+    // } else {
+    //     echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
+    // }
+    exit;
+} else {
+    // Handle invalid request methods
+    header('Content-Type: application/json');
+
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit;
+}
 }
 
         
