@@ -182,13 +182,14 @@
                 dataType: 'json',
                 success: function(response) {
                   console.log(response)
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Status Updated',
-                            text: `Status has been updated to ${status}.`,
-                        });
-                        // Optionally refresh or update the displayed data here
+                  if (response.success) {
+                    Swal.fire({
+                          icon: 'success',
+                          title: 'Status Updated',
+                          text: `Status has been updated to ${status}.`,
+                      }).then(() => {
+                          location.reload();
+                      });
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -253,29 +254,6 @@
                     confirmButtonText: 'Yes, confirm it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Send data to the server using AJAX
-                        // $.ajax({
-                        //     url: 'path_to_your_php_script.php', // Replace with your actual PHP script URL
-                        //     type: 'POST',
-                        //     data: { selectedKRS: selectedKRS },
-                        //     success: function (response) {
-                        //         Swal.fire(
-                        //             'Confirmed!',
-                        //             'Selected KRS has been confirmed.',
-                        //             'success'
-                        //         ).then(() => {
-                        //             location.reload(); // Reload page after successful confirmation
-                        //         });
-                        //     },
-                        //     error: function () {
-                        //         Swal.fire(
-                        //             'Error!',
-                        //             'An error occurred while confirming KRS.',
-                        //             'error'
-                        //         );
-                        //     }
-                        // });
-
                         $.ajax({
                             url: '/admin/siakad/persetujuan-krs/update-general', // Ganti dengan URL endpoint PHP Anda untuk update
                             type: 'POST',
@@ -284,13 +262,14 @@
                             success: function(response) {
                               console.log(response)
                                 if (response.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Status Updated',
-                                        text: `Status has been updated`,
-                                    });
-                                    // Optionally refresh or update the displayed data here
-                                } else {
+                                  Swal.fire({
+                                      icon: 'success',
+                                      title: 'Status Updated',
+                                      text: `Status has been updated to ${status}.`,
+                                  }).then(() => {
+                                      location.reload();
+                                  });
+                                }else {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Error',
