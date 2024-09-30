@@ -310,7 +310,6 @@ public function addOrUpdateApprovalRecord($krs_id, $approval_date, $approval_sta
 public function updateApprovalStatusByGeneral($krs_ids, $approval_status, $advisor_id)
 {
     try {
-        error_log("krs id model: " . print_r($krs_ids, true));
 
         // Memeriksa apakah $krs_ids adalah array
         if (!is_array($krs_ids)) {

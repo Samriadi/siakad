@@ -36,8 +36,8 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                         <label for="name">Nama</label>
-                        <input type="hidden" class="form-control" id="student_id" value="6663">
-                        <input type="text" class="form-control" id="name" value="tester 3">
+                        <input type="hidden" class="form-control" id="student_id" value="6662">
+                        <input type="text" class="form-control" id="name" value="tester 2">
                         </div>
                         <div class="form-group col-md-4">
                         <label for="semester">Semester</label>
@@ -159,6 +159,7 @@
                 </thead>
                 <tbody id="krsData">
                     <?php if (!empty($DetailKRS)) : ?>
+                        
                         <?php foreach ($DetailKRS as $key => $value) : ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
@@ -179,7 +180,11 @@
                         <th colspan="3" class="text-right">Total SKS</th>
                         <th colspan="2" id="totalSKS">0</th>
                     </tr>
-                    <?php if (!empty($DetailKRS)) : ?>
+                    <?php if (!empty($DetailKRS)) : 
+                        
+                        
+                        ?>
+                        <
                         <?php if($approval['approval_status'] === 'Pending') { ?>
                             <tr>
                                 <td colspan="5" style="padding: 0;">
