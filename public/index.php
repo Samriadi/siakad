@@ -7,7 +7,7 @@ error_reporting(0);
 // Memulai session
 
 // Contoh data pengguna yang disimpan dalam session
-$_SESSION['student_id'] = 6661;
+$_SESSION['student_id'] = 6662;
 $_SESSION['advisor_id'] = 23;
 
 require_once __DIR__ . '/../app/Core/Router.php';

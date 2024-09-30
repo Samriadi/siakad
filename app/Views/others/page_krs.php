@@ -36,8 +36,8 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                         <label for="name">Nama</label>
-                        <input type="hidden" class="form-control" id="student_id" value="6661">
-                        <input type="text" class="form-control" id="name" value="bass">
+                        <input type="hidden" class="form-control" id="student_id" value="6663">
+                        <input type="text" class="form-control" id="name" value="tester 3">
                         </div>
                         <div class="form-group col-md-4">
                         <label for="semester">Semester</label>

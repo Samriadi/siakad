@@ -38,34 +38,39 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col">No</th>
-                          <th scope="col">Nama Mahasiswa</th>
-                          <th scope="col">NIM</th>
-                          <th scope="col">Semester</th>
-                          <th scope="col">Status Aproved</th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($dataKRS as $key => $value) : ?>
-                          <tr>
-                            <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->NamaLengkap ?></td>
-                            <td><?= $value->Nim ?></td>
-                            <td><?= $value->semester ?></td>
-                            <td><?= $value->approval_status ?></td>
-                            <td style="white-space: nowrap;">
-                              <a class="btn btn-primary btn-action mr-1" id="btn-show"  data-toggle="modal" data-target="#editModal"  data-id="<?= $value->krs_id ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-                            </td>
-                          </tr>
-                        <?php endforeach ?>
-                      </tbody>
-                    </table>
+                  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">Nama Mahasiswa</th>
+      <th scope="col">NIM</th>
+      <th scope="col">Semester</th>
+      <th scope="col">Status Aproved</th>
+      <th scope="col">Select</th> <!-- Added a header for the checkbox column -->
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($dataKRS as $key => $value) : ?>
+      <tr>
+        <th scope="row"><?= ++$key ?></th>
+        <td><?= $value->NamaLengkap ?></td>
+        <td><?= $value->Nim ?></td>
+        <td><?= $value->semester ?></td>
+        <td><?= $value->approval_status ?></td>
+        <td>
+          <input type="checkbox" name="selected_krs[]" value="<?= $value->krs_id ?>" /> <!-- Checkbox for selection -->
+        </td>
+        <td style="white-space: nowrap;">
+          <a class="btn btn-primary btn-action mr-1" id="btn-show" data-toggle="modal" data-target="#editModal" data-id="<?= $value->krs_id ?>">
+            <i class="fas fa-pencil-alt"></i>
+          </a>
+        </td>
+      </tr>
+    <?php endforeach ?>
+  </tbody>
+</table>
+
                   </div>
                 </div>
               </div>
