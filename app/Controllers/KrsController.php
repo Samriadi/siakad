@@ -171,17 +171,15 @@ public function updatePersetujuanByGeneral(){
 
 
     header('Content-Type: application/json');
-    echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+    // echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
 
-    // if ($result) {
+    if ($result) {
+         $this->KrsModel->addOrUpdateApprovalRecordByGeneral($krs_id, date('Y-m-d'), $approval_status, $this->advisor_id);
 
-
-    //      $this->KrsModel->addOrUpdateApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, $this->advisor_id);
-
-    //     echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
-    // } else {
-    //     echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
-    // }
+        echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
+    }
     exit;
 } else {
     // Handle invalid request methods
