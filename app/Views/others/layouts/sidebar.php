@@ -30,13 +30,12 @@
         <ul class="dropdown-menu">
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/krs">Kartu Rencana Studi</a></li>
           <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KRS</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/persetujuan-krs">Persetujuan KRS</a><li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/persetujuan-krs">Persetujuan KRS</a></li> 
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/khs">Kartu Hasil Studi</a></li>
           <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KHS</a></li>
         </ul>
       </li>
-
-      <li class="menu-header">Pages</li>
+          <li class="menu-header">Pages</li>
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>
         <ul class="dropdown-menu">
