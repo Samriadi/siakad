@@ -36,6 +36,7 @@ require_once __DIR__ . '/../app/Models/KrsModel.php';
 
 $router = new Router();
 $router->add('/', 'MainController', 'index');
+$router->add('/select-dash', 'MainController', 'selectDash');
 $router->add('/login', 'AuthController', 'login');
 
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
