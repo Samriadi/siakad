@@ -13,6 +13,7 @@
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/">General</a></li>
         </ul>
       </li>
+
       <li class="menu-header">SIAKAD</li>
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data Master</span></a>
@@ -35,28 +36,32 @@
           <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KHS</a></li>
         </ul>
       </li>
-          <li class="menu-header">Pages</li>
+      
+      <li class="menu-header">Pages</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Pengaturan</span></a>
         <ul class="dropdown-menu">
-          <li class="nav-item"><a href="/admin/siakad/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/setting">Setting</a></li>
         </ul>
-      </li>
+      </li> 
     </ul>
   </aside>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const currentPath = window.location.pathname;
-    const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
+  const currentPath = window.location.pathname.replace(/\/$/, ""); // Hapus trailing slash jika ada
+  const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
 
-    menuItems.forEach(item => {
-      if (item.getAttribute('href') === currentPath) {
-        item.closest('.nav-item').classList.add('active');
-        item.closest('.dropdown').classList.add('active');
-        item.classList.add('active');
-      }
-    });
+  menuItems.forEach(item => {
+    // Periksa apakah href item sama dengan path saat ini
+    const href = item.getAttribute('href').replace(/\/$/, ""); // Hapus trailing slash juga pada href
+    if (href === currentPath) {
+      item.closest('.nav-item').classList.add('active');
+      item.closest('.dropdown').classList.add('active');
+      item.classList.add('active');
+    }
   });
+});
+
 </script>
