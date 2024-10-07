@@ -54,11 +54,9 @@
             </div>
 
           <?php
-// Get the current semester from the query string or default to 1
             $currentSemester = isset($_GET['semester']) ? intval($_GET['semester']) : 1;
             $currentSemester = max(1, min(8, $currentSemester)); // Ensure the semester is between 1 and 8
 
-            // Determine the data source for the current semester
             $dataMatkul = ${"dataMatkul" . $currentSemester};
             ?>
 
