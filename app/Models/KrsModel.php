@@ -202,13 +202,30 @@ public function getApprovalStatusAndComments($student_id)
             'comments' => $result['comments'],
         ] : null;
 
-    error_log(print_r($res, true));
 
         return $res;
 
     } catch (PDOException $e) {
         // Log error or handle it appropriately
         error_log("Error retrieving approval status and comments: " . $e->getMessage());
+        return false; // Return false in case of error
+    }
+}
+
+public function getStatusKrs($page) {
+    try {
+        $query = "SELECT status FROM mhs_setting WHERE page = :page";
+        $stmt = $this->db->prepare($query);
+
+        // Bind the parameter as an associative array
+        $stmt->execute([':page' => $page]);
+
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+
+        return $result;
+
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
         return false; // Return false in case of error
     }
 }
