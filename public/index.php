@@ -3,7 +3,6 @@ session_start();
 date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(0);  
 // Memulai session
 
 // Contoh data pengguna yang disimpan dalam session
@@ -24,6 +23,7 @@ require_once __DIR__ . '/../app/Controllers/MatkulController.php';
 require_once __DIR__ . '/../app/Controllers/PerkuliahanController.php';
 require_once __DIR__ . '/../app/Controllers/KrsController.php';
 require_once __DIR__ . '/../app/Controllers/KhsController.php';
+require_once __DIR__ . '/../app/Controllers/SettingController.php';
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 require_once __DIR__ . '/../app/Models/DosenModel.php';
@@ -31,6 +31,7 @@ require_once __DIR__ . '/../app/Models/StaffModel.php';
 require_once __DIR__ . '/../app/Models/MatkulModel.php';
 require_once __DIR__ . '/../app/Models/PerkuliahanModel.php';
 require_once __DIR__ . '/../app/Models/KrsModel.php';
+require_once __DIR__ . '/../app/Models/SettingModel.php';
 
 
 
@@ -88,6 +89,11 @@ $router->add('/persetujuan-krs/update', 'KrsController', 'updatePersetujuan');
 $router->add('/persetujuan-krs/update-general', 'KrsController', 'updatePersetujuanByGeneral');
 
 $router->add('/khs', 'KhsController', 'khs');
+
+$router->add('/setting', 'SettingController', 'index');
+$router->add('/setting/update', 'SettingController', 'updateData');
+
+
 
 
 
