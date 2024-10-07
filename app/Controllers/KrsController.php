@@ -39,8 +39,18 @@ class KrsController
 
     $approval = $this->KrsModel->getApprovalStatusAndComments($this->student_id);
 
+    $KRS = $this->KrsModel->getStatusKRS('krs');
 
-    include __DIR__ . '/../Views/others/page_krs.php';
+
+    if($KRS->status=='Closed'){
+      include __DIR__ . '/../Views/others/page_krsClosed.php';
+    }
+    else{
+      include __DIR__ . '/../Views/others/page_krs.php';
+
+    }
+
+
   }
 
     public function addData()
