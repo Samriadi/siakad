@@ -184,7 +184,6 @@
                         
                         
                         ?>
-                        <
                         <?php if($approval['approval_status'] === 'Pending') { ?>
                             <tr>
                                 <td colspan="5" style="padding: 0;">
