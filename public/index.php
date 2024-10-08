@@ -4,7 +4,7 @@ date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 // Memulai session
-
+error_reporting(0);
 // Contoh data pengguna yang disimpan dalam session
 $_SESSION['student_id'] = 6662;
 $_SESSION['advisor_id'] = 23;
