@@ -23,7 +23,9 @@
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
+          <?php if($_SESSION['user_loged'] == 'kaprodi') : ?>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li>
+          <?php endif ?>
         </ul>
       </li>
       <li class="dropdown">

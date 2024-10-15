@@ -59,7 +59,7 @@ class KrsController
       $data = json_decode(file_get_contents('php://input'), true);
 
       // Validasi data
-    error_log("data: " . print_r($data, true));
+    // error_log("data: " . print_r($data, true));
 
       $academic_year = $data[0]['academic_year'] ?? null;
       $semester = $data[0]['semester'] ?? null;
