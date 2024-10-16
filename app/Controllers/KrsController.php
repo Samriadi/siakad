@@ -139,7 +139,7 @@ public function updatePersetujuan()
         $krs_id = $_POST['krs_id'];
         $approval_status = $_POST['approval_status'];
         $comments = $_POST['comments'] ?? ''; 
-        error_log(print_r($_POST['comments'], true));
+        // error_log(print_r($_POST['comments'], true));
 
         // Validate the input data
         if (empty($krs_id) || empty($approval_status)) {
