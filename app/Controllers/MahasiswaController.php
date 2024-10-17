@@ -9,10 +9,20 @@ class MahasiswaController
 
     public function __construct()
     {
+        $this->checkLogin();
+
         $this->MahasiswaModel = new MahasiswaModel();
         $this->dataMahasiswa = $this->MahasiswaModel->getAll();
         $this->checkData = $this->MahasiswaModel->checkData();
     }
+
+    public function checkLogin() {
+        if (!isset($_SESSION['user_loged'])) {
+            header("Location: /admin/login");
+            exit();
+        }
+      }
+      
     public function index()
     {
 
