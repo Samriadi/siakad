@@ -8,8 +8,16 @@ class DosenController
 
   public function __construct()
   {
+    $this->checkLogin();
+
     $this->DosenModel = new DosenModel();
     $this->dataDosen = $this->DosenModel->getAll();
+  }
+  public function checkLogin() {
+    if (!isset($_SESSION['user_loged'])) {
+        header("Location: /admin/login");
+        exit();
+    }
   }
   public function index()
   {
