@@ -7,9 +7,18 @@ class SettingController
 
   public function __construct()
   {
+    $this->checkLogin();
+
     $this->SettingModel = new SettingModel();
   
   }
+  public function checkLogin() {
+    if (!isset($_SESSION['user_loged'])) {
+        header("Location: /admin/login");
+        exit();
+    }
+  }
+  
   public function index()
   {
 
