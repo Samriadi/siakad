@@ -36,15 +36,13 @@
                                 <div class="card-header">
                                     <h4>Data Mahasiswa</h4>
                                     <div class="card-header-action">
-
-
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#importCSVModal">Import CSV</button>
-
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                  <div class="table-responsive">
                                     <table class="table table-hover">
-                                        <thead>
+                                        <thead> 
                                             <tr>
                                                 <th scope="col">No</th>
                                                 <th scope="col">NamaLengkap</th>
@@ -77,10 +75,9 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </section>
-        </div>
 
-    </div>
 
     <!-- Modal Structure -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">

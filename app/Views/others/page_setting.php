@@ -79,7 +79,6 @@
   <!-- Footer -->
   <?php include '../app/Views/others/layouts/footer.php'; ?>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
   function confirmToggle(button) {
     const id = button.getAttribute('data-id');
