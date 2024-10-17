@@ -8,8 +8,16 @@ class MatkulController
 
   public function __construct()
   {
+    $this->checkLogin();
+
     $this->MatkulModel = new MatkulModel();
     $this->dataMatkul = $this->MatkulModel->getAll();
+  }
+  public function checkLogin() {
+    if (!isset($_SESSION['user_loged'])) {
+        header("Location: /admin/login");
+        exit();
+    }
   }
   public function index()
   {
