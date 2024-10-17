@@ -8,8 +8,16 @@ class StaffController
 
   public function __construct()
   {
+    $this->checkLogin();
+
     $this->StaffModel = new StaffModel();
     $this->dataStaff = $this->StaffModel->getAll();
+  }
+  public function checkLogin() {
+    if (!isset($_SESSION['user_loged'])) {
+        header("Location: /admin/login");
+        exit();
+    }
   }
   public function index()
   {
