@@ -23,7 +23,7 @@ require_once __DIR__ . '/../app/Controllers/MatkulController.php';
 require_once __DIR__ . '/../app/Controllers/PerkuliahanController.php';
 require_once __DIR__ . '/../app/Controllers/KrsController.php';
 require_once __DIR__ . '/../app/Controllers/KhsController.php';
-require_once __DIR__ . '/../app/Controllers/SettingController.php';
+require_once __DIR__ . '/../app/Controllers/SettingController.php'; 
 
 require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
 require_once __DIR__ . '/../app/Models/DosenModel.php';
