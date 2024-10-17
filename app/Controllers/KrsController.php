@@ -6,8 +6,11 @@ class KrsController
   private $KrsModel;
   private $matkul1;
   private $matkul2;
+  
   public function __construct()
   {
+    $this->checkLogin();
+
     $this->KrsModel = new KrsModel();
     
     $this->matkul1 = $this->KrsModel->getMatakuliah(1);
@@ -23,6 +26,14 @@ class KrsController
     $this->student_id = $_SESSION['student_id'];
     $this->advisor_id = $_SESSION['advisor_id'];
   }
+
+  public function checkLogin() {
+    if (!isset($_SESSION['user_loged'])) {
+        header("Location: /admin/login");
+        exit();
+    }
+  }
+  
   public function krs()
   {
 
