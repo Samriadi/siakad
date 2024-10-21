@@ -279,30 +279,7 @@ class MahasiswaModel
         }
     }
 
-    public function getDataRegistUsingNik($x) {
-        $query = "SELECT nik FROM pmb_mahasiswa WHERE nik = :nik";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([':nik' => $x]);
-        
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        error_log("check result: " . print_r($result, true));
 
-        return $result;
-
-    }
-
-    public function addDataRegistUsingNik($x) {
-        $query = "INSERT INTO pmb_mahasiswa (nik) VALUES (:nik)";
-        
-        $stmt = $this->db->prepare($query);
-        
-        $result = $stmt->execute([':nik' => $x]);
-    
-        error_log("Insert result: " . ($result ? "Success" : "Failed"));
-    
-        return $result;
-    }
     
           
     

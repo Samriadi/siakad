@@ -116,6 +116,7 @@
                         type: 'POST',
                         data: { nik: nik },
                         success: function(response) {
+                            console.log(response);
                             if (response.status === 'exist') {
                                 alert(response.message); 
                             } else if (response.status === 'null') {

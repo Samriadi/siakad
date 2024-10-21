@@ -33,38 +33,37 @@ class MainController{
     }
 
      //pmb
-    public function indexRegist()
-    {
-        include __DIR__ . '/../Views/others/page_regist.php';
-    }
-
-    public function addRegist() {
-        $nik = $_POST['nik'] ?? ''; 
-        
-        // Mengecek apakah NIK sudah terdaftar
-        $checkNik = $this->MahasiswaModel->getDataRegistUsingNik($nik);
-        
-        if (!empty($checkNik)) {
-            $response = [
-                'status' => 'exist',
-                'message' => 'Anda sudah terdaftar sebelumnya. Silahkan login menggunakan NIK dan password Anda sebelumnya.'
-            ];
-        }
-        else{
-            // $addNik = $this->MahasiswaModel->addDataRegistUsingNik($nik);
-
-            $response =  ['status' => 'null', 'data' => $nik];
-        }
-        
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    }
-
-    public function insertRegist()
-    {
-        include __DIR__ . '/../Views/others/page_insertRegist.php';
-    }
-    
+     public function indexRegist()
+     {
+         include __DIR__ . '/../Views/others/page_regist.php';
+     }
+ 
+     public function addRegist() {
+         $nik = $_POST['nik'] ?? ''; 
+         
+         // Mengecek apakah NIK sudah terdaftar
+         $checkNik = $this->MahasiswaModel->getDataRegistUsingNik($nik);
+         
+         if (!empty($checkNik)) {
+             $response = [
+                 'status' => 'exist',
+                 'message' => 'Anda sudah terdaftar sebelumnya. Silahkan login menggunakan NIK dan password Anda sebelumnya.'
+             ];
+         }
+         else{
+             // $addNik = $this->MahasiswaModel->addDataRegistUsingNik($nik);
+ 
+             $response =  ['status' => 'null', 'data' => $nik];
+         }
+         
+         header('Content-Type: application/json');
+         echo json_encode($response);
+     }
+ 
+     public function insertRegist()
+     {
+         include __DIR__ . '/../Views/others/page_insertRegist.php';
+     }
     
 
 }
