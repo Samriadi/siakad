@@ -96,6 +96,7 @@ $router->add('/setting/update', 'SettingController', 'updateData');
 $router->add('/regist', 'MainController', 'indexRegist');
 $router->add('/regist/add', 'MainController', 'addRegist');
 $router->add('/regist/insert', 'MainController', 'insertRegist');
+$router->add('/regist/save', 'MainController', 'saveRegist');
 
 
 
