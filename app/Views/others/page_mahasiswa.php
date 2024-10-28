@@ -186,7 +186,7 @@
 
     <!-- Modal Structure -->
     <div class="modal fade" id="multiFormModal" tabindex="-1" role="dialog" aria-labelledby="multiFormModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document"> <!-- Menambahkan modal-lg untuk memperlebar modal -->
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="multiFormModalLabel">Form Add</h5>
@@ -210,30 +210,191 @@
                         <!-- Form Mahasiswa -->
                         <div class="tab-pane fade show active" id="formMahasiswa" role="tabpanel" aria-labelledby="formMahasiswa-tab">
                             <form id="formMahasiswaContent">
-                                <div class="form-group">
-                                    <label for="namaLengkap">Nama Lengkap</label>
-                                    <input type="text" class="form-control" id="namaLengkap" placeholder="Masukkan Nama Lengkap">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nama">Nama Lengkap</label>
+                                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Lengkap" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="tempatLahir">Tempat Lahir</label>
+                                        <input type="text" class="form-control" id="tempatLahir" name="tempatLahir" placeholder="Masukkan Tempat Lahir" required>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="nim">NIM</label>
-                                    <input type="text" class="form-control" id="nim" placeholder="Masukkan NIM">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="tanggalLahir">Tanggal Lahir</label>
+                                        <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="jenkel">Jenis Kelamin</label>
+                                        <select class="form-control" id="jenkel" name="jenkel" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="agama">Agama</label>
+                                        <input type="text" class="form-control" id="agama" name="agama" placeholder="Masukkan Agama" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="kewarganegaraan">Kewarganegaraan</label>
+                                        <input type="text" class="form-control" id="kewarganegaraan" name="kewarganegaraan" placeholder="Masukkan Kewarganegaraan" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nik">NIK</label>
+                                        <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="nis">NIS</label>
+                                        <input type="text" class="form-control" id="nis" name="nis" placeholder="Masukkan NIS" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="alamat">Alamat</label>
+                                        <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="rtrw">RT/RW</label>
+                                        <input type="text" class="form-control" id="rtrw" name="rtrw" placeholder="Masukkan RT/RW" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="kelurahan">Kelurahan</label>
+                                        <input type="text" class="form-control" id="kelurahan" name="kelurahan" placeholder="Masukkan Kelurahan" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="kecamatan">Kecamatan</label>
+                                        <input type="text" class="form-control" id="kecamatan" name="kecamatan" placeholder="Masukkan Kecamatan" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="kabupaten">Kabupaten</label>
+                                        <input type="text" class="form-control" id="kabupaten" name="kabupaten" placeholder="Masukkan Kabupaten" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="propinsi">Propinsi</label>
+                                        <input type="text" class="form-control" id="propinsi" name="propinsi" placeholder="Masukkan Propinsi" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="waNumber">Nomor WA</label>
+                                        <input type="text" class="form-control" id="waNumber" name="waNumber" placeholder="Masukkan Nomor WA" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="">Pilih Status</option>
+                                            <option value="Aktif">Aktif</option>
+                                            <option value="Tidak Aktif">Tidak Aktif</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </form>
                         </div>
+
+
                         
                         <!-- Form Orangtua -->
                         <div class="tab-pane fade" id="formOrangtua" role="tabpanel" aria-labelledby="formOrangtua-tab">
                             <form id="formOrangtuaContent">
-                                <div class="form-group">
-                                    <label for="namaAyah">Nama Ayah</label>
-                                    <input type="text" class="form-control" id="namaAyah" placeholder="Masukkan Nama Ayah">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nama_ayah">Nama Ayah</label>
+                                        <input type="text" class="form-control" id="nama_ayah" name="nama_ayah" placeholder="Masukkan Nama Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="nama_ibu">Nama Ibu</label>
+                                        <input type="text" class="form-control" id="nama_ibu" name="nama_ibu" placeholder="Masukkan Nama Ibu">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="namaIbu">Nama Ibu</label>
-                                    <input type="text" class="form-control" id="namaIbu" placeholder="Masukkan Nama Ibu">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nik_ayah">NIK Ayah</label>
+                                        <input type="text" class="form-control" id="nik_ayah" name="nik_ayah" placeholder="Masukkan NIK Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="nik_ibu">NIK Ibu</label>
+                                        <input type="text" class="form-control" id="nik_ibu" name="nik_ibu" placeholder="Masukkan NIK Ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="phone_ayah">No HP Ayah</label>
+                                        <input type="text" class="form-control" id="phone_ayah" name="phone_ayah" placeholder="Masukkan No HP Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="phone_ibu">No HP Ibu</label>
+                                        <input type="text" class="form-control" id="phone_ibu" name="phone_ibu" placeholder="Masukkan No HP Ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="tglahir_ayah">Tanggal Lahir Ayah</label>
+                                        <input type="date" class="form-control" id="tglahir_ayah" name="tglahir_ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="tglahir_ibu">Tanggal Lahir Ibu</label>
+                                        <input type="date" class="form-control" id="tglahir_ibu" name="tglahir_ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="agama_ayah">Agama Ayah</label>
+                                        <input type="text" class="form-control" id="agama_ayah" name="agama_ayah" placeholder="Masukkan Agama Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="agama_ibu">Agama Ibu</label>
+                                        <input type="text" class="form-control" id="agama_ibu" name="agama_ibu" placeholder="Masukkan Agama Ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="job_ayah">Pekerjaan Ayah</label>
+                                        <input type="text" class="form-control" id="job_ayah" name="job_ayah" placeholder="Masukkan Pekerjaan Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="job_ibu">Pekerjaan Ibu</label>
+                                        <input type="text" class="form-control" id="job_ibu" name="job_ibu" placeholder="Masukkan Pekerjaan Ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="salary_ayah">Penghasilan Ayah</label>
+                                        <input type="number" class="form-control" id="salary_ayah" name="salary_ayah" placeholder="Masukkan Penghasilan Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="salary_ibu">Penghasilan Ibu</label>
+                                        <input type="number" class="form-control" id="salary_ibu" name="salary_ibu" placeholder="Masukkan Penghasilan Ibu">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="alamat_ayah">Alamat Ayah</label>
+                                        <input type="text" class="form-control" id="alamat_ayah" name="alamat_ayah" placeholder="Masukkan Alamat Ayah">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="alamat_ibu">Alamat Ibu</label>
+                                        <input type="text" class="form-control" id="alamat_ibu" name="alamat_ibu" placeholder="Masukkan Alamat Ibu">
+                                    </div>
                                 </div>
                             </form>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -410,6 +571,8 @@
         function confirmDelete(element) {
             const id = element.getAttribute('data-id');
 
+            console.log(id)
+
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -454,6 +617,51 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        function submitForms() {
+            // Collect data from both forms
+            const formMahasiswaData = new FormData(document.getElementById('formMahasiswaContent'));
+            const formOrangtuaData = new FormData(document.getElementById('formOrangtuaContent'));
+
+            // Combine the two FormData objects
+            const combinedData = new FormData();
+            formMahasiswaData.forEach((value, key) => combinedData.append(key, value));
+            formOrangtuaData.forEach((value, key) => combinedData.append(key, value));
+
+            // AJAX request to save data
+            $.ajax({
+                url: '/admin/siakad/mahasiswa/add', // URL to your controller method
+                type: 'POST',
+                data: combinedData,
+                processData: false, // Important for FormData
+                contentType: false,  // Important for FormData
+                success: function(response) {
+                    // Handle success response
+                    console.log('Data saved successfully:', response);
+                    Swal.fire(
+                                    'Success!',
+                                    'The record has been added.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle error response
+                    console.error('Error saving data:', textStatus, errorThrown);
+                    Swal.fire(
+                                    'Error!',
+                                    'There was an issue adding the record.',
+                                    'error'
+                                );
+                }
+            });
+        }
+
+   
+
     </script>
 
     <script>
