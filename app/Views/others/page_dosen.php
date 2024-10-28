@@ -42,9 +42,9 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                     <table class="table table-hover">
-                      <thead>
+                      <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
                         <tr>
                           <th scope="col">No</th>
                           <th scope="col">NIDN</th>
@@ -408,6 +408,16 @@
         });
       }
     </script>
+    <script>
+            $(document).ready(function() {
+                $('.table').DataTable({
+                    "paging": true,          // Pagination
+                    "searching": true,       // Search box
+                    "ordering": true,        // Column sorting
+                    "info": true             // Info text (e.g., "Showing 1 to 10 of 20 entries")
+                });
+            });
+        </script>
 
 </body>
 
