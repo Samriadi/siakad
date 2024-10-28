@@ -33,3 +33,13 @@
   <script src="assets/js/scripts.js"></script>
   <script src="assets/js/custom.js"></script>
   <script src="assets/js/helper.js"></script>
+
+  <!-- DataTables CSS -->
+<!-- DataTables CSS untuk Bootstrap 5 -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Integrasi DataTables dengan Bootstrap 5 -->
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
