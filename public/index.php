@@ -4,7 +4,7 @@ date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 // Memulai session
-error_reporting(0);
+// error_reporting(0);
 // Contoh data pengguna yang disimpan dalam session
 $_SESSION['student_id'] = 6662;
 $_SESSION['advisor_id'] = 23;
@@ -41,6 +41,7 @@ $router->add('/select-dash', 'MainController', 'selectDash');
 $router->add('/login', 'AuthController', 'login');
 
 $router->add('/mahasiswa', 'MahasiswaController', 'index');
+$router->add('/mahasiswa/add', 'MahasiswaController', 'addData');
 $router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
 $router->add('/mahasiswa/importCSV', 'MahasiswaController', 'importDataCSV');
 $router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
