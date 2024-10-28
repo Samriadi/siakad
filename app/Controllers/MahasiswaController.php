@@ -33,6 +33,28 @@ class MahasiswaController
 
         include __DIR__ . '/../Views/others/page_mahasiswa.php';
     }
+
+    public function addData() {
+        // Check if the request is an AJAX request
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get the posted data
+            $mahasiswaData = $_POST; // You can use $_POST directly if not using FormData
+        
+            // Save data using the model
+            $result = $this->MahasiswaModel->saveMahasiswaAndOrangtua($mahasiswaData);
+
+            // Return response
+            if ($result) {
+                echo json_encode(['status' => 'success', 'message' => 'Data saved successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to save data.']);
+            }
+        } else {
+            // Not an AJAX request
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
+        }
+    }
+
     public function importData()
     {
         try {
@@ -161,8 +183,6 @@ class MahasiswaController
         $id = intval($_POST['id']);
 
         $success = $this->MahasiswaModel->deleteData($id);
-        $success = $this->MahasiswaModel->deleteDataOrtu($id);
-
 
         echo json_encode(['success' => $success]);
     }
