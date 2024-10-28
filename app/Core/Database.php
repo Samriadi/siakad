@@ -35,4 +35,8 @@ class Database
     {
         return $this->connection->quote($string);
     }
+
+    public function lastInsertId() {
+        return $this->connection->lastInsertId();
+    }
 }
