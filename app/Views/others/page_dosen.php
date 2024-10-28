@@ -47,25 +47,25 @@
                       <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
                         <tr>
                           <th scope="col">No</th>
-                          <th scope="col">NIDN</th>
                           <th scope="col">Nama Lengkap</th>
+                          <th scope="col">NIDN</th>
+                          <th scope="col">Jenis Kelamin</th>
                           <th scope="col">Tanggal Lahir</th>
-                          <th scope="col">Gender</th>
                           <th scope="col">Alamat</th>
                           <th scope="col">Telepon</th>
                           <th scope="col">Email</th>
                           <th scope="col">Tanggal Masuk</th>
-                          <th class="w-75">Action</th>
+                          <th class="w-15">Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->nidn ?></td>
                             <td><?= $value->name ?></td>
-                            <td><?= $value->birth_date ?></td>
+                            <td><?= $value->nidn ?></td>
                             <td><?= $value->gender ?></td>
+                            <td><?= $value->birth_date ?></td>
                             <td><?= $value->address ?></td>
                             <td><?= $value->phone ?></td>
                             <td><?= $value->email ?></td>
