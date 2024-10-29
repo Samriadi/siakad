@@ -25,7 +25,7 @@
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
         <ul class="dropdown-menu">
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li> -->
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
