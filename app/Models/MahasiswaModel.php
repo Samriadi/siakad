@@ -260,20 +260,8 @@ class MahasiswaModel
             // Delete from the mahasiswa table
             $stmtMahasiswa = $this->db->prepare("DELETE FROM {$this->mhs_mahasiswa} WHERE ID = :id");
             $stmtMahasiswa->execute([':id' => $id]);
-    
-            // Check if the mahasiswa deletion was successful
-            if ($stmtMahasiswa->rowCount() > 0) {
-                // If successful, delete from the ortu table
-                $stmtOrtu = $this->db->prepare("DELETE FROM {$this->mhs_ortu} WHERE maba_id = :id");
-                $stmtOrtu->execute([':id' => $id]);
-    
-                // Return true if any rows were affected in ortu
-                return $stmtOrtu->rowCount() > 0;
-            } else {
-                // Rollback if mahasiswa deletion failed
-                $this->db->rollBack();
-                return false;
-            }
+            
+            return true;
         } catch (PDOException $e) {
             // Rollback the transaction in case of an error
             $this->db->rollBack();
@@ -298,8 +286,8 @@ class MahasiswaModel
     public function saveMahasiswaAndOrangtua($data) {
         error_log("mahasiswa data: " . print_r($data['nama'], true));
     
-        $sqlMahasiswa = "INSERT INTO mhs_mahasiswa (NamaLengkap, tempat_lahir, tgl_lahir, jenkel, Agama, kewarganegaraan, nik, NIS, alamat, rtrw, kelurahan, kecamatan, kabupaten, propinsi, WANumber, Email, status) 
-        VALUES (:nama, :tempatLahir, :tanggalLahir, :jenkel, :agama, :kewarganegaraan, :nik, :nis, :alamat, :rtrw, :kelurahan, :kecamatan, :kabupaten, :propinsi, :waNumber, :email, :status)";
+        $sqlMahasiswa = "INSERT INTO mhs_mahasiswa (NamaLengkap, tempat_lahir, tgl_lahir, jenkel, Agama, kewarganegaraan, nik, NIS, alamat, rtrw, kelurahan, kecamatan, kabupaten, propinsi, WANumber, Email, status, nama_ayah, nama_ibu, nik_ayah, nik_ibu, phone_ayah, phone_ibu, tglahir_ayah, tglahir_ibu, agama_ayah, agama_ibu, job_ayah, job_ibu, salary_ayah, salary_ibu, alamat_ayah, alamat_ibu) 
+        VALUES (:nama, :tempatLahir, :tanggalLahir, :jenkel, :agama, :kewarganegaraan, :nik, :nis, :alamat, :rtrw, :kelurahan, :kecamatan, :kabupaten, :propinsi, :waNumber, :email, :status, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
         $stmt = $this->db->prepare($sqlMahasiswa);
     
         // Bind parameters
@@ -320,28 +308,6 @@ class MahasiswaModel
         $stmt->bindParam(':waNumber', $data['waNumber']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':status', $data['status']);
-
-        $result = $stmt->execute();
-
-        error_log("mahasiswa data: " . print_r($result, true));
-
-    
-        // Execute and check if successful
-        if (!$result) {
-            error_log("Error inserting mahasiswa data: " . print_r($stmt->errorInfo(), true));
-            return false;
-        }
-        $lastID = $this->db->lastInsertId();
-
-        error_log("last id: " . print_r($lastID, true));
-
-        // SQL query for inserting orangtua data
-        $sqlOrangtua = "INSERT INTO mhs_ortu (maba_id, nama_ayah, nama_ibu, nik_ayah, nik_ibu, phone_ayah, phone_ibu, tglahir_ayah, tglahir_ibu, agama_ayah, agama_ibu, job_ayah, job_ibu, salary_ayah, salary_ibu, alamat_ayah, alamat_ibu) 
-        VALUES (:maba_id, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
-        $stmt = $this->db->prepare($sqlOrangtua);
-    
-        // Bind parameters for orangtua
-        $stmt->bindParam(':maba_id', $lastID);
         $stmt->bindParam(':nama_ayah', $data['nama_ayah']);
         $stmt->bindParam(':nama_ibu', $data['nama_ibu']);
         $stmt->bindParam(':nik_ayah', $data['nik_ayah']);
@@ -358,11 +324,34 @@ class MahasiswaModel
         $stmt->bindParam(':salary_ibu', $data['salary_ibu']);
         $stmt->bindParam(':alamat_ayah', $data['alamat_ayah']);
         $stmt->bindParam(':alamat_ibu', $data['alamat_ibu']);
+
+        $result = $stmt->execute();
+
+        error_log("mahasiswa data: " . print_r($result, true));
+
     
-        if (!$stmt->execute()) {
-            error_log("Error inserting orangtua data: " . print_r($stmt->errorInfo(), true));
+        // Execute and check if successful
+        if (!$result) {
+            error_log("Error inserting mahasiswa data: " . print_r($stmt->errorInfo(), true));
             return false;
         }
+        // $lastID = $this->db->lastInsertId();
+
+        // error_log("last id: " . print_r($lastID, true));
+
+        // // SQL query for inserting orangtua data
+        // $sqlOrangtua = "INSERT INTO mhs_ortu (maba_id, nama_ayah, nama_ibu, nik_ayah, nik_ibu, phone_ayah, phone_ibu, tglahir_ayah, tglahir_ibu, agama_ayah, agama_ibu, job_ayah, job_ibu, salary_ayah, salary_ibu, alamat_ayah, alamat_ibu) 
+        // VALUES (:maba_id, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
+        // $stmt = $this->db->prepare($sqlOrangtua);
+    
+        // // Bind parameters for orangtua
+        // $stmt->bindParam(':maba_id', $lastID);
+   
+    
+        // if (!$stmt->execute()) {
+        //     error_log("Error inserting orangtua data: " . print_r($stmt->errorInfo(), true));
+        //     return false;
+        // }
     
         return true;
     }
