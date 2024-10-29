@@ -53,19 +53,19 @@ class MahasiswaModel
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat)
+    public function saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat, $nama_ayah, $nama_ibu)
     {
         // Validate input values
-        if (empty($Nim) || empty($NamaLengkap) || empty($WANumber) || empty($alamat)) {
-            error_log("Validation failed: One or more required fields are empty.");
-            return false;
-        }
+        // if (empty($Nim) || empty($NamaLengkap) || empty($WANumber) || empty($alamat)) {
+        //     error_log("Validation failed: One or more required fields are empty.");
+        //     return false;
+        // }
 
         // Prepare SQL statement
         $insertDataMahasiswa = "INSERT INTO $this->mhs_mahasiswa (
-            Nim, NamaLengkap, WANumber, alamat
+            Nim, NamaLengkap, WANumber, alamat, nama_ayah, nama_ibu
         ) VALUES (
-            :Nim, :NamaLengkap, :WANumber, :alamat
+            :Nim, :NamaLengkap, :WANumber, :alamat, :nama_ayah, :nama_ibu
         )";
 
         $stmtInsert = $this->db->prepare($insertDataMahasiswa);
@@ -76,7 +76,9 @@ class MahasiswaModel
                 ':Nim' => $Nim,
                 ':NamaLengkap' => $NamaLengkap,
                 ':WANumber' => $WANumber,
-                ':alamat' => $alamat
+                ':alamat' => $alamat,
+                ':nama_ayah' => $nama_ayah,
+                ':nama_ibu' => $nama_ibu
             ]);
             return true;
         } catch (PDOException $e) {
@@ -290,7 +292,6 @@ class MahasiswaModel
         VALUES (:nama, :tempatLahir, :tanggalLahir, :jenkel, :agama, :kewarganegaraan, :nik, :nis, :alamat, :rtrw, :kelurahan, :kecamatan, :kabupaten, :propinsi, :waNumber, :email, :status, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
         $stmt = $this->db->prepare($sqlMahasiswa);
     
-        // Bind parameters
         $stmt->bindParam(':nama', $data['nama']);
         $stmt->bindParam(':tempatLahir', $data['tempatLahir']);
         $stmt->bindParam(':tanggalLahir', $data['tanggalLahir']);

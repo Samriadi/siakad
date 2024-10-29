@@ -429,14 +429,25 @@
                     contentType: false,
                     processData: false,
                     success: function(response) {
-                        // Menampilkan pesan sukses atau error
-                        console.log(response);
-                        // Menutup modal setelah sukses
                         $('#importCSVModal').modal('hide');
-                        // Reload halaman atau update tabel
+
+                        Swal.fire({
+                            text: 'Your data has been imported.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1000, // menutup otomatis setelah 2 detik
+                            willClose: () => {
+                                window.location.reload(); 
+                            }
+                        });
+
                     },
                     error: function(response) {
-                        alert('Failed to import CSV');
+                        Swal.fire({
+                                        text: data.error || 'An error occurred during import.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
                     }
                 });
             });

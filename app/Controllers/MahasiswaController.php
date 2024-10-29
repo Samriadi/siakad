@@ -59,7 +59,7 @@ class MahasiswaController
             ob_start();
 
             $this->MahasiswaModel->importData();
-            $this->MahasiswaModel->importDataOrtu();
+            // $this->MahasiswaModel->importDataOrtu();
 
 
             ob_end_clean();
@@ -209,12 +209,20 @@ class MahasiswaController
                                 $Nim = isset($data[1]) ? trim($data[1]) : null;
                                 $WANumber = isset($data[2]) ? trim($data[2]) : null;
                                 $alamat = isset($data[3]) ? trim($data[3]) : null;
+                                $nama_ayah = isset($data[4]) ? trim($data[4]) : null;
+                                $nama_ibu = isset($data[5]) ? trim($data[5]) : null;
 
                                 // Log data being processed
-                                error_log("Processing: $NamaLengkap, $Nim, $WANumber, $alamat");
+                                // error_log("Processing: $NamaLengkap, $Nim, $WANumber, $alamat");
 
                                 // Save the data
-                                $this->MahasiswaModel->saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat);
+                                $result = $this->MahasiswaModel->saveMahasiswa($NamaLengkap, $Nim, $WANumber, $alamat, $nama_ayah, $nama_ibu);
+
+                                if($result){
+                                   echo json_encode(['status' => 'success', 'message' => 'Data saved successfully!']);
+                                }
+
+
                             } else {
                                 // Log invalid rows with specific details
                                 error_log("Invalid CSV row or missing columns: " . print_r($data, true));
