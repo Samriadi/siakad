@@ -28,8 +28,6 @@ class MahasiswaController
 
         $data = $this->dataMahasiswa;
         $isData = $this->checkData;
-        $dataOrtu = $this->MahasiswaModel->getOrtu();
-
 
         include __DIR__ . '/../Views/others/page_mahasiswa.php';
     }
