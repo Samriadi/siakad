@@ -99,7 +99,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($dataOrtu as $key => $value) : ?>
+                                                        <?php foreach ($data as $key => $value) : ?>
                                                             <tr>
                                                                 <th scope="row"><?= ++$key ?></th>
                                                                 <td><?= $value->NamaLengkap ?></td>
