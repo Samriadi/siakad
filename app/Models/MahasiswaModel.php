@@ -25,16 +25,25 @@ class MahasiswaModel
 
         $this->db = Database::getInstance();
     }
+
     public function getAll()
     {
-        $query = "SELECT 
-                    *
-                    FROM 
-                    $this->mhs_mahasiswa";
+        $query = "SELECT * FROM $this->mhs_mahasiswa";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+    
+
+  
+    public function countAll()
+{
+    $query = "SELECT COUNT(*) as total FROM $this->mhs_mahasiswa";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    
+    return $stmt->fetch(PDO::FETCH_OBJ)->total;
+}
 
 
 
