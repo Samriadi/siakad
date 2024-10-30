@@ -42,7 +42,7 @@
                   </div>
                 </div>
                 <div class="card-body">
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 770px; overflow-y: auto;">
                     <table class="table table-hover">
                       <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
                         <tr>
