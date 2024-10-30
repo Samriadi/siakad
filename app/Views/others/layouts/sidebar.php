@@ -22,17 +22,17 @@
 
     <ul class="sidebar-menu">
 
-      <li class="menu-header">SIAKAD</li>
+      <li class="menu-header">Data Master</li>
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
         <ul class="dropdown-menu">
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li> -->
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li> -->
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li> -->
           <?php if($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li> -->
           <?php endif ?>
         </ul>
       </li>
