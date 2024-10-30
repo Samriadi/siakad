@@ -52,36 +52,75 @@
                                 <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                                                <table class="table table-hover">
-                                                    <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
-                                                        <tr>
-                                                            <th scope="col">No</th>
-                                                            <th scope="col">Nama Lengkap</th>
-                                                            <th scope="col">Nim</th>
-                                                            <th scope="col">Wa Number</th>
-                                                            <th scope="col">Alamat</th>
-                                                            <th scope="col">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($data as $key => $value) : ?>
-                                                            <tr>
-                                                                <th scope="row"><?= ++$key ?></th>
-                                                                <td><?= $value->NamaLengkap ?></td>
-                                                                <td><?= $value->Nim ?></td>
-                                                                <td><?= $value->WANumber ?></td>
-                                                                <td><?= $value->alamat ?></td>
-                                                                <td>
-                                                                    <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
-                                                                        <i class="fas fa-trash-alt"></i>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                        <?php endforeach ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                        <div class="table-responsive" style="max-height: 760px; overflow-y: auto;">
+    <table class="table table-hover">
+        <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Status</th>
+                <th scope="col">Nama Lengkap</th>
+                <th scope="col">Nim</th>
+                <th scope="col">Jenis Kelamin</th>
+                <th scope="col">Tanggal Lahir</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($data as $key => $value) : ?>
+                <tr>
+                    <th scope="row"><?= $key + 1 ?></th>
+                    <td>
+                        <?php 
+                            // Badge logic for status
+                            $status = strtolower(str_replace(' ', '', $value->status));
+                            $badgeClass = '';
+                            
+                            switch ($status) {
+                                case 'aktif':
+                                    $badgeClass = 'badge-success';
+                                    break;
+                                case 'nonaktif':
+                                    $badgeClass = 'badge-secondary';
+                                    break;
+                                case 'cuti':
+                                    $badgeClass = 'badge-warning';
+                                    break;
+                                case 'kampusmerdeka':
+                                    $badgeClass = 'badge-info';
+                                    break;
+                                case 'lulus':
+                                    $badgeClass = 'badge-primary';
+                                    break;
+                                case 'dikeluarkan':
+                                    $badgeClass = 'badge-danger';
+                                    break;
+                                case 'putussekolah':
+                                    $badgeClass = 'badge-dark';
+                                    break;
+                                default:
+                                    $badgeClass = 'badge-light';
+                                    break;
+                            }
+                        ?>
+                        <div class="badge badge-pill <?= $badgeClass ?> mb-1 float-left"><?= $value->status ?></div>
+                    </td>
+                    <td><?= $value->NamaLengkap ?></td>
+                    <td><?= $value->Nim ?></td>
+                    <td><?= $value->jenkel ?></td>
+                    <td><?= $value->tgl_lahir ?></td>
+                    <td>
+                        <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -675,16 +714,22 @@
 
     </script>
 
-    <script>
-        $(document).ready(function () {
-            $('.table').DataTable({
-                "paging": true,        // Menampilkan pagination
-                "searching": true,     // Menampilkan search box
-                "ordering": true,      // Menampilkan sorting
-                "info": true          // Menampilkan informasi jumlah data
-            });
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable({
+            "paging": true,                     // Enable pagination
+            "pageLength": 10,                   // Set default page length to 10
+            "lengthMenu": [                      // Dropdown options for "Show by"
+                [10, 25, 50, 100, -1],         // Values to show
+                [10, 25, 50, 100, "All"]       // Displayed options
+            ],
+            "searching": true,                  // Enable search box
+            "ordering": true,                   // Enable sorting
+            "info": true                        // Show information about the data
         });
-    </script>
+    });
+</script>
+
 
     </body>
 
