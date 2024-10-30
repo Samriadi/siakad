@@ -23,14 +23,14 @@ class MahasiswaController
         }
       }
       
-    public function index()
-    {
+      public function index()
+      {
+          $data =  $this->MahasiswaModel->getAll(); // Get all records without pagination, as DataTables will handle this
+      
+          include __DIR__ . '/../Views/others/page_mahasiswa.php';
+      }
+      
 
-        $data = $this->dataMahasiswa;
-        $isData = $this->checkData;
-
-        include __DIR__ . '/../Views/others/page_mahasiswa.php';
-    }
 
     public function addData() {
         // Check if the request is an AJAX request
