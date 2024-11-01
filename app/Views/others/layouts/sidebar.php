@@ -46,6 +46,7 @@
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Invoice</span></a>
             <ul class="dropdown-menu">
               <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Pembayaran</a></li>
+              <li class="nav-item"><a class="nav-link" href="/admin/siakad/Tagihan">Tagihan</a></li>
 
             </ul>
         </li>
