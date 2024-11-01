@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>SIAKAD - Dosen</title>
+  <title>SIAKAD - Paytype</title>
   <?php include '../app/Views/others/layouts/header.php'; ?>
 
 <body>
@@ -101,8 +101,8 @@
                 <label for="add_jenis_tagihan">Periode Tagihan</label>
                   <select class="form-control" id="add_jenis_tagihan">
                     <option value="Persemester">Persemester</option>
-                    <option value="Bulanan">Bulanan</option>
                     <option value="Sekali">Sekali</option>
+                    <option value="Tertentu">Tertentu</option>
                   </select>
                 </div>
               </div>
@@ -137,8 +137,8 @@
                   <label for="jenis_tagihan">Periode Tagihan</label>
                   <select class="form-control" id="jenis_tagihan">
                     <option value="Persemester">Persemester</option>
-                    <option value="Bulanan">Bulanan</option>
                     <option value="Sekali">Sekali</option>
+                    <option value="Tertentu">Tertentu</option>
                   </select>
                 </div>
               </div>
