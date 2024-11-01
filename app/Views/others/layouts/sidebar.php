@@ -41,20 +41,17 @@
 
 
       <ul class="sidebar-menu">
-        <li class="menu-header">administrasi</li>
+        <li class="menu-header">SIAKAD</li>
           <li class="dropdown">
-            <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
+            <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Invoice</span></a>
             <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link" href="/admin/siakad/krs">Kartu Rencana Studi</a></li>
+              <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Pembayaran</a></li>
 
             </ul>
         </li>
-      </ul>
 
-      <ul class="sidebar-menu">
-        <li class="menu-header">Akademik</li>
           <li class="dropdown">
-            <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
+            <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Administrasi</span></a>
             <ul class="dropdown-menu">
               <li class="nav-item"><a class="nav-link" href="/admin/siakad/krs">Kartu Rencana Studi</a></li>
               <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KRS</a></li>
