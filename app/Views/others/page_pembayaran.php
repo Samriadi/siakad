@@ -21,11 +21,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Pembayaran</h1>
+          <h1>Data Paytype</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Pembayaran</div>
+            <div class="breadcrumb-item">Paytype</div>
           </div>
         </div>
 
@@ -34,7 +34,7 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Data Pembayaran</h4>
+                  <h4>Data Paytype</h4>
                   <div class="card-header-action">
                     <a class="btn btn-primary" data-toggle="modal" data-target="#addModal">
                       <i class="fas fa-plus text-white"></i>
@@ -48,7 +48,7 @@
                         <tr>
                           <th scope="col">No</th>
                           <th scope="col">Nama Tagihan</th>
-                          <th scope="col">Jenis Tagihan</th>
+                          <th scope="col">Periode Tagihan</th>
                           <th class="w-15">Action</th>
                         </tr>
                       </thead>
@@ -98,9 +98,9 @@
                   <input type="text" class="form-control" id="add_nama_tagihan">
                 </div>
                 <div class="form-group col-md-6">
-                <label for="add_jenis_tagihan">Jenis Tagihan</label>
+                <label for="add_jenis_tagihan">Periode Tagihan</label>
                   <select class="form-control" id="add_jenis_tagihan">
-                    <option value="Tahunan">Tahunan</option>
+                    <option value="Persemester">Persemester</option>
                     <option value="Bulanan">Bulanan</option>
                     <option value="Sekali">Sekali</option>
                   </select>
@@ -134,9 +134,9 @@
                   <input type="text" class="form-control" id="nama_tagihan">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="jenis_tagihan">Jenis Tagihan</label>
+                  <label for="jenis_tagihan">Periode Tagihan</label>
                   <select class="form-control" id="jenis_tagihan">
-                    <option value="Tahunan">Tahunan</option>
+                    <option value="Persemester">Persemester</option>
                     <option value="Bulanan">Bulanan</option>
                     <option value="Sekali">Sekali</option>
                   </select>
