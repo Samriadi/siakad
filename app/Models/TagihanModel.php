@@ -35,16 +35,15 @@ class TagihanModel
   public function addData($data)
   {
     try {
-      $query = "INSERT INTO $this->mhs_perkuliahan (course_id, dosen_id, day, start_time, end_time, room) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
+      $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
+                    VALUES (?, ?, ?, ?, ?)";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
-        $data['course_id'],
-        $data['dosen_id'],
-        $data['day'],
-        $data['start_time'],
-        $data['end_time'],
-        $data['room']
+        $data['prodi'],
+        $data['jenis_tagihan'],
+        $data['angkatan'],
+        $data['nominal'],
+        $data['keterangan']
       ]);
 
       return $result;

@@ -88,67 +88,64 @@
 
     <!-- Modal Structure -->
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addModalLabel">Add Data Perkuliahan</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="add_course_id">Mata Kuliah</label>
-                  <select id="add_course_id" class="form-control" required>
-                    <option value="" selected disabled>Pilih Mata Kuliah</option>
-                  </select>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="add_dosen_id">Dosen</label>
-                  <select id="add_dosen_id" class="form-control" required>
-                    <option value="" selected disabled>Pilih Dosen</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="add_day">Hari</label>
-                  <select id="add_day" class="form-control" required>
-                    <option value="" selected disabled>Pilih Hari</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                  </select>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="add_start_time">Jam Mulai</label>
-                  <input type="time" class="form-control" id="add_start_time">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="add_end_time">Jam Selesai</label>
-                  <input type="time" class="form-control" id="add_end_time">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="add_room">Ruangan</label>
-                  <input type="text" class="form-control" id="add_room">
-                </div>
-              </div>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="add_submit">Submit</button>
-          </div>
+            <form id="addForm">
+                <div class="modal-body">
+                <div class="card-body">
+                    <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="add_prodi">Program Studi</label>
+                        <input type="text" class="form-control" id="add_prodi" name="prodi">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="add_jenis_tagihan">Jenis Tagihan</label>
+                        <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                        <option value="" selected disabled>Pilih Jenis Tagihan</option>
+                        </select>
+                    </div>
+                    </div>
+                    <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="add_angkatan">Angkatan</label>
+                        <select id="add_angkatan" class="form-control" name="angkatan" required>
+                        <option value="" selected disabled>Pilih Angkatan</option>
+                        <option value="Semua Angkatan">Semua Angkatan</option>
+                        <option value="Angkatan 2024">Angkatan 2024</option>
+                        <option value="Angkatan 2023">Angkatan 2023</option>
+                        <option value="Angkatan 2022">Angkatan 2022</option>
+                        <option value="Angkatan 2021">Angkatan 2021</option>
+                        <option value="Angkatan 2020">Angkatan 2020</option>
+                        <option value="Angkatan 2019">Angkatan 2019</option>
+                        <option value="Angkatan 2018">Angkatan 2018</option>
+                        <option value="Angkatan 2017">Angkatan 2017</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="add_nominal">Nominal</label>
+                        <input type="number" class="form-control" id="add_nominal" name="nominal">
+                    </div>
+                    </div>
+                    <div class="form-group">
+                    <label for="add_keterangan">Keterangan</label>
+                    <input type="text" class="form-control" id="add_keterangan" name="keterangan">
+                    </div>
+                </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="add_submit">Submit</button>
+                </div>
+            </form>
+            </div>
         </div>
-      </div>
-    </div>
+        </div>
 
 
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -214,26 +211,19 @@
         //add data
         $('#btn-add').on('click', function() {
           $.ajax({
-            url: '/admin/siakad/perkuliahan/include',
+            url: '/admin/siakad/tagihan/include',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
               if (response.success) {
                 var data = response.data;
-                var DataMatkul = data.DataMatkul;
-                var DataDosen = data.DataDosen;
+                var dataPaytype = data.dataPaytype;
 
-                $('#add_course_id').empty().append('<option value="" selected disabled>Pilih Mata Kuliah</option>');
-                $('#add_dosen_id').empty().append('<option value="" selected disabled>Pilih Dosen</option>');
+                $('#add_jenis_tagihan').empty().append('<option value="" selected disabled>Pilih Jenis Tagihan</option>');
 
-                $.each(DataMatkul, function(index, matkul) {
-                  $('#add_course_id').append('<option value="' + matkul.course_id + '">' + matkul.course_name + '</option>');
+                $.each(dataPaytype, function(index, value) {
+                  $('#add_jenis_tagihan').append('<option value="' + value.recid + '">' + value.nama_tagihan + '</option>');
                 });
-
-                $.each(DataDosen, function(index, dosen) {
-                  $('#add_dosen_id').append('<option value="' + dosen.lecturer_id + '">' + dosen.name + '</option>');
-                });
-
                 $('#addModal').modal('show');
 
               } else {
@@ -247,50 +237,59 @@
 
           $('#add_submit').on('click', function() {
             var arrayData = [{
-              course_id: $('#add_course_id').val(),
-              dosen_id: $('#add_dosen_id').val(),
-              day: $('#add_day').val(),
-              start_time: $('#add_start_time').val(),
-              end_time: $('#add_end_time').val(),
-              room: $('#add_room').val()
+              prodi: $('#add_prodi').val(),
+              jenis_tagihan: $('#add_jenis_tagihan').val(),
+              angkatan: $('#add_angkatan').val(),
+              nominal: $('#add_nominal').val(),
+              keterangan: $('#add_keterangan').val(),
             }];
 
             console.log(arrayData);
 
             $.ajax({
-              url: '/admin/siakad/perkuliahan/add',
-              type: 'POST',
-              contentType: 'application/json',
-              data: JSON.stringify(arrayData),
-              dataType: 'json',
-              success: function(response) {
-                console.log(response);
-                if (response.success) {
-                  Swal.fire({
-                    text: 'Your data has been added.',
-                    icon: 'success',
-                    showConfirmButton: false,
-                    willClose: () => {
-                      window.location.reload();
+                url: '/admin/siakad/tagihan/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(arrayData),
+                dataType: 'json',
+                statusCode: {
+                    200: function() {
+                        console.log('Status 200: OK');
+                    },
+                    500: function() {
+                        console.log('Status 500: Server Error');
                     }
-                  });
-                } else {
-                  Swal.fire({
-                    text: 'An error occurred during the update.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                  });
+                },
+                success: function(response) {
+                    console.log('Response:', response);
+                    if (response.success) {
+                        Swal.fire({
+                            text: 'Your data has been added.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            willClose: () => {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            text: 'An error occurred during the update.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    Swal.fire({
+                        text: 'An unexpected error occurred.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                Swal.fire({
-                  text: 'An unexpected error occurred.',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-                });
-              }
             });
+
           });
         });
 
