@@ -18,7 +18,7 @@ $controllers = [
     'MainController', 'AuthController', 'MahasiswaController', 
     'DosenController', 'StaffController', 'MatkulController', 
     'PerkuliahanController', 'KrsController', 'KhsController', 
-    'SettingController', 'PembayaranController'
+    'SettingController', 'PembayaranController', 'TagihanController'
 ];
 foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/Controllers/$controller.php";
@@ -28,7 +28,7 @@ foreach ($controllers as $controller) {
 $models = [
     'MahasiswaModel', 'DosenModel', 'StaffModel', 
     'MatkulModel', 'PerkuliahanModel', 'KrsModel', 
-    'SettingModel', 'PembayaranModel'
+    'SettingModel', 'PembayaranModel', 'TagihanModel'
 ];
 foreach ($models as $model) {
     require_once __DIR__ . "/../app/Models/$model.php";
@@ -145,6 +145,16 @@ addRouteGroup('/pembayaran', 'PembayaranController', [
     '/add' => 'addData',
     '/update' => 'updateData',
     '/delete' => 'deleteData',
+]);
+
+// tagihan routes
+addRouteGroup('/tagihan', 'TagihanController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+    '/include' => 'includeData',
 ]);
 
 // Dispatch URL
