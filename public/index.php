@@ -3,106 +3,150 @@ session_start();
 date_default_timezone_set('Asia/Makassar');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-// Memulai session
-// error_reporting(0);
+
 // Contoh data pengguna yang disimpan dalam session
-$_SESSION['student_id'] = 6662;
-$_SESSION['advisor_id'] = 23;
+// $_SESSION['student_id'] = 6662;
+// $_SESSION['advisor_id'] = 23;
 
 require_once __DIR__ . '/../app/Core/Router.php';
 require_once __DIR__ . '/../app/Core/Database.php';
 require_once __DIR__ . '/../app/Core/Table.php';
 // require_once __DIR__ . '/../app/Helpers/Function.php';
 
-require_once __DIR__ . '/../app/Controllers/MainController.php';
-require_once __DIR__ . '/../app/Controllers/AuthController.php';
-require_once __DIR__ . '/../app/Controllers/MahasiswaController.php';
-require_once __DIR__ . '/../app/Controllers/DosenController.php';
-require_once __DIR__ . '/../app/Controllers/StaffController.php';
-require_once __DIR__ . '/../app/Controllers/MatkulController.php';
-require_once __DIR__ . '/../app/Controllers/PerkuliahanController.php';
-require_once __DIR__ . '/../app/Controllers/KrsController.php';
-require_once __DIR__ . '/../app/Controllers/KhsController.php';
-require_once __DIR__ . '/../app/Controllers/SettingController.php'; 
+// Controller Imports
+$controllers = [
+    'MainController', 'AuthController', 'MahasiswaController', 
+    'DosenController', 'StaffController', 'MatkulController', 
+    'PerkuliahanController', 'KrsController', 'KhsController', 
+    'SettingController', 'PembayaranController'
+];
+foreach ($controllers as $controller) {
+    require_once __DIR__ . "/../app/Controllers/$controller.php";
+}
 
-require_once __DIR__ . '/../app/Models/MahasiswaModel.php';
-require_once __DIR__ . '/../app/Models/DosenModel.php';
-require_once __DIR__ . '/../app/Models/StaffModel.php';
-require_once __DIR__ . '/../app/Models/MatkulModel.php';
-require_once __DIR__ . '/../app/Models/PerkuliahanModel.php';
-require_once __DIR__ . '/../app/Models/KrsModel.php';
-require_once __DIR__ . '/../app/Models/SettingModel.php';
+// Model Imports
+$models = [
+    'MahasiswaModel', 'DosenModel', 'StaffModel', 
+    'MatkulModel', 'PerkuliahanModel', 'KrsModel', 
+    'SettingModel', 'PembayaranModel'
+];
+foreach ($models as $model) {
+    require_once __DIR__ . "/../app/Models/$model.php";
+}
 
-
-
+// Initialize Router
 $router = new Router();
+
+// Helper function to add grouped routes
+function addRouteGroup($prefix, $controller, $routes) {
+    global $router;
+    foreach ($routes as $route => $method) {
+        $router->add("$prefix$route", $controller, $method);
+    }
+}
+
+// Define routes
 $router->add('/', 'MainController', 'index');
 $router->add('/select-dash', 'MainController', 'selectDash');
 $router->add('/login', 'AuthController', 'login');
 
-$router->add('/mahasiswa', 'MahasiswaController', 'index');
-$router->add('/mahasiswa/add', 'MahasiswaController', 'addData');
-$router->add('/mahasiswa/import', 'MahasiswaController', 'importData');
-$router->add('/mahasiswa/importCSV', 'MahasiswaController', 'importDataCSV');
-$router->add('/mahasiswa/fetch', 'MahasiswaController', 'fetchData');
-$router->add('/mahasiswa/update', 'MahasiswaController', 'updateData');
-$router->add('/mahasiswa/delete', 'MahasiswaController', 'deleteData');
+// Mahasiswa routes
+addRouteGroup('/mahasiswa', 'MahasiswaController', [
+    '' => 'index',
+    '/add' => 'addData',
+    '/import' => 'importData',
+    '/importCSV' => 'importDataCSV',
+    '/fetch' => 'fetchData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+]);
 
+// Orang Tua (Ortu) routes
+addRouteGroup('/ortu', 'MahasiswaController', [
+    '' => 'ortu',
+    '/fetch' => 'fetchDataOrtu',
+    '/update' => 'updateDataOrtu',
+    '/delete' => 'deleteDataOrtu',
+]);
 
-$router->add('/ortu', 'MahasiswaController', 'ortu');
-$router->add('/ortu/fetch', 'MahasiswaController', 'fetchDataOrtu');
-$router->add('/ortu/update', 'MahasiswaController', 'updateDataOrtu');
-$router->add('/ortu/delete', 'MahasiswaController', 'deleteDataOrtu');
+// Dosen routes
+addRouteGroup('/dosen', 'DosenController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+]);
 
+// Staff routes
+addRouteGroup('/staff', 'StaffController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+]);
 
-$router->add('/dosen', 'DosenController', 'index');
-$router->add('/dosen/fetch', 'DosenController', 'fetchData');
-$router->add('/dosen/add', 'DosenController', 'add');
-$router->add('/dosen/update', 'DosenController', 'updateData');
-$router->add('/dosen/delete', 'DosenController', 'deleteData');
+// Mata Kuliah (Matkul) routes
+addRouteGroup('/matkul', 'MatkulController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+]);
 
-$router->add('/staff', 'StaffController', 'index');
-$router->add('/staff/fetch', 'StaffController', 'fetchData');
-$router->add('/staff/add', 'StaffController', 'addData');
-$router->add('/staff/update', 'StaffController', 'updateData');
-$router->add('/staff/delete', 'StaffController', 'deleteData');
+// Perkuliahan routes
+addRouteGroup('/perkuliahan', 'PerkuliahanController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+    '/include' => 'includeData',
+]);
 
-$router->add('/matkul', 'MatkulController', 'index');
-$router->add('/matkul/fetch', 'MatkulController', 'fetchData');
-$router->add('/matkul/add', 'MatkulController', 'addData');
-$router->add('/matkul/update', 'MatkulController', 'updateData');
-$router->add('/matkul/delete', 'MatkulController', 'deleteData');
+// KRS (Kartu Rencana Studi) routes
+addRouteGroup('/krs', 'KrsController', [
+    '' => 'krs',
+    '/add' => 'addData',
+    '/delete' => 'deleteData',
+]);
 
-$router->add('/perkuliahan', 'PerkuliahanController', 'index');
-$router->add('/perkuliahan/fetch', 'PerkuliahanController', 'fetchData');
-$router->add('/perkuliahan/add', 'PerkuliahanController', 'addData');
-$router->add('/perkuliahan/update', 'PerkuliahanController', 'updateData');
-$router->add('/perkuliahan/delete', 'PerkuliahanController', 'deleteData');
-$router->add('/perkuliahan/include', 'PerkuliahanController', 'includeData');
+// KRS Approval routes
+addRouteGroup('/persetujuan-krs', 'KrsController', [
+    '' => 'indexPersetujuan',
+    '/detail' => 'detailPersetujuan',
+    '/update' => 'updatePersetujuan',
+    '/update-general' => 'updatePersetujuanByGeneral',
+]);
 
-$router->add('/krs', 'KrsController', 'krs');
-$router->add('/krs/add', 'KrsController', 'addData');
-$router->add('/krs/delete', 'KrsController', 'deleteData');
-
-$router->add('/persetujuan-krs', 'KrsController', 'indexPersetujuan');
-$router->add('/persetujuan-krs/detail', 'KrsController', 'detailPersetujuan');
-$router->add('/persetujuan-krs/update', 'KrsController', 'updatePersetujuan');
-$router->add('/persetujuan-krs/update-general', 'KrsController', 'updatePersetujuanByGeneral');
-
+// KHS (Kartu Hasil Studi) routes
 $router->add('/khs', 'KhsController', 'khs');
 
-$router->add('/setting', 'SettingController', 'index');
-$router->add('/setting/update', 'SettingController', 'updateData');
+// Settings routes
+addRouteGroup('/setting', 'SettingController', [
+    '' => 'index',
+    '/update' => 'updateData',
+]);
 
-$router->add('/regist', 'MainController', 'indexRegist');
-$router->add('/regist/add', 'MainController', 'addRegist');
-$router->add('/regist/insert', 'MainController', 'insertRegist');
-$router->add('/regist/save', 'MainController', 'saveRegist');
+// Registration routes
+addRouteGroup('/regist', 'MainController', [
+    '' => 'indexRegist',
+    '/add' => 'addRegist',
+    '/insert' => 'insertRegist',
+    '/save' => 'saveRegist',
+]);
 
+// Pembayaran routes
+addRouteGroup('/pembayaran', 'PembayaranController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+]);
 
-
-
-
+// Dispatch URL
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
-
 $router->dispatch($url);
