@@ -102,7 +102,16 @@
                     <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="add_prodi">Program Studi</label>
-                        <input type="text" class="form-control" id="add_prodi" name="prodi">
+                        <select id="add_prodi" class="form-control" name="prodi" required>
+                        <option value="" selected disabled>Pilih Prodi</option>
+                        <option value="Transfer (RPL)">Transfer (RPL)</option>
+                        <option value="S1 REGULER">S1 REGULER</option>
+                        <option value="S1 REGULER, dan Transfer">S1 REGULER, dan Transfer</option>
+                        <option value="D3">D3</option>
+                        <option value="Semua Prodi (kecuali PSPPA)">Semua Prodi (kecuali PSPPA)
+                        </option>
+                        <option value="PSPPA">PSPPA</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="add_jenis_tagihan">Jenis Tagihan</label>
