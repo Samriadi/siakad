@@ -71,11 +71,15 @@ class TagihanController
     } else {
       $request = $this->TagihanModel->addData($dataArray[0]);
 
-      header('Content-Type: application/json');
-      echo json_encode(['success' => true, 'message' => 'Data successfully added.']);
+      $response = [
+        'success' => $request,
+        'message' => $request ? 'Data berhasil ditambahkan' : 'added failed',
+      ];
+
     }
 
-   
+    header('Content-Type: application/json');
+    echo json_encode($response);
 
   }
 

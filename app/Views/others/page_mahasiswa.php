@@ -62,7 +62,7 @@
                 <th scope="col">Nim</th>
                 <th scope="col">Jenis Kelamin</th>
                 <th scope="col">Tanggal Lahir</th>
-                <th scope="col">Action</th>
+                <!-- <th scope="col">Action</th> -->
             </tr>
         </thead>
         <tbody>
@@ -108,11 +108,11 @@
                     <td><?= $value->Nim ?></td>
                     <td><?= $value->jenkel ?></td>
                     <td><?= $value->tgl_lahir ?></td>
-                    <td>
+                    <!-- <td>
                         <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                    </td>
+                    </td> -->
                 </tr>
             <?php endforeach; ?>
         </tbody>

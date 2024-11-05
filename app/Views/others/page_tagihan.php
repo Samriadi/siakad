@@ -252,47 +252,38 @@
             console.log(arrayData);
 
             $.ajax({
-                url: '/admin/siakad/tagihan/add',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(arrayData),
-                dataType: 'json',
-                statusCode: {
-                    200: function() {
-                        console.log('Status 200: OK');
-                    },
-                    500: function() {
-                        console.log('Status 500: Server Error');
+              url: '/admin/siakad/tagihan/add',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(arrayData),
+              dataType: 'json',
+              success: function(response) {
+                console.log(response);
+                if (response.success) {
+                  Swal.fire({
+                    text: 'Your data has been added.',
+                    icon: 'success',
+                    showConfirmButton: true,
+                    willClose: () => {
+                      window.location.reload();
                     }
-                },
-                success: function(response) {
-                    console.log('Response:', response);
-                    if (response.success) {
-                        Swal.fire({
-                            text: 'Your data has been added.',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            willClose: () => {
-                                window.location.reload();
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            text: 'An error occurred during the update.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    Swal.fire({
-                        text: 'An unexpected error occurred.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                  });
+                } else {
+                  Swal.fire({
+                    text: 'An error occurred during the update.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                  });
                 }
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown);
+                Swal.fire({
+                  text: 'An unexpected error occurred.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
             });
 
           });
