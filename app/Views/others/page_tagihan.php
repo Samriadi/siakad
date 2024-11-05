@@ -152,7 +152,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Edit Data Perkuliahan</h5>
+            <h5 class="modal-title" id="editModalLabel">Edit Data</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -161,37 +161,42 @@
             <div class="card-body">
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="course_id">Mata Kuliah</label>
-                  <select id="course_id" class="form-control" required>
-                  </select>
+                  <label for="prodi">Program Studi</label>
+                  <input type="text" id="prodi" class="form-control" required>
+                  </input>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="dosen_id">Dosen</label>
-                  <select id="dosen_id" class="form-control" required>
+                  <label for="jenis_tagihan">Jenis Tagihan</label>
+                    <select id="jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                    <option value="" selected disabled>Pilih Jenis Tagihan</option>
                   </select>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="day">Hari</label>
-                  <select id="day" class="form-control" required>
-                  </select>
+                <label for="angkatan">Angkatan</label>
+                        <select id="angkatan" class="form-control" name="angkatan" required>
+                        <option value="" selected disabled>Pilih Angkatan</option>
+                        <option value="Semua Angkatan">Semua Angkatan</option>
+                        <option value="Angkatan 2024">Angkatan 2024</option>
+                        <option value="Angkatan 2023">Angkatan 2023</option>
+                        <option value="Angkatan 2022">Angkatan 2022</option>
+                        <option value="Angkatan 2021">Angkatan 2021</option>
+                        <option value="Angkatan 2020">Angkatan 2020</option>
+                        <option value="Angkatan 2019">Angkatan 2019</option>
+                        <option value="Angkatan 2018">Angkatan 2018</option>
+                        <option value="Angkatan 2017">Angkatan 2017</option>
+                        </select>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="start_time">Jam Mulai</label>
-                  <input type="time" class="form-control" id="start_time">
+                  <label for="nominal">Nominal</label>
+                  <input type="number" class="form-control" id="nominal">
                 </div>
               </div>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="end_time">Jam Selesai</label>
-                  <input type="time" class="form-control" id="end_time">
+                <div class="form-group">
+                  <label for="keterangan">Keterangan</label>
+                  <input type="text" class="form-control" id="keterangan">
                 </div>
-                <div class="form-group col-md-6">
-                  <label for="room">Ruangan</label>
-                  <input type="text" class="form-control" id="room">
-                </div>
-              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -301,7 +306,7 @@
           console.log(id);
 
           $.ajax({
-            url: '/admin/siakad/perkuliahan/fetch',
+            url: '/admin/siakad/tagihan/fetch',
             type: 'POST',
             data: {
               id: id
@@ -310,40 +315,21 @@
             success: function(response) {
               if (response.success) {
                 var data = response.data;
-                var dataMatkul = response.dataMatkul;
-                var dataDosen = response.dataDosen;
-                var optionMatkul = response.optionMatkul;
-                var optionDosen = response.optionDosen;
+                var dataPaytype = response.dataPaytype;
+                var optionPaytype = response.optionPaytype;
 
-                $('#course_id').empty().append('<option value="' + dataMatkul.course_id + '">' + dataMatkul.course_name + '</option>');
+                $('#jenis_tagihan').empty().append('<option value="' + dataPaytype.recid + '">' + dataPaytype.nama_tagihan + '</option>');
 
-                $('#dosen_id').empty().append('<option value="' + dataDosen.lecturer_id + '">' + dataDosen.name + '</option>');
-
-                $('#day').empty().append('<option value="' + data.day + '">' + data.day + '</option>');
-
-                $.each(optionMatkul, function(index, matkul) {
-                  if (!$('#course_id option[value="' + matkul.course_id + '"]').length) {
-                    $('#course_id').append('<option value="' + matkul.course_id + '">' + matkul.course_name + '</option>');
+                $.each(optionPaytype, function(index, item) {
+                  if (!$('#jenis_tagihan option[value="' + item.recid + '"]').length) {
+                    $('#jenis_tagihan').append('<option value="' + item.recid + '">' + item.nama_tagihan + '</option>');
                   }
                 });
 
-                $.each(optionDosen, function(index, dosen) {
-                  if (!$('#dosen_id option[value="' + dosen.lecturer_id + '"]').length) {
-                    $('#dosen_id').append('<option value="' + dosen.lecturer_id + '">' + dosen.name + '</option>');
-                  }
-                });
-
-                var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                $.each(days, function(index, day) {
-                  if (!$('#day option[value="' + day + '"]').length) {
-                    $('#day').append('<option value="' + day + '">' + day + '</option>');
-                  }
-                });
-
-
-                $('#start_time').val(data.start_time);
-                $('#end_time').val(data.end_time);
-                $('#room').val(data.room);
+                $('#prodi').val(data.prodi);
+                $('#angkatan').val(data.angkatan);
+                $('#nominal').val(data.nominal);
+                $('#keterangan').val(data.keterangan);
 
 
                 $('#editModal').modal('show');
@@ -357,17 +343,16 @@
           $('#submit').on('click', function() {
 
             var arrayData = [{
-              schedule_id: id,
-              course_id: $('#course_id').val(),
-              dosen_id: $('#dosen_id').val(),
-              day: $('#day').val(),
-              start_time: $('#start_time').val(),
-              end_time: $('#end_time').val(),
-              room: $('#room').val(),
+              recid: id,
+              prodi: $('#prodi').val(),
+              jenis_tagihan: $('#jenis_tagihan').val(),
+              angkatan: $('#angkatan').val(),
+              nominal: $('#nominal').val(),
+              keterangan: $('#keterangan').val()
             }];
 
             $.ajax({
-              url: '/admin/siakad/perkuliahan/update',
+              url: '/admin/siakad/tagihan/update',
               type: 'POST',
               contentType: 'application/json',
               data: JSON.stringify(arrayData),
@@ -413,7 +398,7 @@
         }).then((result) => {
           if (result.isConfirmed) {
             $.ajax({
-              url: '/admin/siakad/perkuliahan/delete',
+              url: '/admin/siakad/tagihan/delete',
               type: 'POST',
               data: {
                 id: id
@@ -447,6 +432,17 @@
           }
         });
       }
+    </script>
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true
+        });
+    });
     </script>
 
 </body>

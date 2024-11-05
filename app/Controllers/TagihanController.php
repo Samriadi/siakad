@@ -33,30 +33,19 @@ class TagihanController
   {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
-    $dataMatkul = $this->PerkuliahanModel->getDataMatkul();
-    $dataDosen = $this->PerkuliahanModel->getDataDosen();
-
+    $dataPaytype = $this->PembayaranModel->getAll();
 
     $selectedData = null;
-    $selectedDataMatkul = null;
-    $selectedDataDosen = null;
+    $selectedDataPaytype = null;
 
-    foreach ($this->dataPerkuliahan as $item) {
-      if ($item->schedule_id == $id) {
+    foreach ($this->dataTagihan as $item) {
+      if ($item->recid == $id) {
         $selectedData = $item;
-
-        foreach ($dataMatkul as $matkul) {
-          if ($matkul->course_id == $item->course_id) {
-            $selectedDataMatkul = $matkul;
+        foreach ($dataPaytype as $item) {
+          if ($item->recid == $item->recid) {
+            $selectedDataPaytype = $item;
           }
         }
-
-        foreach ($dataDosen as $dosen) {
-          if ($dosen->lecturer_id == $item->dosen_id) {
-            $selectedDataDosen = $dosen;
-          }
-        }
-
         break;
       }
     }
@@ -65,10 +54,8 @@ class TagihanController
     echo json_encode([
       'success' => $selectedData !== null,
       'data' => $selectedData,
-      'dataMatkul' => $selectedDataMatkul,
-      'dataDosen' => $selectedDataDosen,
-      'optionMatkul' => $dataMatkul,
-      'optionDosen' => $dataDosen
+      'dataPaytype' => $selectedDataPaytype,
+      'optionPaytype' => $dataPaytype
     ]);
   }
 
@@ -93,43 +80,43 @@ class TagihanController
   }
 
 
-//   public function updateData()
-//   {
-//     $dataArray = json_decode(file_get_contents('php://input'), true);
+  public function updateData()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
 
-//     if ($dataArray === null) {
-//       $response = [
-//         'success' => false,
-//         'message' => 'Invalid JSON input'
-//       ];
-//     } else {
-//       $request = $this->PerkuliahanModel->updateData($dataArray[0]);
+    if ($dataArray === null) {
+      $response = [
+        'success' => false,
+        'message' => 'Invalid JSON input'
+      ];
+    } else {
+      $request = $this->TagihanModel->updateData($dataArray[0]);
 
-//       $response = [
-//         'success' => $request,
-//         'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
-//       ];
-//     }
+      $response = [
+        'success' => $request,
+        'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
+      ];
+    }
 
-//     header('Content-Type: application/json');
-//     echo json_encode($response);
-//   }
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
 
-//   public function deleteData()
-//   {
-//     header('Content-Type: application/json');
+  public function deleteData()
+  {
+    header('Content-Type: application/json');
 
-//     if (!isset($_POST['id']) || empty($_POST['id'])) {
-//       echo json_encode(['success' => false, 'message' => 'Invalid ID']);
-//       return;
-//     }
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+      echo json_encode(['success' => false, 'message' => 'Invalid ID']);
+      return;
+    }
 
-//     $id = intval($_POST['id']);
+    $id = intval($_POST['id']);
 
-//     $success = $this->PerkuliahanModel->deleteData($id);
+    $success = $this->TagihanModel->deleteData($id);
 
-//     echo json_encode(['success' => $success]);
-//   }
+    echo json_encode(['success' => $success]);
+  }
 
   public function includeData()
   {

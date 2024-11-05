@@ -56,16 +56,15 @@ class TagihanModel
   public function updateData($data)
   {
     try {
-      $query = "UPDATE $this->mhs_perkuliahan SET course_id = :course_id, dosen_id = :dosen_id, day = :day, start_time = :start_time , end_time = :end_time, room = :room WHERE schedule_id = :schedule_id";
+      $query = "UPDATE $this->mhs_tagihan SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , keterangan = :keterangan WHERE recid = :recid";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
-        ':course_id' => $data['course_id'],
-        ':dosen_id' => $data['dosen_id'],
-        ':day' => $data['day'],
-        ':start_time' => $data['start_time'],
-        ':end_time' => $data['end_time'],
-        ':room' => $data['room'],
-        ':schedule_id' => $data['schedule_id']
+        ':prodi' => $data['prodi'],
+        ':jenis_tagihan' => $data['jenis_tagihan'],
+        ':angkatan' => $data['angkatan'],
+        ':nominal' => $data['nominal'],
+        ':keterangan' => $data['keterangan'],
+        ':recid' => $data['recid']
       ]);
 
       return $result;
@@ -78,7 +77,7 @@ class TagihanModel
   public function deleteData($id)
   {
     try {
-      $stmt = $this->db->prepare("DELETE FROM $this->mhs_perkuliahan WHERE schedule_id = :id");
+      $stmt = $this->db->prepare("DELETE FROM $this->mhs_tagihan WHERE recid = :id");
       $stmt->execute([
         ':id' => $id
       ]);
