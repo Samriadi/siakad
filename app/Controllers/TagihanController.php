@@ -71,7 +71,7 @@ class TagihanController
     } else {
       $request = $this->TagihanModel->addData($dataArray[0]);
 
-      $response = [
+-      $response = [
         'success' => $request,
         'message' => $request ? 'Data berhasil ditambahkan' : 'added failed',
       ];
