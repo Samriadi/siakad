@@ -61,7 +61,7 @@
                             <th scope="row"><?= ++$key ?></th>
                             <td><?= $value->nama_prodi ?></td>
                             <td><?= $value->nama_tagihan ?></td>
-                            <td><?= $value->angkatan ?></td>
+                            <td><?= $value->nama_angkatan ?></td>
                             <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
                             <td><?= $value->keterangan ?></td>
                             <td style="white-space: nowrap;">
@@ -118,15 +118,6 @@
                         <label for="add_angkatan">Angkatan</label>
                         <select id="add_angkatan" class="form-control" name="angkatan" required>
                         <option value="" selected disabled>Pilih Angkatan</option>
-                        <option value="Semua Angkatan">Semua Angkatan</option>
-                        <option value="Angkatan 2024">Angkatan 2024</option>
-                        <option value="Angkatan 2023">Angkatan 2023</option>
-                        <option value="Angkatan 2022">Angkatan 2022</option>
-                        <option value="Angkatan 2021">Angkatan 2021</option>
-                        <option value="Angkatan 2020">Angkatan 2020</option>
-                        <option value="Angkatan 2019">Angkatan 2019</option>
-                        <option value="Angkatan 2018">Angkatan 2018</option>
-                        <option value="Angkatan 2017">Angkatan 2017</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
@@ -226,6 +217,7 @@
                 var data = response.data;
                 var dataPaytype = data.dataPaytype;
                 var dataProdi = data.dataProdi;
+                var dataAngkatan = data.dataAngkatan;
 
                 $('#add_prodi').empty().append('<option value="" selected disabled>Pilih Prodi</option>');
 
@@ -237,6 +229,12 @@
 
                 $.each(dataPaytype, function(index, value) {
                   $('#add_jenis_tagihan').append('<option value="' + value.recid + '">' + value.nama_tagihan + '</option>');
+                });
+
+                $('#add_angkatan').empty().append('<option value="" selected disabled>Pilih Angkatan</option>');
+
+                $.each(dataAngkatan, function(index, value) {
+                  $('#add_angkatan').append('<option value="' + value.ID_angkatan + '">' + value.nama + '</option>');
                 });
 
                 $('#addModal').modal('show');
