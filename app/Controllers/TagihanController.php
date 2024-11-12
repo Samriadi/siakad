@@ -61,27 +61,45 @@ class TagihanController
 
   public function addData()
   {
-    $dataArray = json_decode(file_get_contents('php://input'), true);
-
-    if ($dataArray === null) {
-      $response = [
-        'success' => false,
-        'message' => 'Invalid JSON input'
-      ];
-    } else {
-      $request = $this->TagihanModel->addData($dataArray[0]);
-
--      $response = [
-        'success' => $request,
-        'message' => $request ? 'Data berhasil ditambahkan' : 'added failed',
-      ];
-
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-
+      // Ambil data JSON dari request body
+      $dataArray = json_decode(file_get_contents('php://input'), true);
+  
+      // Pastikan data tidak kosong
+      if (empty($dataArray) || !isset($dataArray[0])) {
+          $response = [
+              'success' => false,
+              'message' => 'No data provided',
+          ];
+      } else {
+          // Panggil fungsi addData pada model dan tangkap hasilnya
+          $request = $this->TagihanModel->addData($dataArray[0]);
+  
+          // Tentukan respon berdasarkan hasil dari model
+          if ($request === 'success') {
+              $response = [
+                  'success' => true,
+                  'message' => 'Data berhasil ditambahkan',
+              ];
+          } elseif ($request === 'exists') {
+              $response = [
+                  'success' => false,
+                  'message' => 'Data sudah ada',
+              ];
+          } else {
+              $response = [
+                  'success' => false,
+                  'message' => 'Gagal menambahkan data',
+              ];
+          }
+      }
+  
+      // Set response header dan kirim JSON response
+      header('Content-Type: application/json');
+      echo json_encode($response);
+      exit;
   }
+  
+
 
 
   public function updateData()
