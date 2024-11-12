@@ -6,6 +6,7 @@ class TagihanModel
   private $mhs_tagihan = 'mhs_tagihan';
   private $mhs_paytype = 'mhs_paytype';
   private $mhs_prodi = 'mhs_prodi';
+  private $mhs_angkatan = 'mhs_angkatan';
 
 
   public function __construct()
@@ -13,10 +14,12 @@ class TagihanModel
     global $mhs_tagihan;
     global $mhs_paytype;
     global $mhs_prodi;
+    global $mhs_angkatan;
 
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_paytype = $mhs_paytype;
     $this->mhs_prodi = $mhs_prodi;
+    $this->mhs_angkatan = $mhs_angkatan;
 
     $this->db = Database::getInstance();
   }
@@ -25,11 +28,13 @@ class TagihanModel
       $query = "SELECT 
                       a.*,
                       b.nama_tagihan,
-                      c.deskripsi AS nama_prodi
+                      c.deskripsi AS nama_prodi,
+                      d.nama AS nama_angkatan
                   FROM 
                       $this->mhs_tagihan a
                   LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
                   LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+                  LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan 
                   ";
       
       $stmt = $this->db->prepare($query);
@@ -112,6 +117,14 @@ class TagihanModel
   public function getDataProdi()
   {
       $query = "SELECT * FROM $this->mhs_prodi";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getDataAngkatan()
+  {
+      $query = "SELECT * FROM $this->mhs_angkatan";
       $stmt = $this->db->prepare($query);
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_OBJ);
