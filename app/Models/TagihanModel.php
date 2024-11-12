@@ -5,15 +5,18 @@ class TagihanModel
   private $db;
   private $mhs_tagihan = 'mhs_tagihan';
   private $mhs_paytype = 'mhs_paytype';
+  private $mhs_prodi = 'mhs_prodi';
 
 
   public function __construct()
   {
     global $mhs_tagihan;
     global $mhs_paytype;
+    global $mhs_prodi;
 
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_paytype = $mhs_paytype;
+    $this->mhs_prodi = $mhs_prodi;
 
     $this->db = Database::getInstance();
   }
@@ -21,10 +24,13 @@ class TagihanModel
   {
       $query = "SELECT 
                       a.*,
-                      b.nama_tagihan
+                      b.nama_tagihan,
+                      c.deskripsi AS nama_prodi
                   FROM 
                       $this->mhs_tagihan a
-                  LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan";
+                  LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
+                  LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+                  ";
       
       $stmt = $this->db->prepare($query);
       $stmt->execute();
@@ -101,5 +107,13 @@ class TagihanModel
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getDataProdi()
+  {
+      $query = "SELECT * FROM $this->mhs_prodi";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 }
