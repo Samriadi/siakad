@@ -13,3 +13,4 @@ $mhs_krs = "mhs_krs";
 $mhs_krs_courses = "mhs_krs_courses";
 $mhs_paytype = "mhs_paytype";
 $mhs_tagihan = "mhs_tagihan";
+$mhs_prodi = "mhs_prodi";
