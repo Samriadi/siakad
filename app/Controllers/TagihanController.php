@@ -126,13 +126,15 @@ class TagihanController
   {
     $dataPaytype = $this->PembayaranModel->getAll();
     $dataProdi = $this->TagihanModel->getDataProdi();
+    $dataAngkatan = $this->TagihanModel->getDataAngkatan();
 
     if (!empty($dataPaytype)) {
       $response = [
         'success' => true,
         'data' => [
           'dataPaytype' => $dataPaytype,
-          'dataProdi' => $dataProdi
+          'dataProdi' => $dataProdi,
+          'dataAngkatan' => $dataAngkatan
         ]
       ];
     } else {
