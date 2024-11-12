@@ -59,7 +59,7 @@
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->prodi ?></td>
+                            <td><?= $value->nama_prodi ?></td>
                             <td><?= $value->nama_tagihan ?></td>
                             <td><?= $value->angkatan ?></td>
                             <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
@@ -104,13 +104,6 @@
                         <label for="add_prodi">Program Studi</label>
                         <select id="add_prodi" class="form-control" name="prodi" required>
                         <option value="" selected disabled>Pilih Prodi</option>
-                        <option value="Transfer (RPL)">Transfer (RPL)</option>
-                        <option value="S1 REGULER">S1 REGULER</option>
-                        <option value="S1 REGULER, dan Transfer">S1 REGULER, dan Transfer</option>
-                        <option value="D3">D3</option>
-                        <option value="Semua Prodi (kecuali PSPPA)">Semua Prodi (kecuali PSPPA)
-                        </option>
-                        <option value="PSPPA">PSPPA</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
@@ -232,12 +225,20 @@
               if (response.success) {
                 var data = response.data;
                 var dataPaytype = data.dataPaytype;
+                var dataProdi = data.dataProdi;
+
+                $('#add_prodi').empty().append('<option value="" selected disabled>Pilih Prodi</option>');
+
+                $.each(dataProdi, function(index, value) {
+                  $('#add_prodi').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                });
 
                 $('#add_jenis_tagihan').empty().append('<option value="" selected disabled>Pilih Jenis Tagihan</option>');
 
                 $.each(dataPaytype, function(index, value) {
                   $('#add_jenis_tagihan').append('<option value="' + value.recid + '">' + value.nama_tagihan + '</option>');
                 });
+
                 $('#addModal').modal('show');
 
               } else {
@@ -245,7 +246,7 @@
               }
             },
             error: function(xhr, status, error) {
-              console.log('Terjadi kesalahan: ' + error);
+              console.log('Respon False: ' + error);
             }
           });
 
