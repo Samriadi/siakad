@@ -125,12 +125,14 @@ class TagihanController
   public function includeData()
   {
     $dataPaytype = $this->PembayaranModel->getAll();
+    $dataProdi = $this->TagihanModel->getDataProdi();
 
     if (!empty($dataPaytype)) {
       $response = [
         'success' => true,
         'data' => [
-          'dataPaytype' => $dataPaytype
+          'dataPaytype' => $dataPaytype,
+          'dataProdi' => $dataProdi
         ]
       ];
     } else {
@@ -140,7 +142,6 @@ class TagihanController
       ];
     }
 
-    // Mengembalikan response dalam format JSON
     header('Content-Type: application/json');
     echo json_encode($response);
   }
