@@ -26,15 +26,19 @@ class TagihanModel
   public function getAll()
   {
       $query = "SELECT 
-                      a.*,
-                      b.nama_tagihan,
-                      c.deskripsi AS nama_prodi,
-                      d.nama AS nama_angkatan
-                  FROM 
-                      $this->mhs_tagihan a
-                  LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
-                  LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
-                  LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan 
+                    a.*,
+                    b.nama_tagihan,
+                    c.deskripsi AS nama_prodi,
+                    CASE 
+                        WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
+                        ELSE a.angkatan
+                    END AS nama_angkatan
+                FROM 
+                    $this->mhs_tagihan a
+                LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
+                LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+                LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
+
                   ";
       
       $stmt = $this->db->prepare($query);
@@ -45,24 +49,42 @@ class TagihanModel
 
   public function addData($data)
   {
-    try {
-      $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
+      try {
+          // Cek apakah data dengan kombinasi prodi, jenis_tagihan, dan angkatan sudah ada
+          $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan 
+                         WHERE prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
+          $checkStmt = $this->db->prepare($checkQuery);
+          $checkStmt->execute([
+              $data['prodi'],
+              $data['jenis_tagihan'],
+              $data['angkatan']
+          ]);
+  
+          // Jika data sudah ada, kembalikan 'exists' untuk menandakan bahwa data duplikat
+          if ($checkStmt->fetchColumn() > 0) {
+              return 'exists';
+          }
+  
+          // Jika data belum ada, lanjutkan dengan insert
+          $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
                     VALUES (?, ?, ?, ?, ?)";
-      $stmt = $this->db->prepare($query);
-      $result = $stmt->execute([
-        $data['prodi'],
-        $data['jenis_tagihan'],
-        $data['angkatan'],
-        $data['nominal'],
-        $data['keterangan']
-      ]);
-
-      return $result;
-    } catch (PDOException $e) {
-      error_log($e->getMessage());
-      return false;
-    }
+          $stmt = $this->db->prepare($query);
+          $result = $stmt->execute([
+              $data['prodi'],
+              $data['jenis_tagihan'],
+              $data['angkatan'],
+              $data['nominal'],
+              $data['keterangan']
+          ]);
+  
+          return $result ? 'success' : 'error';
+      } catch (PDOException $e) {
+          error_log($e->getMessage());
+          return 'error';
+      }
   }
+  
+
 
   public function updateData($data)
   {
