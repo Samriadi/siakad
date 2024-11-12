@@ -233,9 +233,13 @@
 
                 $('#add_angkatan').empty().append('<option value="" selected disabled>Pilih Angkatan</option>');
 
+                // Tambahkan opsi "Semua Angkatan" di awal
+                $('#add_angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
+
                 $.each(dataAngkatan, function(index, value) {
                   $('#add_angkatan').append('<option value="' + value.ID_angkatan + '">' + value.nama + '</option>');
                 });
+
 
                 $('#addModal').modal('show');
 
@@ -248,54 +252,61 @@
             }
           });
 
-          $('#add_submit').on('click', function() {
-            var arrayData = [{
+        });
+
+        $('#add_submit').on('click', async function(event) {
+          event.preventDefault(); 
+          
+          // Ambil data dari input dan buat array
+          var arrayData = [{
               prodi: $('#add_prodi').val(),
               jenis_tagihan: $('#add_jenis_tagihan').val(),
               angkatan: $('#add_angkatan').val(),
               nominal: $('#add_nominal').val(),
               keterangan: $('#add_keterangan').val(),
-            }];
+          }];
 
-            console.log(arrayData);
+          try {
+              // Kirim data melalui AJAX
+              let response = await $.ajax({
+                  url: '/admin/siakad/tagihan/add',
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(arrayData),
+                  dataType: 'json',
+              });
 
-            $.ajax({
-              url: '/admin/siakad/tagihan/add',
-              type: 'POST',
-              contentType: 'application/json',
-              data: JSON.stringify(arrayData),
-              dataType: 'json',
-              success: function(response) {
-                console.log(response);
-                if (response.success) {
-                  Swal.fire({
-                    text: 'Your data has been added.',
-                    icon: 'success',
-                    showConfirmButton: true,
-                    willClose: () => {
-                      window.location.reload();
-                    }
+              // Cek respons dari server dan tampilkan pesan sesuai
+              if (response.success) {
+                  await Swal.fire(
+                      'Added!',
+                      response.message,  // Pesan sukses dari server
+                      'success'
+                  ).then(() => {
+                      location.reload();  // Reload halaman setelah sukses
                   });
-                } else {
-                  Swal.fire({
-                    text: 'An error occurred during the update.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+              } else {
+                  // Tampilkan pesan kesalahan jika data sudah ada atau gagal
+                  await Swal.fire({
+                      text: response.message,  // Pesan error dari server
+                      icon: 'warning',
+                      confirmButtonText: 'OK'
                   });
-                }
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                Swal.fire({
+              }
+
+          } catch (error) {
+              console.error('AJAX Error:', error);
+              
+              // Tampilkan pesan error jika ada masalah pada koneksi atau server
+              await Swal.fire({
                   text: 'An unexpected error occurred.',
                   icon: 'error',
                   confirmButtonText: 'OK'
-                });
-              }
-            });
+              });
+          }
+      });
 
-          });
-        });
+
 
 
         //edit data
