@@ -15,3 +15,4 @@ $mhs_paytype = "mhs_paytype";
 $mhs_tagihan = "mhs_tagihan";
 $mhs_prodi = "mhs_prodi";
 $mhs_angkatan = "mhs_angkatan";
+$mhs_penugasan_dosen = "mhs_penugasan_dosen";
