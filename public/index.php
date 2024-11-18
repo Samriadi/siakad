@@ -19,7 +19,7 @@ $controllers = [
     'DosenController', 'StaffController', 'MatkulController', 
     'PerkuliahanController', 'KrsController', 'KhsController', 
     'SettingController', 'PembayaranController', 'TagihanController',
-    'ProdiController'
+    'ProdiController', 'AngkatanController'
 ];
 foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/Controllers/$controller.php";
@@ -30,7 +30,7 @@ $models = [
     'MahasiswaModel', 'DosenModel', 'StaffModel', 
     'MatkulModel', 'PerkuliahanModel', 'KrsModel', 
     'SettingModel', 'PembayaranModel', 'TagihanModel',
-    'ProdiModel'
+    'ProdiModel', 'AngkatanModel'
 ];
 foreach ($models as $model) {
     require_once __DIR__ . "/../app/Models/$model.php";
@@ -159,8 +159,18 @@ addRouteGroup('/tagihan', 'TagihanController', [
     '/include' => 'includeData',
 ]);
 
-// tagihan routes
+// prodi routes
 addRouteGroup('/prodi', 'ProdiController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+    '/include' => 'includeData',
+]);
+
+// angkatan routes
+addRouteGroup('/angkatan', 'AngkatanController', [
     '' => 'index',
     '/fetch' => 'fetchData',
     '/add' => 'addData',
