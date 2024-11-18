@@ -55,13 +55,11 @@ class TagihanController
         foreach ($dataPaytype as $itemPay) {
           if ($itemPay->recid == $item->jenis_tagihan) {
             $selectedDataPaytype = $itemPay;
-            // error_log("item selected paytype: " . print_r($selectedDataPaytype, true));
           }
         }
         foreach ($dataAngkatan as $itemAngkatan) {
           if ($itemAngkatan->ID_angkatan == $item->angkatan) {
             $selectedDataAngkatan = $itemAngkatan;
-            error_log("item selected angkatan: " . print_r($selectedDataAngkatan, true));
           }
         }
         break;
