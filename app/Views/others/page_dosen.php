@@ -21,7 +21,7 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data</h1>
+          <h1>Data Dosen</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Data</a></div>
@@ -34,7 +34,6 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Data Dosen</h4>
                   <div class="card-header-action">
                     <a class="btn btn-primary" data-toggle="modal" data-target="#addModal">
                       <i class="fas fa-plus text-white"></i>
@@ -42,49 +41,96 @@
                   </div>
                 </div>
                 <div class="card-body">
-                <div class="table-responsive" style="max-height: 770px; overflow-y: auto;">
-                    <table class="table table-hover">
-                      <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
-                        <tr>
-                          <th scope="col">No</th>
-                          <th scope="col">Nama Lengkap</th>
-                          <th scope="col">NIDN</th>
-                          <th scope="col">Jenis Kelamin</th>
-                          <th scope="col">Tanggal Lahir</th>
-                          <th scope="col">Alamat</th>
-                          <th scope="col">Telepon</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Tanggal Masuk</th>
-                          <th class="w-15">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($data as $key => $value) : ?>
-                          <tr>
-                            <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->name ?></td>
-                            <td><?= $value->nidn ?></td>
-                            <td><?= $value->gender ?></td>
-                            <td><?= $value->birth_date ?></td>
-                            <td><?= $value->address ?></td>
-                            <td><?= $value->phone ?></td>
-                            <td><?= $value->email ?></td>
-                            <td><?= $value->hire_date ?></td>
-                            <td style="white-space: nowrap;">
-                              <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-id="<?= $value->lecturer_id ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->lecturer_id ?>" onclick="confirmDelete(this)">
-                                <i class="fas fa-trash-alt"></i>
-                              </a>
-                            </td>
+                            <ul class="nav nav-tabs" id="myTab3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true">Dosen</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile" aria-selected="false">Penugasan</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent2">
+                                <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                        <div class="table-responsive" style="max-height: 760px; overflow-y: auto;">
+                                            <table class="table table-hover">
+                                                <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+                                                    <tr>
+                                                        <th scope="col">No</th>
+                                                        <th scope="col">Status</th>
+                                                        <th scope="col">Nama</th>
+                                                        <th scope="col">NIDN</th>
+                                                        <th scope="col">NIK</th>
+                                                        <!-- <th scope="col">Action</th> -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($data as $key => $value) : ?>
+                                                        <tr>
+                                                            <th scope="row"><?= $key + 1 ?></th>
+                                                            <td><?= $value->Status ?></td>
+                                                            <td><?= $value->Nama ?></td>
+                                                            <td><?= $value->NIDN ?></td>
+                                                            <td><?= $value->NIK ?></td>
+                                                            <!-- <td>
+                                                                <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </a>
+                                                            </td> -->
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                          </tr>
-                        <?php endforeach ?>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive" style="max-height: 760px;">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">No</th>
+                                                            <th scope="col">Nama Dosen</th>
+                                                            <th scope="col">NIDN/NUP/NIDK</th>
+                                                            <th scope="col">Jenis Kelamin</th>
+                                                            <th scope="col">Tahun Ajaran</th>
+                                                            <th scope="col">Program Studi</th>
+                                                            <th scope="col">No. Surat Tugas</th>
+                                                            <th scope="col">Tanggal Surat Tugas</th>
+                                                            <th scope="col">Homebase</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($dataPenugasan as $key => $value) : ?>
+                                                            <tr>
+                                                                <th scope="row"><?= ++$key ?></th>
+                                                                <td><?= $value->nama_dosen ?></td>
+                                                                <td><?= $value->nidn_nup_nidk ?></td>
+                                                                <td><?= $value->jenis_kelamin ?></td>
+                                                                <td><?= $value->tahun_ajaran ?></td>
+                                                                <td><?= $value->program_studi ?></td>
+                                                                <td><?= $value->nomor_surat_tugas ?></td>
+                                                                <td><?= $value->tanggal_surat_tugas ?></td>
+                                                                <td><?= $value->homebase ?></td>
+                                                            </tr>
+                                                        <?php endforeach ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
               </div>
             </div>
           </div>
