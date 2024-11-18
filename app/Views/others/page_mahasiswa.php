@@ -35,12 +35,15 @@
                     <div class="card">
                         <div class="card-header">
                         <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#multiFormModal">
-                           Add Data
+                        <i class="fas fa-plus"></i>
                         </button>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#importCSVModal">Import CSV</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#importCSVModal">
+                        <i class="fas fa-file-import"></i>
+                        </button>
+
                         </div>
                         <div class="card-body">
-                            <ul class="nav nav-pills" id="myTab3" role="tablist">
+                            <ul class="nav nav-tabs" id="myTab3" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true">Mahasiswa</a>
                                 </li>
@@ -53,71 +56,71 @@
                                     <div class="card">
                                         <div class="card-body">
                                         <div class="table-responsive" style="max-height: 760px; overflow-y: auto;">
-    <table class="table table-hover">
-        <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Status</th>
-                <th scope="col">Nama Lengkap</th>
-                <th scope="col">Nim</th>
-                <th scope="col">Jenis Kelamin</th>
-                <th scope="col">Tanggal Lahir</th>
-                <!-- <th scope="col">Action</th> -->
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($data as $key => $value) : ?>
-                <tr>
-                    <th scope="row"><?= $key + 1 ?></th>
-                    <td>
-                        <?php 
-                            // Badge logic for status
-                            $status = strtolower(str_replace(' ', '', $value->status));
-                            $badgeClass = '';
-                            
-                            switch ($status) {
-                                case 'aktif':
-                                    $badgeClass = 'badge-success';
-                                    break;
-                                case 'nonaktif':
-                                    $badgeClass = 'badge-secondary';
-                                    break;
-                                case 'cuti':
-                                    $badgeClass = 'badge-warning';
-                                    break;
-                                case 'kampusmerdeka':
-                                    $badgeClass = 'badge-info';
-                                    break;
-                                case 'lulus':
-                                    $badgeClass = 'badge-primary';
-                                    break;
-                                case 'dikeluarkan':
-                                    $badgeClass = 'badge-danger';
-                                    break;
-                                case 'putussekolah':
-                                    $badgeClass = 'badge-dark';
-                                    break;
-                                default:
-                                    $badgeClass = 'badge-light';
-                                    break;
-                            }
-                        ?>
-                        <div class="badge badge-pill <?= $badgeClass ?> mb-1 float-left"><?= $value->status ?></div>
-                    </td>
-                    <td><?= $value->NamaLengkap ?></td>
-                    <td><?= $value->Nim ?></td>
-                    <td><?= $value->jenkel ?></td>
-                    <td><?= $value->tgl_lahir ?></td>
-                    <!-- <td>
-                        <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </td> -->
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+                                            <table class="table table-hover">
+                                                <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+                                                    <tr>
+                                                        <th scope="col">No</th>
+                                                        <th scope="col">Status</th>
+                                                        <th scope="col">Nama Lengkap</th>
+                                                        <th scope="col">Nim</th>
+                                                        <th scope="col">Jenis Kelamin</th>
+                                                        <th scope="col">Tanggal Lahir</th>
+                                                        <!-- <th scope="col">Action</th> -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($data as $key => $value) : ?>
+                                                        <tr>
+                                                            <th scope="row"><?= $key + 1 ?></th>
+                                                            <td>
+                                                                <?php 
+                                                                    // Badge logic for status
+                                                                    $status = strtolower(str_replace(' ', '', $value->status));
+                                                                    $badgeClass = '';
+                                                                    
+                                                                    switch ($status) {
+                                                                        case 'aktif':
+                                                                            $badgeClass = 'badge-success';
+                                                                            break;
+                                                                        case 'nonaktif':
+                                                                            $badgeClass = 'badge-secondary';
+                                                                            break;
+                                                                        case 'cuti':
+                                                                            $badgeClass = 'badge-warning';
+                                                                            break;
+                                                                        case 'kampusmerdeka':
+                                                                            $badgeClass = 'badge-info';
+                                                                            break;
+                                                                        case 'lulus':
+                                                                            $badgeClass = 'badge-primary';
+                                                                            break;
+                                                                        case 'dikeluarkan':
+                                                                            $badgeClass = 'badge-danger';
+                                                                            break;
+                                                                        case 'putussekolah':
+                                                                            $badgeClass = 'badge-dark';
+                                                                            break;
+                                                                        default:
+                                                                            $badgeClass = 'badge-light';
+                                                                            break;
+                                                                    }
+                                                                ?>
+                                                                <div class="badge badge-pill <?= $badgeClass ?> mb-1 float-left"><?= $value->status ?></div>
+                                                            </td>
+                                                            <td><?= $value->NamaLengkap ?></td>
+                                                            <td><?= $value->Nim ?></td>
+                                                            <td><?= $value->jenkel ?></td>
+                                                            <td><?= $value->tgl_lahir ?></td>
+                                                            <!-- <td>
+                                                                <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </a>
+                                                            </td> -->
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
 
 
@@ -127,7 +130,7 @@
                                 <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="table-responsive" style="max-height: 400px;">
+                                            <div class="table-responsive" style="max-height: 760px;">
                                                 <table class="table table-hover">
                                                     <thead>
                                                         <tr>
@@ -155,6 +158,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
                     </div>
                 </div>
             </div>
