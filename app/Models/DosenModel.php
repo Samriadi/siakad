@@ -4,14 +4,16 @@ class DosenModel
 {
   private $db;
   private $mhs_dosen = 'mhs_dosen';
+  private $mhs_penugasan_dosen = 'mhs_penugasan_dosen';
 
 
   public function __construct()
   {
     global $mhs_dosen;
-
+    global $mhs_penugasan_dosen;
 
     $this->mhs_dosen = $mhs_dosen;
+    $this->mhs_penugasan_dosen = $mhs_penugasan_dosen;
 
     $this->db = Database::getInstance();
   }
@@ -25,6 +27,19 @@ class DosenModel
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
+
+
+public function getAllPenugasan()
+{
+  $query = "SELECT 
+                  *
+                  FROM 
+                  $this->mhs_penugasan_dosen";
+  $stmt = $this->db->prepare($query);
+  $stmt->execute();
+  return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
   public function addData($data)
   {
     try {
