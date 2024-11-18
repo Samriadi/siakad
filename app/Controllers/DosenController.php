@@ -12,6 +12,7 @@ class DosenController
 
     $this->DosenModel = new DosenModel();
     $this->dataDosen = $this->DosenModel->getAll();
+    $this->dataPenugasan = $this->DosenModel->getAllPenugasan();
   }
   public function checkLogin() {
     if (!isset($_SESSION['user_loged'])) {
@@ -23,6 +24,7 @@ class DosenController
   {
 
     $data = $this->dataDosen;
+    $dataPenugasan = $this->dataPenugasan;
 
     include __DIR__ . '/../Views/others/page_dosen.php';
   }
