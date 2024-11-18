@@ -136,13 +136,24 @@ class TagihanModel
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  public function getDataProdi()
+  public function getDataProdi($column = null, $value = null)
   {
       $query = "SELECT * FROM $this->mhs_prodi";
+      
+      if ($column && $value) {
+          $query .= " WHERE $column = :value";
+      }
+  
       $stmt = $this->db->prepare($query);
+      
+      if ($column && $value) {
+          $stmt->bindParam(':value', $value);
+      }
+      
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
+  
 
   public function getDataAngkatan()
   {
