@@ -65,12 +65,15 @@
                             <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
                             <td><?= $value->keterangan ?></td>
                             <td style="white-space: nowrap;">
-                              <a class="btn btn-primary btn-action mr-1" id="btn-edit" data-id="<?= $value->recid ?>">
+
+                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
                                 <i class="fas fa-pencil-alt"></i>
                               </a>
-                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>" onclick="confirmDelete(this)">
+
+                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>"  onclick="confirmDelete(this)">
                                 <i class="fas fa-trash-alt"></i>
                               </a>
+
                             </td>
 
                           </tr>
@@ -155,8 +158,9 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="prodi">Program Studi</label>
-                  <input type="text" id="prodi" class="form-control" required>
-                  </input>
+                  <select id="prodi" class="form-control" name="prodi" required>
+                    <option value="" selected disabled>Pilih Prodi</option>
+                  </select>
                 </div>
                 <div class="form-group col-md-6">
                   <label for="jenis_tagihan">Jenis Tagihan</label>
@@ -168,18 +172,9 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                 <label for="angkatan">Angkatan</label>
-                        <select id="angkatan" class="form-control" name="angkatan" required>
-                        <option value="" selected disabled>Pilih Angkatan</option>
-                        <option value="Semua Angkatan">Semua Angkatan</option>
-                        <option value="Angkatan 2024">Angkatan 2024</option>
-                        <option value="Angkatan 2023">Angkatan 2023</option>
-                        <option value="Angkatan 2022">Angkatan 2022</option>
-                        <option value="Angkatan 2021">Angkatan 2021</option>
-                        <option value="Angkatan 2020">Angkatan 2020</option>
-                        <option value="Angkatan 2019">Angkatan 2019</option>
-                        <option value="Angkatan 2018">Angkatan 2018</option>
-                        <option value="Angkatan 2017">Angkatan 2017</option>
-                        </select>
+                <select id="angkatan" class="form-control" name="angkatan" required>
+                    <option value="" selected disabled>Pilih Angkatan</option>
+                  </select>
                 </div>
                 <div class="form-group col-md-6">
                   <label for="nominal">Nominal</label>
@@ -267,7 +262,6 @@
           }];
 
           try {
-              // Kirim data melalui AJAX
               let response = await $.ajax({
                   url: '/admin/siakad/tagihan/add',
                   type: 'POST',
@@ -276,19 +270,17 @@
                   dataType: 'json',
               });
 
-              // Cek respons dari server dan tampilkan pesan sesuai
               if (response.success) {
                   await Swal.fire(
                       'Added!',
-                      response.message,  // Pesan sukses dari server
+                      response.message,  
                       'success'
                   ).then(() => {
-                      location.reload();  // Reload halaman setelah sukses
+                      location.reload(); 
                   });
               } else {
-                  // Tampilkan pesan kesalahan jika data sudah ada atau gagal
                   await Swal.fire({
-                      text: response.message,  // Pesan error dari server
+                      text: response.message, 
                       icon: 'warning',
                       confirmButtonText: 'OK'
                   });
@@ -296,8 +288,6 @@
 
           } catch (error) {
               console.error('AJAX Error:', error);
-              
-              // Tampilkan pesan error jika ada masalah pada koneksi atau server
               await Swal.fire({
                   text: 'An unexpected error occurred.',
                   icon: 'error',
@@ -310,16 +300,18 @@
 
 
         //edit data
-        $('#btn-edit').on('click', function() {
+        $('.btn-edit').on('click', function() {
+
+          var data = <?php echo json_encode($data) ?>;
+          
           var id = $(this).data('id');
 
-          console.log(id);
 
           $.ajax({
             url: '/admin/siakad/tagihan/fetch',
             type: 'POST',
             data: {
-              id: id
+              id: id,
             },
             dataType: 'json',
             success: function(response) {
@@ -327,6 +319,19 @@
                 var data = response.data;
                 var dataPaytype = response.dataPaytype;
                 var optionPaytype = response.optionPaytype;
+                var dataProdi = response.dataProdi;
+                var optionProdi = response.optionProdi;
+                var dataAngkatan = response.dataAngkatan;
+                var optionAngkatan = response.optionAngkatan;
+
+                var optionAngkatan = response.optionAngkatan;
+                $('#prodi').empty().append('<option value="' + dataProdi.ID + '">' + dataProdi.deskripsi + '</option>');
+
+                $.each(optionProdi, function(index, item) {
+                  if (!$('#prodi option[value="' + item.ID + '"]').length) {
+                    $('#prodi').append('<option value="' + item.ID + '">' + item.deskripsi + '</option>');
+                  }
+                });
 
                 $('#jenis_tagihan').empty().append('<option value="' + dataPaytype.recid + '">' + dataPaytype.nama_tagihan + '</option>');
 
@@ -336,8 +341,26 @@
                   }
                 });
 
-                $('#prodi').val(data.prodi);
-                $('#angkatan').val(data.angkatan);
+                $('#angkatan').empty();
+
+
+                // Jika ada dataAngkatan, tambahkan opsi yang dipilih terlebih dahulu
+                if (dataAngkatan) {
+                    $('#angkatan').append('<option value="' + dataAngkatan.ID_angkatan + '" selected>' + dataAngkatan.nama + '</option>');
+                    $('#angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
+                } else {
+                    // Jika tidak ada dataAngkatan, hanya tambahkan opsi "Semua Angkatan" sebagai default
+                    $('#angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
+                }
+
+                // Tambahkan opsi lainnya dari optionAngkatan, hindari duplikat
+                $.each(optionAngkatan, function(index, item) {
+                    if (!$('#angkatan option[value="' + item.ID_angkatan + '"]').length) {
+                        $('#angkatan').append('<option value="' + item.ID_angkatan + '">' + item.nama + '</option>');
+                    }
+                });
+
+
                 $('#nominal').val(data.nominal);
                 $('#keterangan').val(data.keterangan);
 
