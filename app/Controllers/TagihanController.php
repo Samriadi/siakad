@@ -34,16 +34,34 @@ class TagihanController
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
     $dataPaytype = $this->PembayaranModel->getAll();
+    $dataProdi = $this->TagihanModel->getDataProdi();
+    $dataAngkatan = $this->TagihanModel->getDataAngkatan();
+
 
     $selectedData = null;
+    $selectedDataProdi = null;
     $selectedDataPaytype = null;
+    $selectedDataAngkatan = null;
 
     foreach ($this->dataTagihan as $item) {
       if ($item->recid == $id) {
         $selectedData = $item;
-        foreach ($dataPaytype as $item) {
-          if ($item->recid == $item->recid) {
-            $selectedDataPaytype = $item;
+        foreach ($dataProdi as $itemProdi) {
+          if ($itemProdi->ID == $item->prodi) {
+            $selectedDataProdi = $itemProdi;
+            // error_log("item selected prodi: " . print_r($selectedDataProdi, true));
+          }
+        }
+        foreach ($dataPaytype as $itemPay) {
+          if ($itemPay->recid == $item->jenis_tagihan) {
+            $selectedDataPaytype = $itemPay;
+            // error_log("item selected paytype: " . print_r($selectedDataPaytype, true));
+          }
+        }
+        foreach ($dataAngkatan as $itemAngkatan) {
+          if ($itemAngkatan->ID_angkatan == $item->angkatan) {
+            $selectedDataAngkatan = $itemAngkatan;
+            error_log("item selected angkatan: " . print_r($selectedDataAngkatan, true));
           }
         }
         break;
@@ -55,7 +73,11 @@ class TagihanController
       'success' => $selectedData !== null,
       'data' => $selectedData,
       'dataPaytype' => $selectedDataPaytype,
-      'optionPaytype' => $dataPaytype
+      'optionPaytype' => $dataPaytype,
+      'dataProdi' => $selectedDataProdi,
+      'optionProdi' => $dataProdi,
+      'dataAngkatan' => $selectedDataAngkatan,
+      'optionAngkatan' => $dataAngkatan
     ]);
   }
 
