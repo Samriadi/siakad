@@ -3,14 +3,14 @@
 class AngkatanController
 {
 
-  private $AngkatanMOdel;
+  private $AngkatanModel;
 
   public function __construct()
   {
     $this->checkLogin();
 
-    $this->AngkatanMOdel = new AngkatanMOdel();
-    $this->dataAngkatan = $this->AngkatanMOdel->getAll();
+    $this->AngkatanModel = new AngkatanModel();
+    $this->dataAngkatan = $this->AngkatanModel->getAll();
   }
   public function checkLogin() {
     if (!isset($_SESSION['user_loged'])) {
@@ -26,56 +26,6 @@ class AngkatanController
     include __DIR__ . '/../Views/others/page_angkatan.php';
   }
 
-  public function fetchData()
-  {
-    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-
-    $dataPaytype = $this->PembayaranModel->getAll();
-    $dataProdi = $this->TagihanModel->getDataProdi();
-    $dataAngkatan = $this->TagihanModel->getDataAngkatan();
-
-
-    $selectedData = null;
-    $selectedDataProdi = null;
-    $selectedDataPaytype = null;
-    $selectedDataAngkatan = null;
-
-    foreach ($this->dataTagihan as $item) {
-      if ($item->recid == $id) {
-        $selectedData = $item;
-        foreach ($dataProdi as $itemProdi) {
-          if ($itemProdi->ID == $item->prodi) {
-            $selectedDataProdi = $itemProdi;
-            // error_log("item selected prodi: " . print_r($selectedDataProdi, true));
-          }
-        }
-        foreach ($dataPaytype as $itemPay) {
-          if ($itemPay->recid == $item->jenis_tagihan) {
-            $selectedDataPaytype = $itemPay;
-          }
-        }
-        foreach ($dataAngkatan as $itemAngkatan) {
-          if ($itemAngkatan->ID_angkatan == $item->angkatan) {
-            $selectedDataAngkatan = $itemAngkatan;
-          }
-        }
-        break;
-      }
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode([
-      'success' => $selectedData !== null,
-      'data' => $selectedData,
-      'dataPaytype' => $selectedDataPaytype,
-      'optionPaytype' => $dataPaytype,
-      'dataProdi' => $selectedDataProdi,
-      'optionProdi' => $dataProdi,
-      'dataAngkatan' => $selectedDataAngkatan,
-      'optionAngkatan' => $dataAngkatan
-    ]);
-  }
-
   public function addData()
   {
       // Ambil data JSON dari request body
@@ -89,7 +39,7 @@ class AngkatanController
           ];
       } else {
           // Panggil fungsi addData pada model dan tangkap hasilnya
-          $request = $this->TagihanModel->addData($dataArray[0]);
+          $request = $this->AngkatanModel->addData($dataArray[0]);
   
           // Tentukan respon berdasarkan hasil dari model
           if ($request === 'success') {
