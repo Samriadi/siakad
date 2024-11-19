@@ -58,9 +58,9 @@ class ProdiModel
   public function deleteData($id)
   {
     try {
-      $stmt = $this->db->prepare("DELETE FROM $this->mhs_paytype WHERE recid = :id");
+      $stmt = $this->db->prepare("DELETE FROM $this->mhs_prodi WHERE ID = :ID");
       $stmt->execute([
-        ':id' => $id
+        ':ID' => $id
       ]);
       return $stmt->rowCount() > 0; 
     } catch (PDOException $e) {
