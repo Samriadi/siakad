@@ -12,13 +12,31 @@ class ProdiModel
     $this->db = Database::getInstance();
   }
 
-  public function getAll()
+  public function getAll($where = [])
   {
-    $query = "SELECT   * FROM $this->mhs_prodi";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+      $query = "SELECT * FROM {$this->mhs_prodi}";
+
+      if (!empty($where)) {
+          $conditions = [];
+          foreach ($where as $column => $value) {
+              $conditions[] = "$column = :$column";
+          }
+          $query .= " WHERE " . implode(" AND ", $conditions);
+      }
+
+      $stmt = $this->db->prepare($query);
+
+      if (!empty($where)) {
+          foreach ($where as $column => $value) {
+              $stmt->bindValue(":$column", $value);
+          }
+      }
+
+      $stmt->execute();
+
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
+
 
   public function addData($data)
   {
