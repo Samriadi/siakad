@@ -79,7 +79,7 @@ class AngkatanController
         'message' => 'Invalid JSON input'
       ];
     } else {
-      $request = $this->TagihanModel->updateData($dataArray[0]);
+      $request = $this->AngkatanModel->updateData($dataArray[0]);
 
       $response = [
         'success' => $request,
