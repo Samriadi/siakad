@@ -23,11 +23,12 @@ class ProdiModel
   public function addData($data)
   {
     try {
-      $query = "INSERT INTO $this->mhs_paytype (nama_tagihan, jenis_tagihan) VALUES (?, ?)";
+      $query = "INSERT INTO $this->mhs_prodi (ID, name, deskripsi) VALUES (?, ?, ?)";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
-        $data['nama_tagihan'],
-        $data['jenis_tagihan']
+        $data['ID'],
+        $data['name'],
+        $data['deskripsi']
       ]);
       return $result;
     } catch (PDOException $e) {
