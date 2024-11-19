@@ -40,12 +40,12 @@ class AngkatanModel
   public function updateData($data)
   {
     try {
-      $query = "UPDATE $this->mhs_paytype SET nama_tagihan = :nama_tagihan, jenis_tagihan = :jenis_tagihan WHERE recid = :id";
+      $query = "UPDATE $this->mhs_angkatan SET nama = :nama, deskripsi = :deskripsi WHERE ID_angkatan = :ID_angkatan";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
-        ':nama_tagihan' => $data['nama_tagihan'],
-        ':jenis_tagihan' => $data['jenis_tagihan'],
-        ':id' => $data['id']
+        ':nama' => $data['nama'],
+        ':deskripsi' => $data['deskripsi'],
+        ':ID_angkatan' => $data['ID_angkatan']
       ]);
 
       return $result;
