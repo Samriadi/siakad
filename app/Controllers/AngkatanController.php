@@ -11,6 +11,8 @@ class AngkatanController
 
     $this->AngkatanModel = new AngkatanModel();
     $this->dataAngkatan = $this->AngkatanModel->getAll();
+    // $filteredRecords = $yourModel->getAll(['column_name' => 'value', 'another_column' => 'another_value']);
+
   }
   public function checkLogin() {
     if (!isset($_SESSION['user_loged'])) {
