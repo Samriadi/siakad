@@ -40,12 +40,12 @@ class ProdiModel
   public function updateData($data)
   {
     try {
-      $query = "UPDATE $this->mhs_paytype SET nama_tagihan = :nama_tagihan, jenis_tagihan = :jenis_tagihan WHERE recid = :id";
+      $query = "UPDATE $this->mhs_prodi SET name = :name, deskripsi = :deskripsi WHERE ID = :ID";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
-        ':nama_tagihan' => $data['nama_tagihan'],
-        ':jenis_tagihan' => $data['jenis_tagihan'],
-        ':id' => $data['id']
+        ':name' => $data['name'],
+        ':deskripsi' => $data['deskripsi'],
+        ':ID' => $data['ID']
       ]);
 
       return $result;
