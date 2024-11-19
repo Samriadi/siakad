@@ -130,7 +130,7 @@
                                 <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="table-responsive" style="max-height: 760px;">
+                                            <div class="table-responsive" style="max-height: 800px;">
                                                 <table class="table table-hover">
                                                     <thead>
                                                         <tr>

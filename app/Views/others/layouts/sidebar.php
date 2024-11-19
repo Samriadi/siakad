@@ -45,7 +45,7 @@
           <li class="dropdown">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Administrasi</span></a>
             <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Paytype</a></li>
+              <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
               <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Tagihan</a></li>
 
             </ul>
