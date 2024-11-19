@@ -123,7 +123,7 @@ class ProdiController
         'message' => 'Invalid JSON input'
       ];
     } else {
-      $request = $this->TagihanModel->updateData($dataArray[0]);
+      $request = $this->ProdiModel->updateData($dataArray[0]);
 
       $response = [
         'success' => $request,
