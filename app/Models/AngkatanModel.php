@@ -58,9 +58,9 @@ class AngkatanModel
   public function deleteData($id)
   {
     try {
-      $stmt = $this->db->prepare("DELETE FROM $this->mhs_paytype WHERE recid = :id");
+      $stmt = $this->db->prepare("DELETE FROM $this->mhs_angkatan WHERE ID_angkatan = :ID_angkatan");
       $stmt->execute([
-        ':id' => $id
+        ':ID_angkatan' => $ID_angkatan
       ]);
       return $stmt->rowCount() > 0; 
     } catch (PDOException $e) {
