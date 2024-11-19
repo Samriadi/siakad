@@ -146,36 +146,9 @@ class ProdiController
 
     $id = intval($_POST['id']);
 
-    $success = $this->TagihanModel->deleteData($id);
+    $success = $this->ProdiModel->deleteData($id);
 
     echo json_encode(['success' => $success]);
   }
-
-  public function includeData()
-  {
-    $dataPaytype = $this->PembayaranModel->getAll();
-    $dataProdi = $this->TagihanModel->getDataProdi();
-    $dataAngkatan = $this->TagihanModel->getDataAngkatan();
-
-    if (!empty($dataPaytype)) {
-      $response = [
-        'success' => true,
-        'data' => [
-          'dataPaytype' => $dataPaytype,
-          'dataProdi' => $dataProdi,
-          'dataAngkatan' => $dataAngkatan
-        ]
-      ];
-    } else {
-      $response = [
-        'success' => false,
-        'message' => 'Data tidak ditemukan'
-      ];
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-  }
-
 
 }
