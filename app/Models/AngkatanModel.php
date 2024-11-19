@@ -3,67 +3,80 @@
 class AngkatanModel
 {
   private $db;
-  private $mhs_angkatan = 'mhs_angkatan';
-
+  private $table = 'mhs_angkatan';
 
   public function __construct()
   {
-    global $mhs_angkatan;
     $this->db = Database::getInstance();
   }
 
-  public function getAll()
+  public function getAll($where = [])
   {
-    $query = "SELECT   * FROM $this->mhs_angkatan";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+      $query = "SELECT * FROM {$this->table}";
+
+      if (!empty($where)) {
+          $conditions = [];
+          foreach ($where as $column => $value) {
+              $conditions[] = "$column = :$column";
+          }
+          $query .= " WHERE " . implode(" AND ", $conditions);
+      }
+
+      $stmt = $this->db->prepare($query);
+
+      if (!empty($where)) {
+          foreach ($where as $column => $value) {
+              $stmt->bindValue(":$column", $value);
+          }
+      }
+
+      $stmt->execute();
+
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  public function addData($data)
+
+  public function addData(array $data): bool
   {
     try {
-      $query = "INSERT INTO $this->mhs_angkatan (ID_angkatan, nama, deskripsi) VALUES (?, ?, ?)";
+      $query = "INSERT INTO {$this->table} (ID_angkatan, nama, deskripsi) VALUES (?, ?, ?)";
       $stmt = $this->db->prepare($query);
-      $result = $stmt->execute([
+      return $stmt->execute([
         $data['ID_angkatan'],
         $data['nama'],
         $data['deskripsi']
       ]);
-      return $result;
     } catch (PDOException $e) {
-      error_log($e->getMessage());
+      error_log("Add Data Error: " . $e->getMessage());
       return false;
     }
   }
 
-  public function updateData($data)
+  public function updateData(array $data): bool
   {
     try {
-      $query = "UPDATE $this->mhs_angkatan SET nama = :nama, deskripsi = :deskripsi WHERE ID_angkatan = :ID_angkatan";
+      $query = "UPDATE {$this->table} SET nama = :nama, deskripsi = :deskripsi WHERE ID_angkatan = :ID_angkatan";
       $stmt = $this->db->prepare($query);
-      $result = $stmt->execute([
+      return $stmt->execute([
         ':nama' => $data['nama'],
         ':deskripsi' => $data['deskripsi'],
         ':ID_angkatan' => $data['ID_angkatan']
       ]);
-
-      return $result;
     } catch (PDOException $e) {
-      error_log($e->getMessage());
+      error_log("Update Data Error: " . $e->getMessage());
       return false;
     }
   }
 
-  public function deleteData($id)
+  public function deleteData(int $ID_angkatan): bool
   {
     try {
-      $stmt = $this->db->prepare("DELETE FROM $this->mhs_angkatan WHERE ID_angkatan = :ID_angkatan");
-      $stmt->execute([
-        ':ID_angkatan' => $ID_angkatan
-      ]);
-      return $stmt->rowCount() > 0; 
+      $query = "DELETE FROM {$this->table} WHERE ID_angkatan = :ID_angkatan";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute([':ID_angkatan' => $ID_angkatan]);
+      return $stmt->rowCount() > 0;
     } catch (PDOException $e) {
+      error_log("Delete Data Error: " . $e->getMessage());
       return false;
     }
   }
