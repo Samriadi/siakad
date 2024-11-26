@@ -18,8 +18,7 @@ class MatkulModel
   public function getAll()
   {
     $query = "SELECT 
-                    *
-                    FROM 
+                    * FROM 
                     $this->mhs_matakuliah";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
