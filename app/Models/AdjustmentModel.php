@@ -1,0 +1,266 @@
+<?php
+
+class AdjustmentModel
+{
+  private $db;
+  private $mhs_paytype = 'mhs_paytype';
+  private $mhs_prodi = 'mhs_prodi';
+  private $mhs_angkatan = 'mhs_angkatan';
+  private $mhs_adjustment = 'mhs_adjustment';
+  private $mhs_tagihan = 'mhs_tagihan';
+  private $mhs_matakuliah = 'mhs_matakuliah';
+  private $mhs_dosen = 'mhs_dosen';
+
+
+  public function __construct()
+  {
+    global $mhs_adjustment;
+    global $mhs_paytype;
+    global $mhs_prodi;
+    global $mhs_angkatan;
+    global $mhs_matakuliah;
+    global $mhs_dosen;
+    global $mhs_tagihan;
+
+    $this->mhs_adjustment = $mhs_adjustment;
+    $this->mhs_paytype = $mhs_paytype;
+    $this->mhs_prodi = $mhs_prodi;
+    $this->mhs_angkatan = $mhs_angkatan;
+    $this->mhs_matakuliah = $mhs_matakuliah;
+    $this->mhs_dosen = $mhs_dosen;
+    $this->mhs_tagihan = $mhs_tagihan;
+
+    $this->db = Database::getInstance();
+  }
+
+  public function getAllAdjustment()
+  {
+    $query = "SELECT 
+                    a.*,
+                    e.nama_tagihan,
+                    c.deskripsi AS nama_prodi,
+                    CASE 
+                        WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
+                        ELSE a.angkatan
+                    END AS nama_angkatan
+                FROM 
+                    $this->mhs_adjustment a
+                LEFT JOIN $this->mhs_tagihan b ON b.recid = a.jenis_tagihan
+                LEFT JOIN $this->mhs_paytype e ON e.recid = a.jenis_tagihan
+                LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+                LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
+
+                  ";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getTagihanMhs()
+  {
+    $query = "SELECT Nim,NamaLengkap,prodi_name,vw_mhs.angkatan,sum(nominal) AS nominal FROM vw_mhs INNER JOIN vw_tagihan ON vw_mhs.kode_prodi=vw_tagihan.prodi 
+	  AND vw_mhs.angkatan=vw_tagihan.angkatan WHERE status='Aktif' GROUP BY Nim,NamaLengkap,prodi_name,vw_mhs.angkatan";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getNominal($prodi, $angkatan, $paytype)
+  {
+
+    $query = "SELECT nominal 
+              FROM mhs_tagihan 
+              WHERE prodi = :prodi AND jenis_tagihan = :jenis_tagihan AND angkatan = :angkatan";
+
+    $stmt = $this->db->prepare($query);
+
+    $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
+    $stmt->bindParam(':jenis_tagihan', $paytype, PDO::PARAM_STR);
+    $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    $result = $stmt->fetch(PDO::FETCH_OBJ);
+
+    return $result ? $result->nominal : null;
+  }
+
+
+  public function getAll()
+  {
+    $query = "SELECT 
+                    a.*,
+                    b.nama_tagihan,
+                    ifnull(c.deskripsi,'') AS nama_prodi,
+                    CASE 
+                        WHEN a.angkatan != 'Semua Angkatan' THEN d.nama 
+                        ELSE a.angkatan 
+                    END AS nama_angkatan
+                FROM 
+                    $this->mhs_adjustment a
+                LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
+                LEFT JOIN $this->mhs_prodi c ON c.ID = ifnull(a.prodi,0) 
+                LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
+
+                  ";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+
+  public function addData($data)
+  {
+    try {
+      $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
+                         WHERE prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
+      $checkStmt = $this->db->prepare($checkQuery);
+      $checkStmt->execute([
+        $data['prodi'],
+        $data['jenis_tagihan'],
+        $data['angkatan']
+      ]);
+
+      if ($checkStmt->fetchColumn() > 0) {
+        return 'exists';
+      }
+
+      $ID = $data['nim'];
+      $adjType = $data['adj_type'];
+      if (!$adjType) $adjType = "normal";
+
+      if ($ID <> "") {
+        $Nim = explode(",", $ID);
+        $n = count($Nim);
+
+        for ($I = 0; $I < $n; $I++) {
+          $query = "INSERT INTO $this->mhs_adjustment (prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+          $stmt = $this->db->prepare($query);
+          $result = $stmt->execute([
+            $data['prodi'],
+            $data['jenis_tagihan'],
+            $data['angkatan'],
+            $data['nominal'],
+            $data['keterangan'],
+            $Nim[$I],
+            $adjType,
+            $data['adjust'],
+
+          ]);
+        }
+
+        $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN mhs_mahasiswa AS mhs ON tagihan.nim=mhs.nim SET prodi = kode_prodi WHERE prodi is null AND tagihan.nim is not null";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN (SELECT nim, ID_angkatan AS angkatan FROM mhs_mahasiswa JOIN mhs_angkatan ON RTRIM(angkatan)=RTRIM(nama)) AS mhs 
+			ON tagihan.nim = mhs.nim SET tagihan.angkatan = mhs.angkatan WHERE tagihan.angkatan is null AND tagihan.nim is not null";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+      } else {
+        $query = "INSERT INTO $this->mhs_adjustment (prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $result = $stmt->execute([
+          $data['prodi'],
+          $data['jenis_tagihan'],
+          $data['angkatan'],
+          $data['nominal'],
+          $data['keterangan'],
+          $data['adj_type'],
+          $data['adjust']
+        ]);
+      }
+
+      return $result ? 'success' : 'error';
+    } catch (PDOException $e) {
+      error_log($e->getMessage());
+      return 'error';
+    }
+  }
+
+
+
+  public function updateData($data)
+  {
+    try {
+      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , keterangan = :keterangan, nim = :nim, adj_type = :adjtype WHERE recid = :recid";
+      $stmt = $this->db->prepare($query);
+      $result = $stmt->execute([
+        ':prodi' => $data['prodi'],
+        ':jenis_tagihan' => $data['jenis_tagihan'],
+        ':angkatan' => $data['angkatan'],
+        ':nominal' => $data['nominal'],
+        ':keterangan' => $data['keterangan'],
+        ':nim' => $data['nim'],
+        ':adjtype' => $data['adjtype'],
+        ':recid' => $data['recid']
+      ]);
+
+      return $result;
+    } catch (PDOException $e) {
+      error_log($e->getMessage());
+      return false;
+    }
+  }
+
+  public function deleteData($id)
+  {
+    try {
+      $stmt = $this->db->prepare("DELETE FROM $this->mhs_adjustment WHERE recid = :id");
+      $stmt->execute([
+        ':id' => $id
+      ]);
+      return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      return false;
+    }
+  }
+
+  public function getDataMatkul()
+  {
+    $query = "SELECT course_id, course_name FROM $this->mhs_matakuliah";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getDataDosen()
+  {
+    $query = "SELECT lecturer_id, name FROM $this->mhs_dosen";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getDataProdi($column = null, $value = null)
+  {
+    $query = "SELECT * FROM $this->mhs_prodi";
+
+    if ($column && $value) {
+      $query .= " WHERE $column = :value";
+    }
+
+    $stmt = $this->db->prepare($query);
+
+    if ($column && $value) {
+      $stmt->bindParam(':value', $value);
+    }
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+
+  public function getDataAngkatan()
+  {
+    $query = "SELECT * FROM $this->mhs_angkatan";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+}
