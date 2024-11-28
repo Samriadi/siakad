@@ -109,18 +109,18 @@
                         <option value="" selected disabled>Pilih Prodi</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="add_jenis_tagihan">Jenis Tagihan</label>
-                        <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
-                        <option value="" selected disabled>Pilih Jenis Tagihan</option>
-                        </select>
+                    <div class="form-group col-md-6">						
+                        <label for="add_angkatan">Angkatan</label>
+                        <select id="add_angkatan" class="form-control" name="angkatan" required>
+                        <option value="" selected disabled>Pilih Angkatan</option>
+                        </select>						
                     </div>
                     </div>
                     <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="add_angkatan">Angkatan</label>
-                        <select id="add_angkatan" class="form-control" name="angkatan" required>
-                        <option value="" selected disabled>Pilih Angkatan</option>
+                        <label for="add_jenis_tagihan">Jenis Tagihan</label>
+                        <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                        <option value="" selected disabled>Pilih Jenis Tagihan</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
@@ -162,18 +162,18 @@
                     <option value="" selected disabled>Pilih Prodi</option>
                   </select>
                 </div>
-                <div class="form-group col-md-6">
-                  <label for="jenis_tagihan">Jenis Tagihan</label>
-                    <select id="jenis_tagihan" class="form-control" name="jenis_tagihan" required>
-                    <option value="" selected disabled>Pilih Jenis Tagihan</option>
-                  </select>
+                <div class="form-group col-md-6">				  
+                  <label for="angkatan">Angkatan</label>
+                  <select id="angkatan" class="form-control" name="angkatan" required>
+                    <option value="" selected disabled>Pilih Angkatan</option>
+                  </select>				  
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                <label for="angkatan">Angkatan</label>
-                <select id="angkatan" class="form-control" name="angkatan" required>
-                    <option value="" selected disabled>Pilih Angkatan</option>
+                  <label for="jenis_tagihan">Jenis Tagihan</label>
+                    <select id="jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                    <option value="" selected disabled>Pilih Jenis Tagihan</option>
                   </select>
                 </div>
                 <div class="form-group col-md-6">
@@ -214,25 +214,27 @@
                 var dataProdi = data.dataProdi;
                 var dataAngkatan = data.dataAngkatan;
 
-                // Kosongkan dan tambahkan opsi placeholder untuk 'Prodi'
                 $('#add_prodi').empty().append('<option value="" selected disabled>Pilih Prodi</option>');
-                dataProdi.forEach(item => {
-                    $('#add_prodi').append(`<option value="${item.ID}">${item.deskripsi}</option>`);
+
+                $.each(dataProdi, function(index, value) {
+                  $('#add_prodi').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
                 });
 
-                // Kosongkan dan tambahkan opsi placeholder untuk 'Jenis Tagihan'
                 $('#add_jenis_tagihan').empty().append('<option value="" selected disabled>Pilih Jenis Tagihan</option>');
-                dataPaytype.forEach(item => {
-                    $('#add_jenis_tagihan').append(`<option value="${item.recid}">${item.nama_tagihan}</option>`);
+
+                $.each(dataPaytype, function(index, value) {
+                  $('#add_jenis_tagihan').append('<option value="' + value.recid + '">' + value.nama_tagihan + '</option>');
                 });
 
-                // Kosongkan dan tambahkan opsi placeholder untuk 'Angkatan' dengan opsi tambahan "Semua Angkatan"
-                $('#add_angkatan').empty()
-                    .append('<option value="" selected disabled>Pilih Angkatan</option>')
-                    .append('<option value="Semua Angkatan">Semua Angkatan</option>');
-                dataAngkatan.forEach(item => {
-                    $('#add_angkatan').append(`<option value="${item.ID_angkatan}">${item.nama}</option>`);
+                $('#add_angkatan').empty().append('<option value="" selected disabled>Pilih Angkatan</option>');
+
+                // Tambahkan opsi "Semua Angkatan" di awal
+                $('#add_angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
+
+                $.each(dataAngkatan, function(index, value) {
+                  $('#add_angkatan').append('<option value="' + value.ID_angkatan + '">' + value.nama + '</option>');
                 });
+
 
                 $('#addModal').modal('show');
 
