@@ -6,7 +6,7 @@ class Database
     private $host = 'localhost';
     private $username = 'root';
     private $password = '';
-    private $database = 'pmb';
+    private $database = 'u579415994_kmps';
 
     private function __construct()
     {
@@ -36,7 +36,8 @@ class Database
         return $this->connection->quote($string);
     }
 
-    public function lastInsertId() {
+    public function lastInsertId()
+    {
         return $this->connection->lastInsertId();
     }
 }
