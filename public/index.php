@@ -15,11 +15,21 @@ require_once __DIR__ . '/../app/Core/Table.php';
 
 // Controller Imports
 $controllers = [
-    'MainController', 'AuthController', 'MahasiswaController', 
-    'DosenController', 'StaffController', 'MatkulController', 
-    'PerkuliahanController', 'KrsController', 'KhsController', 
-    'SettingController', 'PembayaranController', 'TagihanController',
-    'ProdiController', 'AngkatanController'
+    'MainController',
+    'AuthController',
+    'MahasiswaController',
+    'DosenController',
+    'StaffController',
+    'MatkulController',
+    'PerkuliahanController',
+    'KrsController',
+    'KhsController',
+    'SettingController',
+    'PembayaranController',
+    'TagihanController',
+    'ProdiController',
+    'AngkatanController',
+    'AdjustmentController'
 ];
 foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/Controllers/$controller.php";
@@ -27,10 +37,18 @@ foreach ($controllers as $controller) {
 
 // Model Imports
 $models = [
-    'MahasiswaModel', 'DosenModel', 'StaffModel', 
-    'MatkulModel', 'PerkuliahanModel', 'KrsModel', 
-    'SettingModel', 'PembayaranModel', 'TagihanModel',
-    'ProdiModel', 'AngkatanModel'
+    'MahasiswaModel',
+    'DosenModel',
+    'StaffModel',
+    'MatkulModel',
+    'PerkuliahanModel',
+    'KrsModel',
+    'SettingModel',
+    'PembayaranModel',
+    'TagihanModel',
+    'ProdiModel',
+    'AngkatanModel',
+    'AdjustmentModel'
 ];
 foreach ($models as $model) {
     require_once __DIR__ . "/../app/Models/$model.php";
@@ -40,7 +58,8 @@ foreach ($models as $model) {
 $router = new Router();
 
 // Helper function to add grouped routes
-function addRouteGroup($prefix, $controller, $routes) {
+function addRouteGroup($prefix, $controller, $routes)
+{
     global $router;
     foreach ($routes as $route => $method) {
         $router->add("$prefix$route", $controller, $method);
@@ -158,6 +177,20 @@ addRouteGroup('/tagihan', 'TagihanController', [
     '/delete' => 'deleteData',
     '/include' => 'includeData',
 ]);
+
+// adjustment tagihan routes
+addRouteGroup('/adjustment', 'AdjustmentController', [
+    '' => 'index',
+    '/fetch' => 'fetchData',
+    '/add' => 'addData',
+    '/update' => 'updateData',
+    '/delete' => 'deleteData',
+    '/include' => 'includeData',
+    '/getNominal' => 'getNominal'
+]);
+
+
+addRouteGroup('/tagihan-mhs', 'TagihanController', ['' => 'tagihanMhs']);
 
 // prodi routes
 addRouteGroup('/prodi', 'ProdiController', [
