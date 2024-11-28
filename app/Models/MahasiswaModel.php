@@ -8,6 +8,7 @@ class MahasiswaModel
     private $mhs_ortu = 'mhs_ortu';
     private $pmb_ortu = 'pmb_ortu';
     private $pmb_nim = 'pmb_nim';
+	private $mhs_prodi = 'mhs_prodi';
 
     public function __construct()
     {
@@ -16,12 +17,14 @@ class MahasiswaModel
         global $mhs_ortu;
         global $pmb_ortu;
         global $pmb_nim;
+		global $mhs_prodi;
 
         $this->mhs_mahasiswa = $mhs_mahasiswa;
         $this->pmb_mahasiswa = $pmb_mahasiswa;
         $this->mhs_ortu = $mhs_ortu;
         $this->pmb_ortu = $pmb_ortu;
         $this->pmb_nim = $pmb_nim;
+		$this->mhs_prodi = $mhs_prodi;
 
         $this->db = Database::getInstance();
     }
@@ -35,6 +38,17 @@ class MahasiswaModel
     }
     
 
+    public function countBy($catgy, $catName, $where="")
+    {
+		if ($where) $where = " WHERE status='$where' ";
+		
+        $query = "SELECT prodi.$catgy AS $catName,COUNT(*) AS jumlah FROM $this->mhs_mahasiswa AS mhs 
+		LEFT JOIN $this->mhs_prodi AS prodi ON mhs.kode_prodi=prodi.ID $where GROUP BY prodi.$catgy";
+        
+		$stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
   
     public function countAll()
 {
