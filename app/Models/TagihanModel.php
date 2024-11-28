@@ -7,6 +7,8 @@ class TagihanModel
   private $mhs_paytype = 'mhs_paytype';
   private $mhs_prodi = 'mhs_prodi';
   private $mhs_angkatan = 'mhs_angkatan';
+  private $mhs_matakuliah = 'mhs_matakuliah';
+  private $mhs_dosen = 'mhs_dosen';
 
 
   public function __construct()
@@ -15,17 +17,31 @@ class TagihanModel
     global $mhs_paytype;
     global $mhs_prodi;
     global $mhs_angkatan;
+    global $mhs_matakuliah;
+    global $mhs_dosen;
 
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_paytype = $mhs_paytype;
     $this->mhs_prodi = $mhs_prodi;
     $this->mhs_angkatan = $mhs_angkatan;
+    $this->mhs_matakuliah = $mhs_matakuliah;
+    $this->mhs_dosen = $mhs_dosen;
 
     $this->db = Database::getInstance();
   }
+
+  public function getTagihanMhs()
+  {
+    $query = "SELECT Nim,NamaLengkap,prodi_name,angkatan,sum(nominal) AS nominal FROM vw_hit_tagihan GROUP BY Nim,NamaLengkap,prodi_name,angkatan";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
   public function getAll()
   {
-      $query = "SELECT 
+    $query = "SELECT 
                     a.*,
                     b.nama_tagihan,
                     c.deskripsi AS nama_prodi,
@@ -40,50 +56,50 @@ class TagihanModel
                 LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
 
                   ";
-      
-      $stmt = $this->db->prepare($query);
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
-  
+
 
   public function addData($data)
   {
-      try {
-          // Cek apakah data dengan kombinasi prodi, jenis_tagihan, dan angkatan sudah ada
-          $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan 
+    try {
+      // Cek apakah data dengan kombinasi prodi, jenis_tagihan, dan angkatan sudah ada
+      $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan 
                          WHERE prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
-          $checkStmt = $this->db->prepare($checkQuery);
-          $checkStmt->execute([
-              $data['prodi'],
-              $data['jenis_tagihan'],
-              $data['angkatan']
-          ]);
-  
-          // Jika data sudah ada, kembalikan 'exists' untuk menandakan bahwa data duplikat
-          if ($checkStmt->fetchColumn() > 0) {
-              return 'exists';
-          }
-  
-          // Jika data belum ada, lanjutkan dengan insert
-          $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
-                    VALUES (?, ?, ?, ?, ?)";
-          $stmt = $this->db->prepare($query);
-          $result = $stmt->execute([
-              $data['prodi'],
-              $data['jenis_tagihan'],
-              $data['angkatan'],
-              $data['nominal'],
-              $data['keterangan']
-          ]);
-  
-          return $result ? 'success' : 'error';
-      } catch (PDOException $e) {
-          error_log($e->getMessage());
-          return 'error';
+      $checkStmt = $this->db->prepare($checkQuery);
+      $checkStmt->execute([
+        $data['prodi'],
+        $data['jenis_tagihan'],
+        $data['angkatan']
+      ]);
+
+      // Jika data sudah ada, kembalikan 'exists' untuk menandakan bahwa data duplikat
+      if ($checkStmt->fetchColumn() > 0) {
+        return 'exists';
       }
+
+      // Jika data belum ada, lanjutkan dengan insert
+      $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
+                    VALUES (?, ?, ?, ?, ?)";
+      $stmt = $this->db->prepare($query);
+      $result = $stmt->execute([
+        $data['prodi'],
+        $data['jenis_tagihan'],
+        $data['angkatan'],
+        $data['nominal'],
+        $data['keterangan']
+      ]);
+
+      return $result ? 'success' : 'error';
+    } catch (PDOException $e) {
+      error_log($e->getMessage());
+      return 'error';
+    }
   }
-  
+
 
 
   public function updateData($data)
@@ -138,28 +154,28 @@ class TagihanModel
 
   public function getDataProdi($column = null, $value = null)
   {
-      $query = "SELECT * FROM $this->mhs_prodi";
-      
-      if ($column && $value) {
-          $query .= " WHERE $column = :value";
-      }
-  
-      $stmt = $this->db->prepare($query);
-      
-      if ($column && $value) {
-          $stmt->bindParam(':value', $value);
-      }
-      
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    $query = "SELECT * FROM $this->mhs_prodi";
+
+    if ($column && $value) {
+      $query .= " WHERE $column = :value";
+    }
+
+    $stmt = $this->db->prepare($query);
+
+    if ($column && $value) {
+      $stmt->bindParam(':value', $value);
+    }
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
-  
+
 
   public function getDataAngkatan()
   {
-      $query = "SELECT * FROM $this->mhs_angkatan";
-      $stmt = $this->db->prepare($query);
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    $query = "SELECT * FROM $this->mhs_angkatan";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 }
