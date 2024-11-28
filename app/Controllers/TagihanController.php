@@ -14,6 +14,7 @@ class TagihanController
     $this->TagihanModel = new TagihanModel();
     $this->PembayaranModel = new PembayaranModel();
     $this->dataTagihan = $this->TagihanModel->getAll();
+	$this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
   }
   public function checkLogin() {
     if (!isset($_SESSION['user_loged'])) {
@@ -27,6 +28,14 @@ class TagihanController
     $data = $this->dataTagihan;
 
     include __DIR__ . '/../Views/others/page_tagihan.php';
+  }
+
+  public function tagihanMhs()
+  {
+
+    $data = $this->tagihanMhs;
+
+    include __DIR__ . '/../Views/others/page_tagihan_mhs.php';
   }
 
   public function fetchData()
