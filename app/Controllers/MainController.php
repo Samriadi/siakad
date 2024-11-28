@@ -1,12 +1,13 @@
 <?php
 
 class MainController{
+	
+	private $MahasiswaModel;
 
     public function __construct()
     {
       $this->checkLogin();
-      $this->MahasiswaModel = new MahasiswaModel();
-
+	  $this->MahasiswaModel = new MahasiswaModel();
     }
 
     public function checkLogin() {
@@ -22,6 +23,9 @@ class MainController{
             header("Location: /admin/login");
             exit();
         }
+		
+        $prodi = $this->MahasiswaModel->countBy("deskripsi", "prodi");
+		$mhsAktif = $this->MahasiswaModel->countBy("deskripsi", "prodi", "Aktif");
     
         // Jika sesi ada, tampilkan halaman dashboard
         include __DIR__ . '/../Views/others/page_dashboard.php';
@@ -31,39 +35,5 @@ class MainController{
     {
         include __DIR__ . '/../Views/others/page_selectDash.php';
     }
-
-     //pmb
-     public function indexRegist()
-     {
-         include __DIR__ . '/../Views/others/page_regist.php';
-     }
- 
-     public function addRegist() {
-         $nik = $_POST['nik'] ?? ''; 
-         
-         // Mengecek apakah NIK sudah terdaftar
-         $checkNik = $this->MahasiswaModel->getDataRegistUsingNik($nik);
-         
-         if (!empty($checkNik)) {
-             $response = [
-                 'status' => 'exist',
-                 'message' => 'Anda sudah terdaftar sebelumnya. Silahkan login menggunakan NIK dan password Anda sebelumnya.'
-             ];
-         }
-         else{
-             // $addNik = $this->MahasiswaModel->addDataRegistUsingNik($nik);
- 
-             $response =  ['status' => 'null', 'data' => $nik];
-         }
-         
-         header('Content-Type: application/json');
-         echo json_encode($response);
-     }
- 
-     public function insertRegist()
-     {
-         include __DIR__ . '/../Views/others/page_insertRegist.php';
-     }
-    
 
 }
