@@ -7,11 +7,11 @@
     </div>
     
     <ul class="sidebar-menu">
-      <li class="menu-header">Dashboard</li>
+      <li class="menu-header">Admin Area</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
         <ul class="dropdown-menu">
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/">General</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/">General Information</a></li>
           <?php if($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/setting">Setup</a></li>
           <?php endif ?>
@@ -22,10 +22,11 @@
 
     <ul class="sidebar-menu">
 
-      <li class="menu-header">Data Master</li>
+      <li class="menu-header">Setup</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Data</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master Data</span></a>
         <ul class="dropdown-menu">
+		  <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li> -->
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
@@ -46,7 +47,9 @@
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Administrasi</span></a>
             <ul class="dropdown-menu">
               <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
-              <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Tagihan</a></li>
+              <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Setup Tagihan</a></li>
+			  <li class="nav-item"><a class="nav-link" href="/admin/siakad/adjustment">Adjustment Tagihan</a></li>
+			  <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan-mhs">Tagihan Mahasiswa</a></li>
 
             </ul>
         </li>
@@ -66,7 +69,7 @@
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Kurikulum</span></a>
             <ul class="dropdown-menu">
             
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
+          
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li>
             </ul>
         </li>
