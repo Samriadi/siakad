@@ -5,8 +5,10 @@ class AdjustmentController
 
   private $TagihanModel;
   private $PembayaranModel;
+  private $FakultasModel;
   private $dataPaytype;
   private $dataTagihan;
+  private $dataFakultas;
   private $tagihanMhs;
 
 
@@ -17,6 +19,7 @@ class AdjustmentController
     $this->TagihanModel = new AdjustmentModel();
     $this->PembayaranModel = new PembayaranModel();
     $this->PembayaranModel = new TagihanModel();
+    $this->FakultasModel = new FakultasModel();
     $this->dataTagihan = $this->TagihanModel->getAllAdjustment();
     $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
   }
@@ -175,6 +178,7 @@ class AdjustmentController
     $dataPaytype = $this->PembayaranModel->getAll();
     $dataProdi = $this->TagihanModel->getDataProdi();
     $dataAngkatan = $this->TagihanModel->getDataAngkatan();
+    $dataFakultas = $this->FakultasModel->getAll();
 
     if (!empty($dataPaytype)) {
       $response = [
@@ -182,7 +186,8 @@ class AdjustmentController
         'data' => [
           'dataPaytype' => $dataPaytype,
           'dataProdi' => $dataProdi,
-          'dataAngkatan' => $dataAngkatan
+          'dataAngkatan' => $dataAngkatan,
+          'dataFakultas' => $dataFakultas
         ]
       ];
     } else {
@@ -198,13 +203,14 @@ class AdjustmentController
 
   public function getNominal()
   {
+    $fakultas = $_GET['fakultas'] ?? null;
     $prodi = $_GET['prodi'] ?? null;
     $angkatan = $_GET['angkatan'] ?? null;
     $paytype = $_GET['paytype'] ?? null;
 
 
-    if ($prodi && $angkatan && $paytype) {
-      $nominal = $this->TagihanModel->getNominal($prodi, $angkatan, $paytype);
+    if ($fakultas && $prodi && $angkatan && $paytype) {
+      $nominal = $this->TagihanModel->getNominal($fakultas, $prodi, $angkatan, $paytype);
 
       if ($nominal || $nominal === 0) {
         echo json_encode(['success' => true, 'nominal' => $nominal]);
