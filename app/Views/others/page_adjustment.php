@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>SIAKAD - Adjustment Tagihan</title>
+  <title>SIAKAD - Setup Tagihan</title>
   <?php include '../app/Views/others/layouts/header.php'; ?>
 
 <body>
@@ -21,11 +21,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Adjustment Tagihan</h1>
+          <h1>Setup Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Data Adjustment</div>
+            <div class="breadcrumb-item">Setup Tagihan</div>
           </div>
         </div>
 
@@ -34,7 +34,7 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Data Adjustment</h4>
+                  <h4>Setup Tagihan</h4>
                   <div class="card-header-action">
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"></i>
@@ -48,8 +48,9 @@
                         <tr>
                           <th scope="col">No</th>
                           <th scope="col">NIM</th>
-                          <th scope="col">Program Studi</th>
-                          <th scope="col">Jenis Tagihan</th>
+                          <th scope="col">Fakultas</th>
+                          <th scope="col">Prodi</th>
+                          <th scope="col">Tagihan</th>
                           <th scope="col">Angkatan</th>
                           <th scope="col">Nominal</th>
                           <th scope="col">Type</th>
@@ -63,6 +64,7 @@
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
                             <td><?= $value->nim ?></td>
+                            <td><?= $value->nama_fakultas ?></td>
                             <td><?= $value->nama_prodi ?></td>
                             <td><?= $value->nama_tagihan ?></td>
                             <td><?= $value->nama_angkatan ?></td>
@@ -125,35 +127,44 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
+                    <label for="add_fakultas">Fakultas</label>
+                    <select id="add_fakultas" class="form-control" name="fakultas" required>
+                      <option value="" selected disabled></option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
                     <label for="add_prodi">Program Studi</label>
                     <select id="add_prodi" class="form-control" name="prodi" required>
-                      <option value="" selected disabled>Pilih Prodi</option>
+                      <option value="" selected disabled></option>
                     </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="add_angkatan">Angkatan</label>
                     <select id="add_angkatan" class="form-control" name="angkatan" required>
-                      <option value="" selected disabled>Pilih Angkatan</option>
+                      <option value="" selected disabled></option>
                     </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="add_nim">NIM</label>
+                    <input type="text" class="form-control" id="add_nim" name="nim">
                   </div>
                 </div>
                 <!-- </div> -->
 
-                <div class="form-group">
-                  <label for="add_nim">NIM</label>
-                  <input type="text" class="form-control" id="add_nim" name="nim">
-                </div>
+
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="add_jenis_tagihan">Jenis Tagihan</label>
                     <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
-                      <option value="" selected disabled>Pilih Jenis Tagihan</option>
+                      <option value="" selected disabled></option>
                     </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="add_nominal">Nominal</label>
                     <input type="number" class="form-control" id="add_nominal" name="nominal" disabled>
+                    <small class="form-text text-danger" id="nominalValidation">nominal tagihan tidak ada!</small>
+
                   </div>
                 </div>
 
@@ -226,6 +237,7 @@
                   <label for="nominal">Nominal</label>
                   <input type="number" class="form-control" id="nominal" disabled>
                 </div>
+
               </div>
               <div class="form-group">
                 <label for="keterangan">Keterangan</label>
@@ -249,6 +261,9 @@
       $(document).ready(function() {
         //add data
         $('#btn-add').on('click', function() {
+          $('#add_submit').prop('disabled', true);
+          nominalValidation.style.display = "none";
+
           $.ajax({
             url: '/admin/siakad/adjustment/include',
             type: 'GET',
@@ -259,16 +274,36 @@
                 var dataPaytype = data.dataPaytype;
                 var dataProdi = data.dataProdi;
                 var dataAngkatan = data.dataAngkatan;
+                var dataFakultas = data.dataFakultas;
 
+                $('#add_fakultas').empty().append('<option value="" selected disabled></option>');
+                $.each(dataFakultas, function(index, value) {
+                  $('#add_fakultas').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                });
 
-                $('#add_prodi').empty().append('<option value="" selected disabled></option>');
+                // Event onchange untuk memfilter prodi berdasarkan fakultas
+                $('#add_fakultas').on('change', function() {
+                  let selectedFakultas = $(this).val(); // Ambil ID fakultas yang dipilih
 
-                $.each(dataProdi, function(index, value) {
-                  $('#add_prodi').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                  $('#add_prodi').empty();
+
+                  $.each(dataProdi, function(index, value) {
+                    if (value.name == 'ALL') {
+                      $('#add_prodi').append('<option value="' + value.ID + '" selected>' + value.deskripsi + '</option>');
+                    }
+                  });
+
+                  // Tambahkan opsi lainnya berdasarkan fakultas yang dipilih
+                  $.each(dataProdi, function(index, value) {
+                    if (value.fakultas == selectedFakultas && value.name != 'ALL') {
+                      $('#add_prodi').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                    }
+                  });
+
                 });
 
 
-                $('#add_jenis_tagihan').empty().append('<option value="" selected disabled>Pilih Jenis Tagihan</option>');
+                $('#add_jenis_tagihan').empty().append('<option value="" selected disabled></option>');
 
                 // Menggunakan Set untuk melacak jenis tagihan unik
                 let uniqueTagihan = new Set();
@@ -306,18 +341,17 @@
         });
 
         function updateNominal() {
+          var selectedFakultas = $('#add_fakultas').val();
           var selectedProdi = $('#add_prodi').val();
           var selectedAngkatan = $('#add_angkatan').val();
           var selectedPaytype = $('#add_jenis_tagihan').val();
 
-          console.log(selectedPaytype);
-
-
-          if (selectedProdi && selectedAngkatan && selectedPaytype) {
+          if (selectedFakultas && selectedProdi && selectedAngkatan && selectedPaytype) {
             $.ajax({
               url: '/admin/siakad/adjustment/getNominal', // Endpoint yang dibuat
               type: 'GET',
               data: {
+                fakultas: selectedFakultas,
                 prodi: selectedProdi,
                 angkatan: selectedAngkatan,
                 paytype: selectedPaytype
@@ -326,10 +360,15 @@
               success: function(response) {
 
                 if (response.success) {
-                  $('#add_nominal').val(response.nominal); // Isi nilai nominal
+                  $('#add_nominal').val(response.nominal);
+                  $('#add_submit').prop('disabled', false);
+                  nominalValidation.style.display = "none";
+
                 } else {
-                  $('#add_nominal').val(''); // Kosongkan jika data tidak ditemukan
-                  Swal.fire('Error', response.message, 'error'); // Tampilkan alert jika gagal
+                  $('#add_nominal').val('');
+                  nominalValidation.style.display = "block";
+                  $('#add_submit').prop('disabled', true);
+
                 }
               },
               error: function(xhr, status, error) {
@@ -340,6 +379,7 @@
         }
 
         // Tambahkan event listener pada dropdown
+        $('#add_fakultas').on('change', updateNominal);
         $('#add_prodi').on('change', updateNominal);
         $('#add_angkatan').on('change', updateNominal);
         $('#add_jenis_tagihan').on('change', updateNominal);
@@ -349,6 +389,7 @@
 
           // Ambil data dari input dan buat array
           var arrayData = [{
+            fakultas: $('#add_fakultas').val(),
             prodi: $('#add_prodi').val(),
             jenis_tagihan: $('#add_jenis_tagihan').val(),
             angkatan: $('#add_angkatan').val(),
