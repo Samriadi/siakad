@@ -50,7 +50,8 @@
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Master Tagihan</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/adjustment">Setup Tagihan</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan-mhs">Tagihan Mahasiswa</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan-mhs">Tagihan Mahasiswa</a></li> -->
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/invoice">Tagihan Mahasiswa</a></li>
 
         </ul>
       </li>
@@ -84,12 +85,18 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname.replace(/\/$/, ""); // Hapus trailing slash jika ada
+    const pathAfterSiakad = currentPath.split('/siakad')[1]; // Ambil bagian setelah '/siakad'
     const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
 
     menuItems.forEach(item => {
-      // Periksa apakah href item sama dengan path saat ini
-      const href = item.getAttribute('href').replace(/\/$/, ""); // Hapus trailing slash juga pada href
-      if (href === currentPath) {
+      // Ambil href dari item dan pastikan tidak ada trailing slash
+      const href = item.getAttribute('href').replace(/\/$/, "");
+
+      // Ambil bagian setelah '/siakad' di href
+      const pathAfterSiakadMenu = href.split('/siakad')[1];
+
+      // Periksa apakah bagian dari currentPath mengandung bagian dari pathAfterSiakadMenu
+      if (pathAfterSiakadMenu && currentPath.includes(pathAfterSiakadMenu)) {
         item.closest('.nav-item').classList.add('active');
         item.closest('.dropdown').classList.add('active');
         item.classList.add('active');
