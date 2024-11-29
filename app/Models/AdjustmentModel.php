@@ -10,6 +10,7 @@ class AdjustmentModel
   private $mhs_tagihan = 'mhs_tagihan';
   private $mhs_matakuliah = 'mhs_matakuliah';
   private $mhs_dosen = 'mhs_dosen';
+  private $mhs_fakultas = 'mhs_fakultas';
 
 
   public function __construct()
@@ -21,6 +22,7 @@ class AdjustmentModel
     global $mhs_matakuliah;
     global $mhs_dosen;
     global $mhs_tagihan;
+    global $mhs_fakultas;
 
     $this->mhs_adjustment = $mhs_adjustment;
     $this->mhs_paytype = $mhs_paytype;
@@ -29,6 +31,7 @@ class AdjustmentModel
     $this->mhs_matakuliah = $mhs_matakuliah;
     $this->mhs_dosen = $mhs_dosen;
     $this->mhs_tagihan = $mhs_tagihan;
+    $this->mhs_fakultas = $mhs_fakultas;
 
     $this->db = Database::getInstance();
   }
@@ -42,14 +45,15 @@ class AdjustmentModel
                     CASE 
                         WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
                         ELSE a.angkatan
-                    END AS nama_angkatan
+                    END AS nama_angkatan,
+                    f.name AS nama_fakultas
                 FROM 
                     $this->mhs_adjustment a
                 LEFT JOIN $this->mhs_tagihan b ON b.recid = a.jenis_tagihan
                 LEFT JOIN $this->mhs_paytype e ON e.recid = a.jenis_tagihan
                 LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
                 LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
-
+                LEFT JOIN $this->mhs_fakultas f ON f.ID = a.fakultas
                   ";
 
     $stmt = $this->db->prepare($query);
@@ -67,15 +71,16 @@ class AdjustmentModel
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  public function getNominal($prodi, $angkatan, $paytype)
+  public function getNominal($fakultas, $prodi, $angkatan, $paytype)
   {
 
     $query = "SELECT nominal 
               FROM mhs_tagihan 
-              WHERE prodi = :prodi AND jenis_tagihan = :jenis_tagihan AND angkatan = :angkatan";
+              WHERE fakultas = :fakultas AND prodi = :prodi AND jenis_tagihan = :jenis_tagihan AND angkatan = :angkatan";
 
     $stmt = $this->db->prepare($query);
 
+    $stmt->bindParam(':fakultas', $fakultas, PDO::PARAM_STR);
     $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
     $stmt->bindParam(':jenis_tagihan', $paytype, PDO::PARAM_STR);
     $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
@@ -116,9 +121,10 @@ class AdjustmentModel
   {
     try {
       $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
-                         WHERE prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
+                         WHERE fakultas =? AND prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
       $checkStmt = $this->db->prepare($checkQuery);
       $checkStmt->execute([
+        $data['fakultas'],
         $data['prodi'],
         $data['jenis_tagihan'],
         $data['angkatan']
@@ -137,10 +143,11 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-          $query = "INSERT INTO $this->mhs_adjustment (prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
           $stmt = $this->db->prepare($query);
           $result = $stmt->execute([
+            $data['fakultas'],
             $data['prodi'],
             $data['jenis_tagihan'],
             $data['angkatan'],
@@ -162,10 +169,11 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
-        $query = "INSERT INTO $this->mhs_adjustment (prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([
+          $data['fakultas'],
           $data['prodi'],
           $data['jenis_tagihan'],
           $data['angkatan'],
