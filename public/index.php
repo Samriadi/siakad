@@ -179,6 +179,16 @@ addRouteGroup('/tagihan', 'TagihanController', [
     '/update' => 'updateData',
     '/delete' => 'deleteData',
     '/include' => 'includeData',
+    '/select' => 'selectData',
+]);
+
+addRouteGroup('/invoice-selected', 'TagihanController', [
+    '' => 'tagihanMhs',
+]);
+
+addRouteGroup('/invoice-find', 'TagihanController', [
+    ''         => 'selectData',
+    '/proses'  => 'prosesInvoice',
 ]);
 
 // adjustment tagihan routes
@@ -192,8 +202,6 @@ addRouteGroup('/adjustment', 'AdjustmentController', [
     '/getNominal' => 'getNominal'
 ]);
 
-
-addRouteGroup('/tagihan-mhs', 'TagihanController', ['' => 'tagihanMhs']);
 
 // prodi routes
 addRouteGroup('/prodi', 'ProdiController', [
@@ -224,6 +232,9 @@ addRouteGroup('/fakultas', 'FakultasController', [
     '/delete' => 'deleteData',
     '/include' => 'includeData',
 ]);
+
+addRouteGroup('/invoice', 'FakultasController', ['' => 'selectFakultas']);
+
 
 // Dispatch URL
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';
