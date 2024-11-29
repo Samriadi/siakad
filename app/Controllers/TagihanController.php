@@ -6,9 +6,11 @@ class TagihanController
   private $TagihanModel;
   private $PembayaranModel;
   private $FakultasModel;
+  private $ProdiModel;
   private $dataPaytype;
   private $dataTagihan;
   private $tagihanMhs;
+  private $selectedData;
 
 
   public function __construct()
@@ -18,6 +20,7 @@ class TagihanController
     $this->TagihanModel = new TagihanModel();
     $this->PembayaranModel = new PembayaranModel();
     $this->FakultasModel = new FakultasModel();
+    $this->ProdiModel = new ProdiModel();
     $this->dataTagihan = $this->TagihanModel->getAll();
     $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
   }
@@ -38,11 +41,40 @@ class TagihanController
 
   public function tagihanMhs()
   {
-
     $data = $this->tagihanMhs;
+    $dataSelected = $_SESSION['selectedData'];;
+    // error_log("item selected prodi: " . print_r($dataSelected, true));
 
     include __DIR__ . '/../Views/others/page_tagihan_mhs.php';
   }
+
+  public function selectData()
+  {
+    $id_fakultas = $_GET['fakultas_id'] ?? null;
+
+    error_log("item: " . print_r($id_fakultas, true));
+
+    if ($id_fakultas) {
+      $dataSelect = $this->ProdiModel->getAll(['fakultas' => $id_fakultas]);
+
+      error_log("item select: " . print_r($dataSelect, true));
+
+      if ($dataSelect) {
+        // Hapus sesi sebelumnya
+        unset($_SESSION['selectedData']);
+
+        // Isi sesi baru
+        $_SESSION['selectedData'] = $dataSelect;
+
+        echo json_encode(['success' => true, 'data' => $_SESSION['selectedData']]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
 
   public function fetchData()
   {
@@ -64,7 +96,6 @@ class TagihanController
         foreach ($dataProdi as $itemProdi) {
           if ($itemProdi->ID == $item->prodi) {
             $selectedDataProdi = $itemProdi;
-            // error_log("item selected prodi: " . print_r($selectedDataProdi, true));
           }
         }
         foreach ($dataPaytype as $itemPay) {
@@ -201,5 +232,38 @@ class TagihanController
 
     header('Content-Type: application/json');
     echo json_encode($response);
+  }
+
+  public function prosesInvoice()
+  {
+    // Ambil data dari request (JSON)
+    $inputData = json_decode(file_get_contents('php://input'), true);
+
+    if (empty($inputData)) {
+      echo json_encode(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
+      return;
+    }
+
+    // Validasi data
+    $errors = [];
+    foreach ($inputData as $index => $item) {
+      if (empty($item['nim']) || empty($item['nama']) || empty($item['prodi'] || empty($item['angkatan']))) {
+        $errors[] = "Data pada baris ke-$index tidak lengkap.";
+      }
+    }
+
+    if (!empty($errors)) {
+      echo json_encode(['status' => 'error', 'message' => $errors]);
+      return;
+    }
+
+    // Simpan data ke database
+    $result = $this->TagihanModel->prosesInvoice($inputData);
+
+    if ($result) {
+      echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan.']);
+    } else {
+      echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data.']);
+    }
   }
 }
