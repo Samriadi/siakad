@@ -30,6 +30,13 @@ class FakultasController
     include __DIR__ . '/../Views/others/page_fakultas.php';
   }
 
+  public function selectFakultas()
+  {
+
+    $data = $this->dataFakultas;
+
+    include __DIR__ . '/../Views/others/page_select_fakultas.php';
+  }
   // public function addData()
   // {
   //   $dataArray = json_decode(file_get_contents('php://input'), true);
