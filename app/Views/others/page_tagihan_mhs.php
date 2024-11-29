@@ -24,8 +24,8 @@
           <h1>Data Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Data Tagihann</div>
+            <div class="breadcrumb-item"><a href="/admin/siakad/invoice">Invoice</a></div>
+            <div class="breadcrumb-item">Selected</div>
           </div>
         </div>
 
@@ -34,9 +34,9 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Data Tagihan</h4>
+                  <h4>Tagihan Mahasiswa - Fakultas <?= $dataSelected[0]->nama_fakultas ?></h4>
                   <div class="card-header-action">
-				  <!--
+                    <!--
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"></i>
                     </a>
@@ -44,47 +44,86 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col">No</th>
-                          <th scope="col">NIM</th>
-                          <th scope="col">Nama Mahasiswa</th>
-                          <th scope="col">Prodi</th>
-						  <th scope="col">Angkatan</th>
-                          <th scope="col">Nominal</th>
-                          <!--<th scope="col">Action</th>-->
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($data as $key => $value) : ?>
-                          <tr>
-                            <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->Nim ?></td>
-                            <td><?= $value->NamaLengkap ?></td>
-                            <td><?= $value->prodi_name ?></td>
-							<td><?= $value->angkatan ?></td>
-                            <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
-							<!--
-                            <td style="white-space: nowrap;">
+                  <ul class="nav nav-tabs" id="myTab3" role="tablist">
+                    <?php foreach ($dataSelected as $index => $item): ?>
+                      <li class="nav-item">
+                        <a class="nav-link <?= $index == 0 ? 'active' : '' ?>"
+                          id="tab-<?= $item->ID ?>"
+                          data-toggle="tab"
+                          href="#tab-content-<?= $item->ID ?>"
+                          role="tab"
+                          aria-controls="tab-content-<?= $item->ID ?>"
+                          aria-selected="<?= $index == 0 ? 'true' : 'false' ?>">
+                          <?= $item->deskripsi ?>
+                        </a>
+                      </li>
+                    <?php endforeach; ?>
+                  </ul>
 
-                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-
-                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>"  onclick="confirmDelete(this)">
-                                <i class="fas fa-trash-alt"></i>
-                              </a>
-
-                            </td>
-							-->
-                          </tr>
-                        <?php endforeach ?>
-                      </tbody>
-                    </table>
+                  <div class="tab-content" id="myTabContent2">
+                    <?php foreach ($dataSelected as $index => $item): ?>
+                      <div class="tab-pane fade <?= $index == 0 ? 'show active' : '' ?>"
+                        id="tab-content-<?= $item->ID ?>"
+                        role="tabpanel"
+                        aria-labelledby="tab-<?= $item->ID ?>">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="table-responsive">
+                              <table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">
+                                      <input type="checkbox" id="select-all-<?= $item->ID ?>" class="select-all-checkbox">
+                                    </th>
+                                    <th scope="col">No</th>
+                                    <th scope="col">NIM</th>
+                                    <th scope="col">Nama Mahasiswa</th>
+                                    <th scope="col">Prodi</th>
+                                    <th scope="col">Angkatan</th>
+                                    <th scope="col">Nominal</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <?php
+                                  $counter = 1; // Menggunakan variabel untuk nomor urut
+                                  foreach ($data as $value) :
+                                    // Memastikan data yang ditampilkan sesuai dengan prodi pada tab yang aktif
+                                    if ($value->prodi_name == $item->deskripsi) :
+                                  ?>
+                                      <tr>
+                                        <td>
+                                          <input type="checkbox" class="row-checkbox-<?= $item->ID ?>"
+                                            value='<?= json_encode([
+                                                      "nim" => $value->Nim,
+                                                      "nama" => $value->NamaLengkap,
+                                                      "prodi" => $value->prodi_name,
+                                                      "angkatan" => $value->angkatan,
+                                                      "nominal" => $value->nominal
+                                                    ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                        </td>
+                                        <th scope="row"><?= $counter++ ?></th>
+                                        <td><?= $value->Nim ?></td>
+                                        <td><?= $value->NamaLengkap ?></td>
+                                        <td><?= $value->prodi_name ?></td>
+                                        <td><?= $value->angkatan ?></td>
+                                        <td><?= 'Rp. ' . number_format($value->nominal ?? 0, 0, ',', '.') ?></td>
+                                      </tr>
+                                  <?php
+                                    endif;
+                                  endforeach;
+                                  ?>
+                                </tbody>
+                              </table>
+                            </div>
+                            <button class="btn btn-primary mt-3" onclick="getSelectedData('<?= $item->ID ?>')">Proses Data</button>
+                          </div>
+                        </div>
+                      </div>
+                    <?php endforeach; ?>
                   </div>
                 </div>
+
+
               </div>
             </div>
           </div>
@@ -96,18 +135,131 @@
     <!-- Footer -->
     <?php include '../app/Views/others/layouts/footer.php'; ?>
 
+    <script>
+      // Storage for all selected data
+      const selectedDataStorage = {};
 
-<script>
-    $(document).ready(function() {
+      // Function to update selected data
+      function updateSelectedData(tabId, data, isSelected) {
+        if (isSelected) {
+          if (!selectedDataStorage[tabId]) {
+            selectedDataStorage[tabId] = new Set();
+          }
+          // Store JSON data as string
+          selectedDataStorage[tabId].add(data);
+        } else {
+          selectedDataStorage[tabId]?.delete(data);
+        }
+      }
+
+      // Function to get all selected data across all pages
+      function getSelectedData(tabId) {
+        try {
+          // Parse JSON untuk semua data terpilih
+          const selectedData = Array.from(selectedDataStorage[tabId] || []).map(item => JSON.parse(item));
+
+          if (selectedData.length === 0) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Tidak Ada Data',
+              text: 'Silakan pilih data terlebih dahulu!',
+            });
+            return;
+          }
+
+          // SweetAlert2 konfirmasi
+          Swal.fire({
+            title: 'Konfirmasi Proses',
+            text: `Anda akan memproses ${selectedData.length} data. Lanjutkan?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Proses',
+            cancelButtonText: 'Batal',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Jika pengguna mengonfirmasi, kirim data ke server
+              fetch('/admin/siakad/invoice-find/proses', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(selectedData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log('Server Response:', data);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data berhasil diproses!',
+                  });
+                })
+                .catch((error) => {
+                  console.error('Error:', error);
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat memproses data.',
+                  });
+                });
+            }
+          });
+        } catch (error) {
+          console.error('Error parsing selected data:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat membaca data.',
+          });
+        }
+      }
+
+
+      document.addEventListener("DOMContentLoaded", function() {
+        <?php foreach ($dataSelected as $item): ?>
+          const selectAllCheckbox<?= $item->ID ?> = document.querySelector("#select-all-<?= $item->ID ?>");
+          const rowCheckboxes<?= $item->ID ?> = document.querySelectorAll(".row-checkbox-<?= $item->ID ?>");
+
+          // Initialize storage for this tab
+          selectedDataStorage["<?= $item->ID ?>"] = new Set();
+
+          // Event listener for "Select All" checkbox
+          selectAllCheckbox<?= $item->ID ?>.addEventListener("change", function() {
+            const isChecked = this.checked;
+            rowCheckboxes<?= $item->ID ?>.forEach(checkbox => {
+              checkbox.checked = isChecked;
+              updateSelectedData("<?= $item->ID ?>", checkbox.value, isChecked);
+            });
+          });
+
+          // Event listener for row checkboxes
+          rowCheckboxes<?= $item->ID ?>.forEach(checkbox => {
+            checkbox.addEventListener("change", function() {
+              updateSelectedData("<?= $item->ID ?>", this.value, this.checked);
+              if (!this.checked) {
+                selectAllCheckbox<?= $item->ID ?>.checked = false;
+              } else if (Array.from(rowCheckboxes<?= $item->ID ?>).every(cb => cb.checked)) {
+                selectAllCheckbox<?= $item->ID ?>.checked = true;
+              }
+            });
+          });
+        <?php endforeach; ?>
+      });
+    </script>
+
+
+
+    <script>
+      $(document).ready(function() {
         $('.table').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "pageLength": 100  // Set jumlah record per halaman
+          "paging": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "pageLength": 25 // Set jumlah record per halaman
         });
-    });
-</script>
+      });
+    </script>
 
 </body>
 
