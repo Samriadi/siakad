@@ -10,6 +10,7 @@ class TagihanModel
   private $mhs_matakuliah = 'mhs_matakuliah';
   private $mhs_dosen = 'mhs_dosen';
   private $mhs_fakultas = 'mhs_fakultas';
+  private $mhs_transaksi = 'mhs_transaksi';
 
 
   public function __construct()
@@ -21,6 +22,7 @@ class TagihanModel
     global $mhs_matakuliah;
     global $mhs_dosen;
     global $mhs_fakultas;
+    global $mhs_transaksi;
 
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_paytype = $mhs_paytype;
@@ -29,6 +31,7 @@ class TagihanModel
     $this->mhs_matakuliah = $mhs_matakuliah;
     $this->mhs_dosen = $mhs_dosen;
     $this->mhs_fakultas = $mhs_fakultas;
+    $this->mhs_transaksi = $mhs_transaksi;
 
     $this->db = Database::getInstance();
   }
@@ -182,5 +185,57 @@ class TagihanModel
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getSelectDataTagihan($id_fakultas)
+  {
+    $query = "SELECT * FROM $this->mhs_tagihan WHERE prodi_name = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute([$id_fakultas]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function prosesInvoice($data)
+  {
+    try {
+      foreach ($data as $item) {
+        if (isset($item['nim'], $item['nama'], $item['prodi'], $item['angkatan'])) {
+          $nominal = isset($item['nominal']) && $item['nominal'] !== '' ? $item['nominal'] : 0;
+
+          $checkQuery = "SELECT tagihan FROM $this->mhs_transaksi WHERE nim = ?";
+          $stmtCheck = $this->db->prepare($checkQuery);
+          $stmtCheck->execute([$item['nim']]);
+          $existingRecord = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+          if ($existingRecord) {
+            $newTagihan = $existingRecord['tagihan'] + $nominal;
+
+            $updateQuery = "UPDATE $this->mhs_transaksi 
+                                    SET tagihan = ? 
+                                    WHERE nim = ?";
+            $stmtUpdate = $this->db->prepare($updateQuery);
+            $stmtUpdate->execute([$newTagihan, $item['nim']]);
+          } else {
+            $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan) VALUES (?, ?, ?, ?, ?)";
+            $stmtInsert = $this->db->prepare($insertQuery);
+            $stmtInsert->execute([
+              $item['nim'],
+              $item['nama'],
+              $item['prodi'],
+              $item['angkatan'],
+              $nominal
+            ]);
+          }
+        } else {
+          error_log("Invalid data: " . print_r($item, true));
+          return false;
+        }
+      }
+
+      return true;
+    } catch (PDOException $e) {
+      error_log("Database Error: " . $e->getMessage());
+      return false;
+    }
   }
 }
