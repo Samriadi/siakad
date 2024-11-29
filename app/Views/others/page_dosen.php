@@ -41,95 +41,95 @@
                   </div>
                 </div>
                 <div class="card-body">
-                            <ul class="nav nav-tabs" id="myTab3" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true">Dosen</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile" aria-selected="false">Penugasan</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="myTabContent2">
-                                <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                        <div class="table-responsive" style="max-height: 760px; overflow-y: auto;">
-                                            <table class="table table-hover">
-                                                <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
-                                                    <tr>
-                                                        <th scope="col">No</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">Nama</th>
-                                                        <th scope="col">NIDN</th>
-                                                        <th scope="col">NIK</th>
-                                                        <!-- <th scope="col">Action</th> -->
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($data as $key => $value) : ?>
-                                                        <tr>
-                                                            <th scope="row"><?= $key + 1 ?></th>
-                                                            <td><?= $value->Status ?></td>
-                                                            <td><?= $value->Nama ?></td>
-                                                            <td><?= $value->NIDN ?></td>
-                                                            <td><?= $value->NIK ?></td>
-                                                            <!-- <td>
-                                                                <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
-                                                                    <i class="fas fa-trash-alt"></i>
-                                                                </a>
-                                                            </td> -->
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                  <ul class="nav nav-tabs" id="myTab3" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true">Dosen</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile" aria-selected="false">Penugasan</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent2">
+                    <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="table-responsive" style="max-height: 760px; overflow-y: auto;">
+                            <table class="table table-hover">
+                              <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+                                <tr>
+                                  <th scope="col">No</th>
+                                  <th scope="col">Status</th>
+                                  <th scope="col">Nama</th>
+                                  <th scope="col">NIDN</th>
+                                  <th scope="col">NIK</th>
+                                  <!-- <th scope="col">Action</th> -->
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <?php foreach ($data as $key => $value) : ?>
+                                  <tr>
+                                    <th scope="row"><?= $key + 1 ?></th>
+                                    <td><?= $value->Status ?></td>
+                                    <td><?= $value->Nama ?></td>
+                                    <td><?= $value->NIDN ?></td>
+                                    <td><?= $value->NIK ?></td>
+                                    <td>
+                                      <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
+                                        <i class="fas fa-trash-alt"></i>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                <?php endforeach; ?>
+                              </tbody>
+                            </table>
+                          </div>
 
 
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="table-responsive" style="max-height: 760px;">
-                                                <table class="table table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">No</th>
-                                                            <th scope="col">Nama Dosen</th>
-                                                            <th scope="col">NIDN/NUP/NIDK</th>
-                                                            <th scope="col">Jenis Kelamin</th>
-                                                            <th scope="col">Tahun Ajaran</th>
-                                                            <th scope="col">Program Studi</th>
-                                                            <th scope="col">No. Surat Tugas</th>
-                                                            <th scope="col">Tanggal Surat Tugas</th>
-                                                            <th scope="col">Homebase</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($dataPenugasan as $key => $value) : ?>
-                                                            <tr>
-                                                                <th scope="row"><?= ++$key ?></th>
-                                                                <td><?= $value->nama_dosen ?></td>
-                                                                <td><?= $value->nidn_nup_nidk ?></td>
-                                                                <td><?= $value->jenis_kelamin ?></td>
-                                                                <td><?= $value->tahun_ajaran ?></td>
-                                                                <td><?= $value->program_studi ?></td>
-                                                                <td><?= $value->nomor_surat_tugas ?></td>
-                                                                <td><?= $value->tanggal_surat_tugas ?></td>
-                                                                <td><?= $value->homebase ?></td>
-                                                            </tr>
-                                                        <?php endforeach ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="table-responsive" style="max-height: 760px;">
+                            <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th scope="col">No</th>
+                                  <th scope="col">Nama Dosen</th>
+                                  <th scope="col">NIDN/NUP/NIDK</th>
+                                  <th scope="col">Jenis Kelamin</th>
+                                  <th scope="col">Tahun Ajaran</th>
+                                  <th scope="col">Program Studi</th>
+                                  <th scope="col">No. Surat Tugas</th>
+                                  <th scope="col">Tanggal Surat Tugas</th>
+                                  <th scope="col">Homebase</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <?php foreach ($dataPenugasan as $key => $value) : ?>
+                                  <tr>
+                                    <th scope="row"><?= ++$key ?></th>
+                                    <td><?= $value->nama_dosen ?></td>
+                                    <td><?= $value->nidn_nup_nidk ?></td>
+                                    <td><?= $value->jenis_kelamin ?></td>
+                                    <td><?= $value->tahun_ajaran ?></td>
+                                    <td><?= $value->program_studi ?></td>
+                                    <td><?= $value->nomor_surat_tugas ?></td>
+                                    <td><?= $value->tanggal_surat_tugas ?></td>
+                                    <td><?= $value->homebase ?></td>
+                                  </tr>
+                                <?php endforeach ?>
+                              </tbody>
+                            </table>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </div>
@@ -455,15 +455,15 @@
       }
     </script>
     <script>
-            $(document).ready(function() {
-                $('.table').DataTable({
-                    "paging": true,          // Pagination
-                    "searching": true,       // Search box
-                    "ordering": true,        // Column sorting
-                    "info": true             // Info text (e.g., "Showing 1 to 10 of 20 entries")
-                });
-            });
-        </script>
+      $(document).ready(function() {
+        $('.table').DataTable({
+          "paging": true, // Pagination
+          "searching": true, // Search box
+          "ordering": true, // Column sorting
+          "info": true // Info text (e.g., "Showing 1 to 10 of 20 entries")
+        });
+      });
+    </script>
 
 </body>
 
