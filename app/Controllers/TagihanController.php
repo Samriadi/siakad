@@ -5,7 +5,11 @@ class TagihanController
 
   private $TagihanModel;
   private $PembayaranModel;
+  private $FakultasModel;
   private $dataPaytype;
+  private $dataTagihan;
+  private $tagihanMhs;
+
 
   public function __construct()
   {
@@ -13,13 +17,15 @@ class TagihanController
 
     $this->TagihanModel = new TagihanModel();
     $this->PembayaranModel = new PembayaranModel();
+    $this->FakultasModel = new FakultasModel();
     $this->dataTagihan = $this->TagihanModel->getAll();
-	$this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
+    $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
   }
-  public function checkLogin() {
+  public function checkLogin()
+  {
     if (!isset($_SESSION['user_loged'])) {
-        header("Location: /admin/login");
-        exit();
+      header("Location: /admin/login");
+      exit();
     }
   }
   public function index()
@@ -90,44 +96,44 @@ class TagihanController
 
   public function addData()
   {
-      // Ambil data JSON dari request body
-      $dataArray = json_decode(file_get_contents('php://input'), true);
-  
-      // Pastikan data tidak kosong
-      if (empty($dataArray) || !isset($dataArray[0])) {
-          $response = [
-              'success' => false,
-              'message' => 'No data provided',
-          ];
+    // Ambil data JSON dari request body
+    $dataArray = json_decode(file_get_contents('php://input'), true);
+
+    // Pastikan data tidak kosong
+    if (empty($dataArray) || !isset($dataArray[0])) {
+      $response = [
+        'success' => false,
+        'message' => 'No data provided',
+      ];
+    } else {
+      // Panggil fungsi addData pada model dan tangkap hasilnya
+      $request = $this->TagihanModel->addData($dataArray[0]);
+
+      // Tentukan respon berdasarkan hasil dari model
+      if ($request === 'success') {
+        $response = [
+          'success' => true,
+          'message' => 'Data berhasil ditambahkan',
+        ];
+      } elseif ($request === 'exists') {
+        $response = [
+          'success' => false,
+          'message' => 'Data sudah ada',
+        ];
       } else {
-          // Panggil fungsi addData pada model dan tangkap hasilnya
-          $request = $this->TagihanModel->addData($dataArray[0]);
-  
-          // Tentukan respon berdasarkan hasil dari model
-          if ($request === 'success') {
-              $response = [
-                  'success' => true,
-                  'message' => 'Data berhasil ditambahkan',
-              ];
-          } elseif ($request === 'exists') {
-              $response = [
-                  'success' => false,
-                  'message' => 'Data sudah ada',
-              ];
-          } else {
-              $response = [
-                  'success' => false,
-                  'message' => 'Gagal menambahkan data',
-              ];
-          }
+        $response = [
+          'success' => false,
+          'message' => 'Gagal menambahkan data',
+        ];
       }
-  
-      // Set response header dan kirim JSON response
-      header('Content-Type: application/json');
-      echo json_encode($response);
-      exit;
+    }
+
+    // Set response header dan kirim JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
   }
-  
+
 
 
 
@@ -174,6 +180,7 @@ class TagihanController
     $dataPaytype = $this->PembayaranModel->getAll();
     $dataProdi = $this->TagihanModel->getDataProdi();
     $dataAngkatan = $this->TagihanModel->getDataAngkatan();
+    $dataFakultas = $this->FakultasModel->getAll();
 
     if (!empty($dataPaytype)) {
       $response = [
@@ -181,7 +188,8 @@ class TagihanController
         'data' => [
           'dataPaytype' => $dataPaytype,
           'dataProdi' => $dataProdi,
-          'dataAngkatan' => $dataAngkatan
+          'dataAngkatan' => $dataAngkatan,
+          'dataFakultas' => $dataFakultas
         ]
       ];
     } else {
@@ -194,6 +202,4 @@ class TagihanController
     header('Content-Type: application/json');
     echo json_encode($response);
   }
-
-
 }
