@@ -9,6 +9,7 @@ class TagihanModel
   private $mhs_angkatan = 'mhs_angkatan';
   private $mhs_matakuliah = 'mhs_matakuliah';
   private $mhs_dosen = 'mhs_dosen';
+  private $mhs_fakultas = 'mhs_fakultas';
 
 
   public function __construct()
@@ -19,6 +20,7 @@ class TagihanModel
     global $mhs_angkatan;
     global $mhs_matakuliah;
     global $mhs_dosen;
+    global $mhs_fakultas;
 
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_paytype = $mhs_paytype;
@@ -26,6 +28,7 @@ class TagihanModel
     $this->mhs_angkatan = $mhs_angkatan;
     $this->mhs_matakuliah = $mhs_matakuliah;
     $this->mhs_dosen = $mhs_dosen;
+    $this->mhs_fakultas = $mhs_fakultas;
 
     $this->db = Database::getInstance();
   }
@@ -45,6 +48,7 @@ class TagihanModel
                     a.*,
                     b.nama_tagihan,
                     c.deskripsi AS nama_prodi,
+                    e.name AS nama_fakultas,
                     CASE 
                         WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
                         ELSE a.angkatan
@@ -54,8 +58,7 @@ class TagihanModel
                 LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
                 LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
                 LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
-
-                  ";
+                LEFT JOIN $this->mhs_fakultas e ON e.ID = a.fakultas";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -68,9 +71,10 @@ class TagihanModel
     try {
       // Cek apakah data dengan kombinasi prodi, jenis_tagihan, dan angkatan sudah ada
       $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan 
-                         WHERE prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
+                         WHERE fakultas = ? AND prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
       $checkStmt = $this->db->prepare($checkQuery);
       $checkStmt->execute([
+        $data['fakultas'],
         $data['prodi'],
         $data['jenis_tagihan'],
         $data['angkatan']
@@ -82,10 +86,11 @@ class TagihanModel
       }
 
       // Jika data belum ada, lanjutkan dengan insert
-      $query = "INSERT INTO $this->mhs_tagihan (prodi, jenis_tagihan, angkatan, nominal, keterangan) 
-                    VALUES (?, ?, ?, ?, ?)";
+      $query = "INSERT INTO $this->mhs_tagihan (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
+        $data['fakultas'],
         $data['prodi'],
         $data['jenis_tagihan'],
         $data['angkatan'],
