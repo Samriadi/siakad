@@ -89,6 +89,8 @@ class AdjustmentModel
 
     $result = $stmt->fetch(PDO::FETCH_OBJ);
 
+    error_log(json_encode($result));
+
     return $result ? $result->nominal : null;
   }
 
@@ -130,9 +132,11 @@ class AdjustmentModel
         $data['angkatan']
       ]);
 
-      if ($checkStmt->fetchColumn() > 0) {
+      /*
+      if ($checkStmt->fetchColumn() == 0) {
         return 'exists';
       }
+	  */
 
       $ID = $data['nim'];
       $adjType = $data['adj_type'];
@@ -169,18 +173,29 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
-        $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
+		SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ? FROM vw_mhs WHERE NIM<>'' ";
+
+        if ($data['prodi'] <> '11111')
+          $query .= "AND kode_prodi=? ";
+        else
+          $query .= "AND kode_prodi<>? ";
+
+        if ($data['angkatan'] <> "Semua Angkatan")
+          $query .= "AND id_angkatan=? ";
+        else
+          $query .= "AND id_angkatan<>? ";
+
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([
           $data['fakultas'],
-          $data['prodi'],
           $data['jenis_tagihan'],
-          $data['angkatan'],
           $data['nominal'],
           $data['keterangan'],
           $data['adj_type'],
-          $data['adjust']
+          $data['adjust'],
+          $data['prodi'],
+          $data['angkatan']
         ]);
       }
 
@@ -195,8 +210,11 @@ class AdjustmentModel
 
   public function updateData($data)
   {
+
+    error_log("data: " . print_r($data, true));
+
     try {
-      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , keterangan = :keterangan, nim = :nim, adj_type = :adjtype WHERE recid = :recid";
+      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , keterangan = :keterangan, nim = :nim, adjustment = :adjustment WHERE recid = :recid";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
         ':prodi' => $data['prodi'],
@@ -205,7 +223,7 @@ class AdjustmentModel
         ':nominal' => $data['nominal'],
         ':keterangan' => $data['keterangan'],
         ':nim' => $data['nim'],
-        ':adjtype' => $data['adjtype'],
+        ':adjustment' => $data['adjustment'],
         ':recid' => $data['recid']
       ]);
 
