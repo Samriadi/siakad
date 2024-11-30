@@ -14,7 +14,7 @@ class PembayaranModel
 
   public function getAll()
   {
-    $query = "SELECT   * FROM $this->mhs_paytype";
+    $query = "SELECT * FROM $this->mhs_paytype";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -61,7 +61,7 @@ class PembayaranModel
       $stmt->execute([
         ':id' => $id
       ]);
-      return $stmt->rowCount() > 0; 
+      return $stmt->rowCount() > 0;
     } catch (PDOException $e) {
       return false;
     }
