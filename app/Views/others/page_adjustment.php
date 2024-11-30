@@ -43,26 +43,27 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table id="exampleTable" class="table table-hover">
                       <thead>
                         <tr>
-                          <th scope="col">No</th>
-                          <th scope="col">NIM</th>
-                          <th scope="col">Fakultas</th>
-                          <th scope="col">Prodi</th>
-                          <th scope="col">Tagihan</th>
-                          <th scope="col">Angkatan</th>
-                          <th scope="col">Nominal</th>
-                          <th scope="col">Type</th>
-                          <th scope="col">Keterangan</th>
-                          <th scope="col">Adjustment</th>
-                          <th scope="col">Action</th>
+                          <th>No</th>
+                          <th>NIM</th>
+                          <th>Fakultas</th>
+                          <th>Prodi</th>
+                          <th>Tagihan</th>
+                          <th>Angkatan</th>
+                          <th>Nominal</th>
+                          <th>Type</th>
+                          <th>Keterangan</th>
+                          <th>Adjustment</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
-                            <th scope="row"><?= ++$key ?></th>
+
+                            <td><?= ++$key ?></td>
                             <td><?= $value->nim ?></td>
                             <td><?= $value->nama_fakultas ?></td>
                             <td><?= $value->nama_prodi ?></td>
@@ -72,18 +73,10 @@
                             <td><?= $value->adj_type ?></td>
                             <td><?= $value->keterangan ?></td>
                             <td><?= $value->adjustment ?></td>
-                            <td style="white-space: nowrap;">
-
-                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-
-                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>" onclick="confirmDelete(this)">
-                                <i class="fas fa-trash-alt"></i>
-                              </a>
-
+                            <td>
+                              <button class="btn btn-primary btn-sm">Edit</button>
+                              <button class="btn btn-danger btn-sm">Delete</button>
                             </td>
-
                           </tr>
                         <?php endforeach ?>
                       </tbody>
@@ -173,8 +166,11 @@
                   <input type="text" class="form-control" id="add_keterangan" name="keterangan">
                 </div>
                 <div class="form-group">
+                  <!--
                   <label for="add_adjustment">Adjustment</label>
                   <input type="number" class="form-control" id="add_adjustment" name="adjust">
+				-->
+                  <input type="hidden" id="add_adjustment" name="adjust">
                 </div>
               </div>
             </div>
@@ -202,30 +198,24 @@
 
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="add_nim">NIM</label>
-                  <input type="text" class="form-control" id="nim">
-                  (Lebih dari 1 orang, pisahkan dengan Koma)
+                  <label for="fakultas">Fakultas</label>
+                  <select id="fakultas" class="form-control" name="fakultas" required>
+                    <option value="" selected disabled>Pilih Fakultas</option>
+                  </select>
                 </div>
-                <div class="form-group col-md-6">
-                  <center><label for="adjtype">Replace Tagihan</label></center>
-                  <input type="checkbox" class="form-control" id="adjtype">
-                </div>
-              </div>
-
-              <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="prodi">Program Studi</label>
                   <select id="prodi" class="form-control" name="prodi" required>
                     <option value="" selected disabled>Pilih Prodi</option>
                   </select>
                 </div>
-                <div class="form-group col-md-6">
-                  <label for="jenis_tagihan">Jenis Tagihan</label>
-                  <select id="jenis_tagihan" class="form-control" name="jenis_tagihan" required>
-                    <option value="" selected disabled>Pilih Jenis Tagihan</option>
-                  </select>
-                </div>
+
+                <!-- <div class="form-group col-md-6">
+                  <center><label for="adjtype">Replace Tagihan</label></center>
+                  <input type="checkbox" class="form-control" id="adjtype">
+                </div> -->
               </div>
+
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="angkatan">Angkatan</label>
@@ -233,15 +223,36 @@
                     <option value="" selected disabled>Pilih Angkatan</option>
                   </select>
                 </div>
+
+                <div class="form-group col-md-6">
+                  <label for="add_nim">NIM</label>
+                  <input type="text" class="form-control" id="nim">
+                  (Lebih dari 1 orang, pisahkan dengan Koma)
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="jenis_tagihan">Jenis Tagihan</label>
+                  <select id="jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                    <option value="" selected disabled>Pilih Jenis Tagihan</option>
+                  </select>
+                </div>
                 <div class="form-group col-md-6">
                   <label for="nominal">Nominal</label>
                   <input type="number" class="form-control" id="nominal" disabled>
+                  <small class="form-text text-danger" id="nominalEditValidation">nominal tagihan tidak ada!</small>
+
                 </div>
 
               </div>
               <div class="form-group">
                 <label for="keterangan">Keterangan</label>
                 <input type="text" class="form-control" id="keterangan">
+              </div>
+              <div class="form-group">
+                <label for="adjustment">Adjustment</label>
+                <input type="number" class="form-control" id="adjustment">
               </div>
             </div>
           </div>
@@ -444,6 +455,9 @@
 
           var data = <?php echo json_encode($data) ?>;
 
+          $('#edit_submit').prop('disabled', true);
+          nominalEditValidation.style.display = "none";
+
           var id = $(this).data('id');
 
 
@@ -463,8 +477,18 @@
                 var optionProdi = response.optionProdi;
                 var dataAngkatan = response.dataAngkatan;
                 var optionAngkatan = response.optionAngkatan;
+                var dataFakultas = response.dataFakultas;
+                var optionFakultas = response.optionFakultas;
 
-                var optionAngkatan = response.optionAngkatan;
+
+                $('#fakultas').empty().append('<option value="' + dataFakultas.ID + '">' + dataFakultas.deskripsi + '</option>');
+
+                $.each(optionFakultas, function(index, item) {
+                  if (!$('#fakultas option[value="' + item.ID + '"]').length) {
+                    $('#fakultas').append('<option value="' + item.ID + '">' + item.deskripsi + '</option>');
+                  }
+                });
+
                 $('#prodi').empty().append('<option value="' + dataProdi.ID + '">' + dataProdi.deskripsi + '</option>');
 
                 $.each(optionProdi, function(index, item) {
@@ -505,12 +529,13 @@
                 $('#nominal').val(data.nominal);
                 $('#keterangan').val(data.keterangan);
                 $('#nim').val(data.nim);
+                $('#adjustment').val(data.adjustemnt);
 
-                if (data.adj_type === "replace") {
-                  $('#adjtype').prop('checked', true); // Centang checkbox
-                } else {
-                  $('#adjtype').prop('checked', false); // Tidak dicentang
-                }
+                // if (data.adj_type === "replace") {
+                //   $('#adjtype').prop('checked', true); // Centang checkbox
+                // } else {
+                //   $('#adjtype').prop('checked', false); // Tidak dicentang
+                // }
 
 
                 $('#editModal').modal('show');
@@ -525,18 +550,23 @@
             var selectedProdi = $('#prodi').val();
             var selectedAngkatan = $('#angkatan').val();
             var selectedPaytype = $('#jenis_tagihan').val();
+            var selectedFakultas = $('#fakultas').val();
 
+            console.log(selectedAngkatan);
+            console.log(selectedProdi);
             console.log(selectedPaytype);
+            console.log(selectedFakultas);
 
 
-            if (selectedProdi && selectedAngkatan && selectedPaytype) {
+            if (selectedFakultas && selectedProdi && selectedAngkatan && selectedPaytype) {
               $.ajax({
                 url: '/admin/siakad/adjustment/getNominal',
                 type: 'GET',
                 data: {
                   prodi: selectedProdi,
                   angkatan: selectedAngkatan,
-                  paytype: selectedPaytype
+                  paytype: selectedPaytype,
+                  fakultas: selectedFakultas
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -544,9 +574,12 @@
                   console.log(response);
                   if (response.success) {
                     $('#nominal').val(response.nominal);
+                    $('#add_submit').prop('disabled', false);
+                    nominalEditValidation.style.display = "none";
                   } else {
                     $('#nominal').val('');
-                    Swal.fire('Error', response.message, 'error');
+                    nominalEditValidation.style.display = "block";
+                    $('#add_submit').prop('disabled', true);
                   }
                 },
                 error: function(xhr, status, error) {
@@ -560,19 +593,24 @@
           $('#prodi').on('change', editNominal);
           $('#angkatan').on('change', editNominal);
           $('#jenis_tagihan').on('change', editNominal);
+          $('#fakultas').on('change', editNominal);
 
           $('#submit').on('click', function() {
 
             var arrayData = [{
               recid: id,
+              fakultas: $('#fakultas').val(),
               prodi: $('#prodi').val(),
               jenis_tagihan: $('#jenis_tagihan').val(),
               angkatan: $('#angkatan').val(),
               nominal: $('#nominal').val(),
               keterangan: $('#keterangan').val(),
               nim: $('#nim').val(),
-              adjtype: $('#adjtype').prop('checked') ? "replace" : "normal"
+              adjustment: $('#adjustment').val()
+              // adjtype: $('#adjtype').prop('checked') ? "replace" : "normal"
             }];
+
+            console.log(arrayData);
 
 
             $.ajax({
@@ -664,7 +702,8 @@
           "paging": true,
           "searching": true,
           "ordering": true,
-          "info": true
+          "info": true,
+          "pageLength": 10 // Set jumlah record per halaman
         });
       });
     </script>
