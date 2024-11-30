@@ -38,7 +38,7 @@ class TagihanModel
 
   public function getTagihanMhs()
   {
-    $query = "SELECT Nim,NamaLengkap,prodi_name,angkatan,sum(nominal) AS nominal FROM vw_hit_tagihan GROUP BY Nim,NamaLengkap,prodi_name,angkatan";
+    $query = "SELECT nim AS Nim,NamaLengkap,prodi AS prodi_name,angkatan,tagihan AS nominal FROM vw_hit_tagihan";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
