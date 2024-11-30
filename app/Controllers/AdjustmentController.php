@@ -52,6 +52,7 @@ class AdjustmentController
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
     $dataPaytype = $this->PembayaranModel->getAll();
+    $dataFakultas = $this->FakultasModel->getAll();
     $dataProdi = $this->TagihanModel->getDataProdi();
     $dataAngkatan = $this->TagihanModel->getDataAngkatan();
 
@@ -60,6 +61,7 @@ class AdjustmentController
     $selectedDataProdi = null;
     $selectedDataPaytype = null;
     $selectedDataAngkatan = null;
+    $selectedDataFakultas = null;
 
     foreach ($this->dataTagihan as $item) {
       if ($item->recid == $id) {
@@ -79,9 +81,17 @@ class AdjustmentController
             $selectedDataAngkatan = $itemAngkatan;
           }
         }
+        foreach ($dataFakultas as $itemFakultas) {
+          if ($itemFakultas->ID == $item->fakultas) {
+            $selectedDataFakultas = $itemFakultas;
+          }
+        }
         break;
       }
     }
+
+
+
 
     header('Content-Type: application/json');
     echo json_encode([
@@ -92,7 +102,12 @@ class AdjustmentController
       'dataProdi' => $selectedDataProdi,
       'optionProdi' => $dataProdi,
       'dataAngkatan' => $selectedDataAngkatan,
-      'optionAngkatan' => $dataAngkatan
+      'optionAngkatan' => $dataAngkatan,
+      'dataFakultas' => $selectedDataFakultas,
+      'optionFakultas' => $dataFakultas
+
+
+
     ]);
   }
 
@@ -207,6 +222,8 @@ class AdjustmentController
     $prodi = $_GET['prodi'] ?? null;
     $angkatan = $_GET['angkatan'] ?? null;
     $paytype = $_GET['paytype'] ?? null;
+
+    error_log("fakultas: $fakultas, prodi: $prodi, angkatan: $angkatan, paytype: $paytype");
 
 
     if ($fakultas && $prodi && $angkatan && $paytype) {
