@@ -42,7 +42,7 @@ class TagihanController
   public function tagihanMhs()
   {
     $data = $this->tagihanMhs;
-    $dataSelected = $_SESSION['selectedData'];;
+    $dataSelected = $_SESSION['selectedData'];
     // error_log("item selected prodi: " . print_r($dataSelected, true));
 
     include __DIR__ . '/../Views/others/page_tagihan_mhs.php';
@@ -261,9 +261,9 @@ class TagihanController
     $result = $this->TagihanModel->prosesInvoice($inputData);
 
     if ($result) {
-      echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan.']);
+      echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan.', 'data' => $result]);
     } else {
-      echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data.']);
+      echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpann data.', 'data' => $result]);
     }
   }
 }
