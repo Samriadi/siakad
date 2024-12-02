@@ -19,3 +19,4 @@ $mhs_penugasan_dosen = "mhs_penugasan_dosen";
 $mhs_adjustment = "mhs_adjustment";
 $mhs_fakultas = "mhs_fakultas";
 $mhs_transaksi = "mhs_transaksi";
+$vw_akses = 'vw_akses';
