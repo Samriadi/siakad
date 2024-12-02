@@ -158,6 +158,7 @@
           // Parse JSON untuk semua data terpilih
           const selectedData = Array.from(selectedDataStorage[tabId] || []).map(item => JSON.parse(item));
 
+          // console.log('Data Terpilih:', selectedData);
           if (selectedData.length === 0) {
             Swal.fire({
               icon: 'warning',
@@ -187,7 +188,7 @@
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                  console.log('Server Response:', data);
+                  // console.log('Server Response:', data);
                   Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
