@@ -62,7 +62,6 @@
                       <tbody>
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
-
                             <td><?= ++$key ?></td>
                             <td><?= $value->nim ?></td>
                             <td><?= $value->nama_fakultas ?></td>
@@ -81,6 +80,7 @@
                         <?php endforeach ?>
                       </tbody>
                     </table>
+
                   </div>
                 </div>
               </div>
