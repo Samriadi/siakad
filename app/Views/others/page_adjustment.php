@@ -46,6 +46,7 @@
                     <table id="exampleTable" class="table table-hover">
                       <thead>
                         <tr>
+                          <th><input type="checkbox" id="checkAll"></th>
                           <th>No</th>
                           <th>NIM</th>
                           <th>Fakultas</th>
@@ -62,6 +63,9 @@
                       <tbody>
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
+                            <td>
+                              <input type="checkbox" class="check-item" value="<?= $value->recid ?>">
+                            </td>
                             <td><?= ++$key ?></td>
                             <td><?= $value->nim ?></td>
                             <td><?= $value->nama_fakultas ?></td>
@@ -73,15 +77,20 @@
                             <td><?= $value->keterangan ?></td>
                             <td><?= $value->adjustment ?></td>
                             <td>
-                              <button class="btn btn-primary btn-sm">Edit</button>
-                              <button class="btn btn-danger btn-sm">Delete</button>
+                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
+                                <i class="fas fa-pencil-alt"></i>
+                              </a>
+                              <!-- <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>" onclick="confirmDelete(this)">
+                                <i class="fas fa-trash-alt"></i>
+                              </a> -->
                             </td>
                           </tr>
                         <?php endforeach ?>
                       </tbody>
                     </table>
-
+                    <button id="deleteSelected" class="btn btn-danger mt-2 mb-3">Delete Selected</button>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -704,6 +713,54 @@
           "ordering": true,
           "info": true,
           "pageLength": 10 // Set jumlah record per halaman
+        });
+      });
+    </script>
+
+    <script>
+      $(document).ready(function() {
+        // Ceklis All
+        $('#checkAll').click(function() {
+          $('.check-item').prop('checked', $(this).prop('checked'));
+        });
+
+        // Tombol Delete
+        $('#deleteSelected').click(function() {
+          let selectedIds = [];
+          $('.check-item:checked').each(function() {
+            selectedIds.push($(this).val());
+          });
+
+          // console.log(selectedIds);
+
+          if (selectedIds.length > 0) {
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'You will delete the selected items!',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                $.ajax({
+                  url: '/admin/siakad/adjustment/drop', // Ubah sesuai endpoint backend Anda
+                  type: 'POST',
+                  data: {
+                    recids: selectedIds
+                  },
+                  success: function(response) {
+                    Swal.fire('Deleted!', 'The selected items have been deleted.', 'success')
+                      .then(() => location.reload());
+                  },
+                  error: function() {
+                    Swal.fire('Error!', 'There was an issue deleting the items.', 'error');
+                  }
+                });
+              }
+            });
+          } else {
+            Swal.fire('No items selected!', 'Please select items to delete.', 'info');
+          }
         });
       });
     </script>
