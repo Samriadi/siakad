@@ -188,6 +188,24 @@ class AdjustmentController
     echo json_encode(['success' => $success]);
   }
 
+  public function dropData()
+  {
+    $recids = $_POST['recids'];
+
+    if (!empty($recids)) {
+      // error_log("recids: " . print_r($recids, true));
+      $req = $this->TagihanModel->dropData($recids);
+
+      if ($req) {
+        echo json_encode(['status' => 'success']);
+      } else {
+        echo json_encode(['status' => 'error']);
+      }
+    } else {
+      echo json_encode(['status' => 'error', 'message' => 'No IDs provided']);
+    }
+  }
+
   public function includeData()
   {
     $dataPaytype = $this->PembayaranModel->getAll();
