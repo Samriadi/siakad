@@ -199,7 +199,8 @@ addRouteGroup('/adjustment', 'AdjustmentController', [
     '/update' => 'updateData',
     '/delete' => 'deleteData',
     '/include' => 'includeData',
-    '/getNominal' => 'getNominal'
+    '/getNominal' => 'getNominal',
+    '/drop' => 'dropData',
 ]);
 
 
