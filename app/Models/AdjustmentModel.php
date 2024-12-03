@@ -247,6 +247,28 @@ class AdjustmentModel
     }
   }
 
+  public function dropData(array $ids)
+  {
+    try {
+      // Menggunakan placeholder untuk setiap ID dalam array
+      $placeholders = implode(',', array_fill(0, count($ids), '?'));
+      $query = "DELETE FROM $this->mhs_adjustment WHERE recid IN ($placeholders)";
+
+      // Mempersiapkan query
+      $stmt = $this->db->prepare($query);
+
+      // Mengeksekusi query dengan parameter array $ids
+      $stmt->execute($ids);
+
+      // Mengembalikan jumlah baris yang terpengaruh
+      return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      // Menangani error jika terjadi
+      return false;
+    }
+  }
+
+
   public function getDataMatkul()
   {
     $query = "SELECT course_id, course_name FROM $this->mhs_matakuliah";
