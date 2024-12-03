@@ -7,7 +7,7 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li class="menu-header">Admin Area</li>
+      <li class="menu-header">Member Area</li>
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
         <ul class="dropdown-menu">
@@ -21,31 +21,9 @@
     </ul>
 
     <ul class="sidebar-menu">
-
-      <li class="menu-header">Setup</li>
+      <li class="menu-header">TRANSAKSI</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master Data</span></a>
-        <ul class="dropdown-menu">
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
-          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li> -->
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/prodi">Program Studi</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/fakultas">Fakultas</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/angkatan">Angkatan</a></li>
-          <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
-            <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li> -->
-          <?php endif ?>
-        </ul>
-      </li>
-
-    </ul>
-
-
-    <ul class="sidebar-menu">
-      <li class="menu-header">SIAKAD</li>
-      <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Administrasi</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Pembayaran</span></a>
         <ul class="dropdown-menu">
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Master Tagihan</a></li>
@@ -78,28 +56,49 @@
     </ul>
 
 
+    <ul class="sidebar-menu">
+
+      <li class="menu-header">Setup</li>
+      <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master Data</span></a>
+        <ul class="dropdown-menu">
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/ortu">Orang Tua</a></li> -->
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/dosen">Dosen</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/prodi">Program Studi</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/fakultas">Fakultas</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/angkatan">Angkatan</a></li>
+          <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
+            <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li> -->
+          <?php endif ?>
+        </ul>
+      </li>
+
+    </ul>
+
   </aside>
 </div>
 
-<script>
+<<script>
   document.addEventListener('DOMContentLoaded', function() {
-    const currentPath = window.location.pathname.replace(/\/$/, ""); // Hapus trailing slash jika ada
-    const pathAfterSiakad = currentPath.split('/siakad')[1]; // Ambil bagian setelah '/siakad'
-    const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
+  const currentPath = window.location.pathname.replace(/\/$/, ""); // Hapus trailing slash jika ada
+  const pathAfterSiakad = currentPath.split('/siakad')[1]; // Ambil bagian setelah '/siakad'
+  const menuItems = document.querySelectorAll('.sidebar-menu .nav-link');
 
-    menuItems.forEach(item => {
-      // Ambil href dari item dan pastikan tidak ada trailing slash
-      const href = item.getAttribute('href').replace(/\/$/, "");
+  menuItems.forEach(item => {
+  // Ambil href dari item dan pastikan tidak ada trailing slash
+  const href = item.getAttribute('href').replace(/\/$/, "");
 
-      // Ambil bagian setelah '/siakad' di href
-      const pathAfterSiakadMenu = href.split('/siakad')[1];
+  // Ambil bagian setelah '/siakad' di href
+  const pathAfterSiakadMenu = href.split('/siakad')[1];
 
-      // Periksa apakah bagian dari currentPath mengandung bagian dari pathAfterSiakadMenu
-      if (pathAfterSiakadMenu && currentPath.includes(pathAfterSiakadMenu)) {
-        item.closest('.nav-item').classList.add('active');
-        item.closest('.dropdown').classList.add('active');
-        item.classList.add('active');
-      }
-    });
+  // Periksa apakah bagian dari currentPath mengandung bagian dari pathAfterSiakadMenu
+  if (pathAfterSiakadMenu && currentPath.includes(pathAfterSiakadMenu)) {
+  item.closest('.nav-item').classList.add('active');
+  item.closest('.dropdown').classList.add('active');
+  item.classList.add('active');
+  }
   });
-</script>
+  });
+  </script>
