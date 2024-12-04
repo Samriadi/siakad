@@ -10,6 +10,7 @@ class AdjustmentController
   private $dataTagihan;
   private $dataFakultas;
   private $tagihanMhs;
+  private $optionFilter;
 
 
   public function __construct()
@@ -35,11 +36,16 @@ class AdjustmentController
   public function index()
   {
 
-    $data = $this->dataTagihan;
+    if (isset($_SESSION['fieldNameFilter']) && isset($_SESSION['fieldValueFilter'])) {
+      $filters = [
+        $_SESSION['fieldNameFilter'] => $_SESSION['fieldValueFilter'],
+      ];
+      $data = $this->TagihanModel->getAllAdjustment($filters);
+    } else {
+      $data = null;
+    }
 
     $dataOptionFilter = $this->optionFilter;
-
-    error_log("data: " . print_r($dataOptionFilter, true));
 
     include __DIR__ . '/../Views/others/page_adjustment.php';
   }
@@ -247,9 +253,6 @@ class AdjustmentController
     $angkatan = $_GET['angkatan'] ?? null;
     $paytype = $_GET['paytype'] ?? null;
 
-    error_log("fakultas: $fakultas, prodi: $prodi, angkatan: $angkatan, paytype: $paytype");
-
-
     if ($fakultas && $prodi && $angkatan && $paytype) {
       $nominal = $this->TagihanModel->getNominal($fakultas, $prodi, $angkatan, $paytype);
 
@@ -295,9 +298,12 @@ class AdjustmentController
     $field = $_GET['field'] ?? null;
     $value = $_GET['value'] ?? null;
 
+    $_SESSION['fieldNameFilter'] = $field;
+    $_SESSION['fieldValueFilter'] = $value;
+
     if ($field && $value) {
       $filters = [
-        $field => $value,
+        $_SESSION['fieldNameFilter'] => $_SESSION['fieldValueFilter'],
       ];
 
       $result = $this->TagihanModel->getAllAdjustment($filters);
