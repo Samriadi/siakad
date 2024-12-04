@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>SIAKAD - Setup Tagihan</title>
+  <title>SIAKAD - Transaksi Tagihan</title>
   <?php include '../app/Views/others/layouts/header.php'; ?>
 
 <body>
@@ -21,11 +21,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Setup Tagihan</h1>
+          <h1>Transaksi Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Setup Tagihan</div>
+            <div class="breadcrumb-item">Transaksi Tagihan</div>
           </div>
         </div>
 
@@ -34,7 +34,22 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Setup Tagihan</h4>
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label for="show_field" class="form-label">Tampilkan</label>
+                        <select id="show_field" class="form-control" name="show_field" required>
+                          <option value=""></option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="show_value" class="form-label">Pilih</label>
+                        <select id="show_value" class="form-control" name="show_value" required>
+                          <option value="">Pilih Value</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="card-header-action">
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"></i>
@@ -54,6 +69,7 @@
                           <th>Tagihan</th>
                           <th>Angkatan</th>
                           <th>Nominal</th>
+                          <th>Quantity</th>
                           <th>Type</th>
                           <th>Keterangan</th>
                           <th>Adjustment</th>
@@ -73,6 +89,7 @@
                             <td><?= $value->nama_tagihan ?></td>
                             <td><?= $value->nama_angkatan ?></td>
                             <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
+                            <td><?= $value->qty ?></td>
                             <td><?= $value->adj_type ?></td>
                             <td><?= $value->keterangan ?></td>
                             <td><?= $value->adjustment ?></td>
@@ -127,13 +144,14 @@
                     </div> -->
                 <!-- </div> -->
 
+                <div class="form-group">
+                  <label for="add_fakultas">Fakultas</label>
+                  <select id="add_fakultas" class="form-control" name="fakultas" required>
+                    <option value="" selected disabled></option>
+                  </select>
+                </div>
+
                 <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label for="add_fakultas">Fakultas</label>
-                    <select id="add_fakultas" class="form-control" name="fakultas" required>
-                      <option value="" selected disabled></option>
-                    </select>
-                  </div>
                   <div class="form-group col-md-6">
                     <label for="add_prodi">Program Studi</label>
                     <select id="add_prodi" class="form-control" name="prodi" required>
@@ -150,6 +168,12 @@
                     <label for="add_nim">NIM</label>
                     <input type="text" class="form-control" id="add_nim" name="nim">
                   </div>
+                  <div class="form-group col-md-6">
+                    <label for="add_jenis_tagihan">Jenis Tagihan</label>
+                    <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
+                      <option value="" selected disabled></option>
+                    </select>
+                  </div>
                 </div>
                 <!-- </div> -->
 
@@ -157,16 +181,13 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="add_jenis_tagihan">Jenis Tagihan</label>
-                    <select id="add_jenis_tagihan" class="form-control" name="jenis_tagihan" required>
-                      <option value="" selected disabled></option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-6">
                     <label for="add_nominal">Nominal</label>
                     <input type="number" class="form-control" id="add_nominal" name="nominal" disabled>
                     <small class="form-text text-danger" id="nominalValidation">nominal tagihan tidak ada!</small>
-
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="add_qty">Quantity</label>
+                    <input type="number" class="form-control" id="add_qty" name="qty">
                   </div>
                 </div>
 
@@ -255,13 +276,20 @@
                 </div>
 
               </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="qty">Quantity</label>
+                  <input type="number" class="form-control" id="qty">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="adjustment">Adjustment</label>
+                  <input type="number" class="form-control" id="adjustment">
+                </div>
+              </div>
               <div class="form-group">
                 <label for="keterangan">Keterangan</label>
                 <input type="text" class="form-control" id="keterangan">
-              </div>
-              <div class="form-group">
-                <label for="adjustment">Adjustment</label>
-                <input type="number" class="form-control" id="adjustment">
               </div>
             </div>
           </div>
@@ -417,7 +445,8 @@
             keterangan: $('#add_keterangan').val(),
             nim: $('#add_nim').val(),
             adj_type: $('#adj_type').prop('checked') ? "replace" : "normal",
-            adjust: $('#add_adjustment').val(),
+            adjust: 0,
+            qty: $('#add_qty').val(),
 
           }];
 
@@ -461,8 +490,6 @@
 
         //edit data
         $('.btn-edit').on('click', function() {
-
-          var data = <?php echo json_encode($data) ?>;
 
           $('#edit_submit').prop('disabled', true);
           nominalEditValidation.style.display = "none";
@@ -536,9 +563,11 @@
 
 
                 $('#nominal').val(data.nominal);
+                $('#qty').val(data.qty);
                 $('#keterangan').val(data.keterangan);
                 $('#nim').val(data.nim);
-                $('#adjustment').val(data.adjustemnt);
+                $('#adjustment').val(data.adjustment);
+
 
                 // if (data.adj_type === "replace") {
                 //   $('#adjtype').prop('checked', true); // Centang checkbox
@@ -613,6 +642,7 @@
               jenis_tagihan: $('#jenis_tagihan').val(),
               angkatan: $('#angkatan').val(),
               nominal: $('#nominal').val(),
+              qty: $('#qty').val(),
               keterangan: $('#keterangan').val(),
               nim: $('#nim').val(),
               adjustment: $('#adjustment').val()
@@ -719,6 +749,67 @@
 
     <script>
       $(document).ready(function() {
+
+        var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
+
+        //option field
+        $('#show_field').empty().append('<option value="" selected disabled>Pilih Field</option>');
+        $.each(dataOptionFilter, function(index, value) {
+          $('#show_field').append('<option value="' + value.COLUMN_NAME + '">' + value.COLUMN_NAME + '</option>');
+        });
+
+        //option field on change
+        $('#show_field').on('change', function() {
+          var selectedField = $(this).val();
+
+          if (selectedField) {
+            $.ajax({
+              url: '/admin/siakad/adjustment/search', // Endpoint yang dibuat
+              type: 'GET',
+              data: {
+                field: selectedField,
+              },
+              dataType: 'json',
+              success: function(response) {
+                $('#show_value').empty().append('<option value="" selected disabled>Pilih Value</option>');
+                $.each(response.value, function(index, value) {
+                  $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                });
+              },
+              error: function(xhr, status, error) {
+                console.log('Error:', error);
+              }
+            });
+          }
+        });
+
+        //option value on change
+        $('#show_value').on('change', function() {
+          var selectedValue = $(this).val();
+          var selectedField = $('#show_field').val();
+
+          if (selectedValue && selectedField) {
+            $.ajax({
+              url: '/admin/siakad/adjustment/show',
+              type: 'GET',
+              data: {
+                field: selectedField,
+                value: selectedValue,
+              },
+              dataType: 'json',
+              success: function(response) {
+                console.log(response.data);
+              },
+              error: function(xhr, status, error) {
+                console.log('Error:', error);
+              }
+            });
+          };
+        });
+
+
+
+
         // Ceklis All
         $('#checkAll').click(function() {
           $('.check-item').prop('checked', $(this).prop('checked'));
