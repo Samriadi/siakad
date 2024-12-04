@@ -201,6 +201,8 @@ addRouteGroup('/adjustment', 'AdjustmentController', [
     '/include' => 'includeData',
     '/getNominal' => 'getNominal',
     '/drop' => 'dropData',
+    '/search' => 'searchData',
+    '/show' => 'showData'
 ]);
 
 
