@@ -41,7 +41,7 @@
                   </div>
                 </div>
                 <div class="card-body">
-                <div class="table-responsive" style="max-height: 770px; overflow-y: auto;">
+                  <div class="table-responsive" style="max-height: 770px; overflow-y: auto;">
                     <table class="table table-hover">
                       <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
                         <tr>
@@ -76,14 +76,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-    $(document).ready(function() {
+      $(document).ready(function() {
         $('.table').DataTable({
-        "paging": true,
-        "searching": true,
-        "ordering": true,
-        "info": true
+          "paging": true,
+          "searching": true,
+          "ordering": true,
+          "info": true
         });
-    });
+      });
     </script>
 
 
