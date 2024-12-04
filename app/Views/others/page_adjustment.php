@@ -39,13 +39,13 @@
                       <div class="col-md-6">
                         <label for="show_field" class="form-label">Tampilkan</label>
                         <select id="show_field" class="form-control" name="show_field" required>
-                          <option value=""></option>
+                          <option value="" selected disabled>Pilih Field</option>
                         </select>
                       </div>
                       <div class="col-md-6">
                         <label for="show_value" class="form-label">Pilih</label>
                         <select id="show_value" class="form-control" name="show_value" required>
-                          <option value="">Pilih Value</option>
+                          <option value="" selected disabled>Pilih Value</option>
                         </select>
                       </div>
                     </div>
@@ -77,32 +77,35 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($data as $key => $value) : ?>
+                        <?php if ($data) : ?>
+                          <?php foreach ($data as $key => $value) : ?>
+                            <tr>
+                              <td>
+                                <input type="checkbox" class="check-item" value="<?= $value->recid ?>">
+                              </td>
+                              <td><?= $key + 1 ?></td>
+                              <td><?= $value->nim ?></td>
+                              <td><?= $value->nama_fakultas ?></td>
+                              <td><?= $value->nama_prodi ?></td>
+                              <td><?= $value->nama_tagihan ?></td>
+                              <td><?= $value->nama_angkatan ?></td>
+                              <td>Rp. <?= number_format($value->nominal, 0, ',', '.') ?>
+                              <td><?= $value->qty ?></td>
+                              <td><?= $value->adj_type ?></td>
+                              <td><?= $value->keterangan ?></td>
+                              <td><?= $value->adjustment ?></td>
+                              <td>
+                                <a class="btn btn-primary btn-sm btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
+                                  <i class="fas fa-pencil-alt"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          <?php endforeach ?>
+                        <?php else : ?>
                           <tr>
-                            <td>
-                              <input type="checkbox" class="check-item" value="<?= $value->recid ?>">
-                            </td>
-                            <td><?= ++$key ?></td>
-                            <td><?= $value->nim ?></td>
-                            <td><?= $value->nama_fakultas ?></td>
-                            <td><?= $value->nama_prodi ?></td>
-                            <td><?= $value->nama_tagihan ?></td>
-                            <td><?= $value->nama_angkatan ?></td>
-                            <td><?= 'Rp. ' . number_format($value->nominal, 0, ',', '.') ?></td>
-                            <td><?= $value->qty ?></td>
-                            <td><?= $value->adj_type ?></td>
-                            <td><?= $value->keterangan ?></td>
-                            <td><?= $value->adjustment ?></td>
-                            <td>
-                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->recid ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-                              <!-- <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>" onclick="confirmDelete(this)">
-                                <i class="fas fa-trash-alt"></i>
-                              </a> -->
-                            </td>
+                            <td colspan="13" class="text-center">Tidak ada data yang tersedia.</td>
                           </tr>
-                        <?php endforeach ?>
+                        <?php endif; ?>
                       </tbody>
                     </table>
                     <button id="deleteSelected" class="btn btn-danger mt-2 mb-3">Delete Selected</button>
@@ -489,8 +492,7 @@
 
 
         //edit data
-        $('.btn-edit').on('click', function() {
-
+        $(document).on('click', '.btn-edit', function() {
           $('#edit_submit').prop('disabled', true);
           nominalEditValidation.style.display = "none";
 
@@ -664,10 +666,12 @@
                     text: 'Your data has been updated.',
                     icon: 'success',
                     showConfirmButton: false,
+                    timer: 700,
                     willClose: () => {
                       window.location.reload();
                     }
                   });
+
                 } else {
                   Swal.fire({
                     text: 'An error occurred during updated.',
@@ -737,25 +741,70 @@
 
     <script>
       $(document).ready(function() {
-        $('.table').DataTable({
-          "paging": true,
-          "searching": true,
-          "ordering": true,
-          "info": true,
-          "pageLength": 10 // Set jumlah record per halaman
-        });
-      });
-    </script>
 
-    <script>
-      $(document).ready(function() {
+        $(document).ready(function() {
+          var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
 
-        var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
+          // Populate #show_field dengan opsi dari dataOptionFilter
+          $.each(dataOptionFilter, function(index, value) {
+            $('#show_field').append('<option value="' + value.COLUMN_NAME + '">' + value.COLUMN_NAME + '</option>');
+          });
 
-        //option field
-        $('#show_field').empty().append('<option value="" selected disabled>Pilih Field</option>');
-        $.each(dataOptionFilter, function(index, value) {
-          $('#show_field').append('<option value="' + value.COLUMN_NAME + '">' + value.COLUMN_NAME + '</option>');
+          // Ambil nilai dari localStorage untuk #show_field dan #show_value
+          var selectedField = localStorage.getItem('selectedField');
+          var selectedValue = localStorage.getItem('selectedValue');
+
+          if (selectedField) {
+            $('#show_field').val(selectedField); // Setel nilai yang tersimpan
+
+            // Muat opsi di #show_value berdasarkan nilai #show_field
+            loadShowValueOptions(selectedField, selectedValue);
+          }
+
+          // Event listener untuk perubahan pada #show_field
+          $('#show_field').on('change', function() {
+            var selectedField = $(this).val();
+            localStorage.setItem('selectedField', selectedField); // Simpan ke localStorage
+
+            if (selectedField) {
+              loadShowValueOptions(selectedField); // Muat opsi baru di #show_value
+            } else {
+              $('#show_value').empty(); // Kosongkan opsi jika tidak ada field yang dipilih
+              localStorage.removeItem('selectedValue'); // Hapus selectedValue dari localStorage
+            }
+          });
+
+          // Event listener untuk perubahan pada #show_value
+          $('#show_value').on('change', function() {
+            var selectedValue = $(this).val();
+            localStorage.setItem('selectedValue', selectedValue); // Simpan nilai terpilih ke localStorage
+          });
+
+          // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
+          function loadShowValueOptions(field, selectedValue = null) {
+            $.ajax({
+              url: '/admin/siakad/adjustment/search',
+              type: 'GET',
+              data: {
+                field: field
+              },
+              dataType: 'json',
+              success: function(response) {
+                $('#show_value').empty(); // Hapus opsi lama
+                $.each(response.value, function(index, value) {
+                  $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+                });
+
+                // Setel nilai terpilih jika tersedia
+                if (selectedValue) {
+                  $('#show_value').val(selectedValue);
+                }
+              },
+              error: function(xhr, status, error) {
+                console.log('Error:', error);
+              }
+            });
+          }
         });
 
         //option field on change
@@ -771,7 +820,6 @@
               },
               dataType: 'json',
               success: function(response) {
-                $('#show_value').empty().append('<option value="" selected disabled>Pilih Value</option>');
                 $.each(response.value, function(index, value) {
                   $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
                 });
@@ -798,7 +846,50 @@
               },
               dataType: 'json',
               success: function(response) {
-                console.log(response.data);
+                let tbody = '';
+                if (response.data.length > 0) {
+                  response.data.forEach((item, index) => {
+                    tbody += `
+                            <tr>
+                                <td><input type="checkbox" class="check-item" value="${item.recid}"></td>
+                                <td>${index + 1}</td>
+                                <td>${item.nim}</td>
+                                <td>${item.nama_fakultas}</td>
+                                <td>${item.nama_prodi}</td>
+                                <td>${item.nama_tagihan}</td>
+                                <td>${item.nama_angkatan}</td>
+                                <td>Rp. ${new Intl.NumberFormat('id-ID').format(item.nominal)}</td>
+                                <td>${item.qty}</td>
+                                <td>${item.adj_type}</td>
+                                <td>${item.keterangan}</td>
+                                <td>${item.adjustment}</td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm btn-action mr-1 btn-edit" data-id="${item.recid}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                  });
+                } else {
+                  tbody = '<tr><td colspan="13" class="text-center">Tidak ada data yang tersedia.</td></tr>';
+                }
+
+
+                if ($.fn.DataTable.isDataTable('.table')) {
+                  $('.table').DataTable().destroy();
+                }
+
+                $('tbody').html(tbody);
+
+                $('.table').DataTable({
+                  "paging": true,
+                  "searching": true,
+                  "ordering": true,
+                  "info": true,
+                  "pageLength": 10
+                });
+
               },
               error: function(xhr, status, error) {
                 console.log('Error:', error);
@@ -855,6 +946,19 @@
         });
       });
     </script>
+
+    <script>
+      $(document).ready(function() {
+        $('.table').DataTable({
+          "paging": true,
+          "searching": true,
+          "ordering": true,
+          "info": true
+        });
+      });
+    </script>
+
+
 
 </body>
 
