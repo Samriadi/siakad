@@ -11,6 +11,7 @@ class AdjustmentModel
   private $mhs_matakuliah = 'mhs_matakuliah';
   private $mhs_dosen = 'mhs_dosen';
   private $mhs_fakultas = 'mhs_fakultas';
+  private $mhs_mahasiswa = 'mhs_mahasiswa';
 
 
   public function __construct()
@@ -23,6 +24,7 @@ class AdjustmentModel
     global $mhs_dosen;
     global $mhs_tagihan;
     global $mhs_fakultas;
+    global $mhs_mahasiswa;
 
     $this->mhs_adjustment = $mhs_adjustment;
     $this->mhs_paytype = $mhs_paytype;
@@ -32,31 +34,48 @@ class AdjustmentModel
     $this->mhs_dosen = $mhs_dosen;
     $this->mhs_tagihan = $mhs_tagihan;
     $this->mhs_fakultas = $mhs_fakultas;
+    $this->mhs_mahasiswa = $mhs_mahasiswa;
 
     $this->db = Database::getInstance();
   }
 
-  public function getAllAdjustment()
+  public function getAllAdjustment($conditions = [])
   {
     $query = "SELECT 
-                    a.*,
-                    e.nama_tagihan,
-                    c.deskripsi AS nama_prodi,
-                    CASE 
-                        WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
-                        ELSE a.angkatan
-                    END AS nama_angkatan,
-                    f.name AS nama_fakultas
-                FROM 
-                    $this->mhs_adjustment a
-                LEFT JOIN $this->mhs_tagihan b ON b.recid = a.jenis_tagihan
-                LEFT JOIN $this->mhs_paytype e ON e.recid = a.jenis_tagihan
-                LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
-                LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
-                LEFT JOIN $this->mhs_fakultas f ON f.ID = a.fakultas
-                  ";
+                a.*,
+                e.nama_tagihan,
+                c.deskripsi AS nama_prodi,
+                CASE 
+                    WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
+                    ELSE a.angkatan
+                END AS nama_angkatan,
+                f.name AS nama_fakultas
+            FROM 
+                $this->mhs_adjustment a
+            LEFT JOIN $this->mhs_tagihan b ON b.recid = a.jenis_tagihan
+            LEFT JOIN $this->mhs_paytype e ON e.recid = a.jenis_tagihan
+            LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+            LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
+            LEFT JOIN $this->mhs_fakultas f ON f.ID = a.fakultas";
+
+    if (!empty($conditions)) {
+      $whereClauses = [];
+      foreach ($conditions as $key => $value) {
+        $whereClauses[] = "$key = :$key";
+      }
+      $query .= " WHERE a." . implode(" AND ", $whereClauses);
+
+      error_log("where query: " . print_r($query, true));
+    }
 
     $stmt = $this->db->prepare($query);
+
+    if (!empty($conditions)) {
+      foreach ($conditions as $key => $value) {
+        $stmt->bindValue(":$key", $value);
+      }
+    }
+
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
@@ -65,6 +84,15 @@ class AdjustmentModel
   {
     $query = "SELECT Nim,NamaLengkap,prodi_name,vw_mhs.angkatan,sum(nominal) AS nominal FROM vw_mhs INNER JOIN vw_tagihan ON vw_mhs.kode_prodi=vw_tagihan.prodi 
 	  AND vw_mhs.angkatan=vw_tagihan.angkatan WHERE status='Aktif' GROUP BY Nim,NamaLengkap,prodi_name,vw_mhs.angkatan";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getOptionFilter()
+  {
+    $query = "SELECT DISTINCT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'mhs_adjustment' AND column_name IN ('fakultas', 'prodi')";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -94,6 +122,33 @@ class AdjustmentModel
     return $result ? $result->nominal : null;
   }
 
+  public function getFieldValuesFakultas($field)
+  {
+    $query = "SELECT DISTINCT b.ID, b.name, b.deskripsi FROM mhs_adjustment a LEFT JOIN mhs_fakultas b ON b.ID = a.$field";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+
+    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    error_log(json_encode($results));
+
+    return $results; // Kembalikan seluruh hasil sebagai array
+  }
+
+  public function getFieldValuesProdi($field)
+  {
+    $query = "SELECT DISTINCT b.ID, b.name, b.deskripsi FROM mhs_adjustment a LEFT JOIN mhs_prodi b ON b.ID = a.$field";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+
+    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    error_log(json_encode($results));
+
+    return $results; // Kembalikan seluruh hasil sebagai array
+  }
 
   public function getAll()
   {
@@ -147,8 +202,8 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
           $stmt = $this->db->prepare($query);
           $result = $stmt->execute([
             $data['fakultas'],
@@ -160,6 +215,7 @@ class AdjustmentModel
             $Nim[$I],
             $adjType,
             $data['adjust'],
+            $data['qty'],
 
           ]);
         }
@@ -173,7 +229,7 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
-        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment) 
+        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty) 
 		SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ? FROM vw_mhs WHERE NIM<>'' ";
 
         if ($data['prodi'] <> '11111')
@@ -191,6 +247,7 @@ class AdjustmentModel
           $data['fakultas'],
           $data['jenis_tagihan'],
           $data['nominal'],
+          $data['qty'],
           $data['keterangan'],
           $data['adj_type'],
           $data['adjust'],
@@ -214,13 +271,14 @@ class AdjustmentModel
     error_log("data: " . print_r($data, true));
 
     try {
-      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , keterangan = :keterangan, nim = :nim, adjustment = :adjustment WHERE recid = :recid";
+      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , qty = :qty, keterangan = :keterangan, nim = :nim, adjustment = :adjustment WHERE recid = :recid";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
         ':prodi' => $data['prodi'],
         ':jenis_tagihan' => $data['jenis_tagihan'],
         ':angkatan' => $data['angkatan'],
         ':nominal' => $data['nominal'],
+        ':qty' => $data['qty'],
         ':keterangan' => $data['keterangan'],
         ':nim' => $data['nim'],
         ':adjustment' => $data['adjustment'],
@@ -306,7 +364,10 @@ class AdjustmentModel
 
   public function getDataAngkatan()
   {
-    $query = "SELECT * FROM $this->mhs_angkatan";
+    $query = "SELECT DISTINCT a.ID_angkatan, a.nama, a.deskripsi
+                FROM $this->mhs_angkatan a 
+                LEFT JOIN $this->mhs_mahasiswa b ON b.angkatan = a.nama 
+                WHERE b.status = 'AKTIF';";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
