@@ -64,8 +64,6 @@ class AdjustmentModel
         $whereClauses[] = "$key = :$key";
       }
       $query .= " WHERE a." . implode(" AND ", $whereClauses);
-
-      error_log("where query: " . print_r($query, true));
     }
 
     $stmt = $this->db->prepare($query);
@@ -117,7 +115,7 @@ class AdjustmentModel
 
     $result = $stmt->fetch(PDO::FETCH_OBJ);
 
-    error_log(json_encode($result));
+    // error_log(json_encode($result));
 
     return $result ? $result->nominal : null;
   }
@@ -131,7 +129,7 @@ class AdjustmentModel
 
     $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    error_log(json_encode($results));
+    // error_log(json_encode($results));
 
     return $results; // Kembalikan seluruh hasil sebagai array
   }
@@ -145,7 +143,7 @@ class AdjustmentModel
 
     $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    error_log(json_encode($results));
+    // error_log(json_encode($results));
 
     return $results; // Kembalikan seluruh hasil sebagai array
   }
@@ -268,7 +266,7 @@ class AdjustmentModel
   public function updateData($data)
   {
 
-    error_log("data: " . print_r($data, true));
+    // error_log("data: " . print_r($data, true));
 
     try {
       $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , qty = :qty, keterangan = :keterangan, nim = :nim, adjustment = :adjustment WHERE recid = :recid";
