@@ -22,6 +22,7 @@ class AdjustmentController
     $this->FakultasModel = new FakultasModel();
     $this->dataTagihan = $this->TagihanModel->getAllAdjustment();
     $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
+    $this->optionFilter = $this->TagihanModel->getOptionFilter();
   }
   public function checkLogin()
   {
@@ -36,8 +37,13 @@ class AdjustmentController
 
     $data = $this->dataTagihan;
 
+    $dataOptionFilter = $this->optionFilter;
+
+    error_log("data: " . print_r($dataOptionFilter, true));
+
     include __DIR__ . '/../Views/others/page_adjustment.php';
   }
+
 
   public function tagihanMhs()
   {
@@ -251,6 +257,55 @@ class AdjustmentController
         echo json_encode(['success' => true, 'nominal' => $nominal]);
       } else {
         echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
+  public function searchData()
+  {
+    $field = $_GET['field'] ?? null;
+
+    $_SESSION['fieldNameFilter'] = $field;
+
+
+    if ($field == 'fakultas') {
+      $value = $this->TagihanModel->getFieldValuesFakultas($field);
+
+      if ($value) {
+        echo json_encode(['success' => true, 'value' => $value]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'value not found']);
+      }
+    } else if ($field == 'prodi') {
+      $value = $this->TagihanModel->getFieldValuesProdi($field);
+      if ($value) {
+        echo json_encode(['success' => true, 'value' => $value]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'value not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
+  public function showData()
+  {
+    $field = $_GET['field'] ?? null;
+    $value = $_GET['value'] ?? null;
+
+    if ($field && $value) {
+      $filters = [
+        $field => $value,
+      ];
+
+      $result = $this->TagihanModel->getAllAdjustment($filters);
+
+      if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'value not found']);
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
