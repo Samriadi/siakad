@@ -741,115 +741,120 @@
 
     <script>
       $(document).ready(function() {
+        var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
 
-        $(document).ready(function() {
-          var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
+        // console.log(dataOptionFilter);
 
-          // Populate #show_field dengan opsi dari dataOptionFilter
-          $.each(dataOptionFilter, function(index, value) {
-            $('#show_field').append('<option value="' + value.COLUMN_NAME + '">' + value.COLUMN_NAME + '</option>');
-          });
-
-          // Ambil nilai dari localStorage untuk #show_field dan #show_value
-          var selectedField = localStorage.getItem('selectedField');
-          var selectedValue = localStorage.getItem('selectedValue');
-
-          if (selectedField) {
-            $('#show_field').val(selectedField); // Setel nilai yang tersimpan
-
-            // Muat opsi di #show_value berdasarkan nilai #show_field
-            loadShowValueOptions(selectedField, selectedValue);
-          }
-
-          // Event listener untuk perubahan pada #show_field
-          $('#show_field').on('change', function() {
-            var selectedField = $(this).val();
-            localStorage.setItem('selectedField', selectedField); // Simpan ke localStorage
-
-            if (selectedField) {
-              loadShowValueOptions(selectedField); // Muat opsi baru di #show_value
-            } else {
-              $('#show_value').empty(); // Kosongkan opsi jika tidak ada field yang dipilih
-              localStorage.removeItem('selectedValue'); // Hapus selectedValue dari localStorage
-            }
-          });
-
-          // Event listener untuk perubahan pada #show_value
-          $('#show_value').on('change', function() {
-            var selectedValue = $(this).val();
-            localStorage.setItem('selectedValue', selectedValue); // Simpan nilai terpilih ke localStorage
-          });
-
-          // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
-          function loadShowValueOptions(field, selectedValue = null) {
-            $.ajax({
-              url: '/admin/siakad/adjustment/search',
-              type: 'GET',
-              data: {
-                field: field
-              },
-              dataType: 'json',
-              success: function(response) {
-                $('#show_value').empty(); // Hapus opsi lama
-                $.each(response.value, function(index, value) {
-                  $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
-                });
-
-                // Setel nilai terpilih jika tersedia
-                if (selectedValue) {
-                  $('#show_value').val(selectedValue);
-                }
-              },
-              error: function(xhr, status, error) {
-                console.log('Error:', error);
-              }
-            });
-          }
+        // Populate #show_field dengan opsi dari dataOptionFilter
+        $.each(dataOptionFilter, function(index, value) {
+          $('#show_field').append('<option value="' + value.column_name + '">' + value.column_name + '</option>');
         });
 
-        //option field on change
+        // Ambil nilai dari localStorage untuk #show_field dan #show_value
+        var selectedField = localStorage.getItem('selectedField');
+        var selectedValue = localStorage.getItem('selectedValue');
+
+        if (selectedField) {
+          $('#show_field').val(selectedField);
+
+          loadShowValueOptions(selectedField, selectedValue);
+        }
+
         $('#show_field').on('change', function() {
           var selectedField = $(this).val();
+          localStorage.setItem('selectedField', selectedField);
 
           if (selectedField) {
-            $.ajax({
-              url: '/admin/siakad/adjustment/search', // Endpoint yang dibuat
-              type: 'GET',
-              data: {
-                field: selectedField,
-              },
-              dataType: 'json',
-              success: function(response) {
-                $.each(response.value, function(index, value) {
-                  $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
-                });
-              },
-              error: function(xhr, status, error) {
-                console.log('Error:', error);
-              }
-            });
+            loadShowValueOptions(selectedField);
+          } else {
+            $('#show_value').empty();
+            localStorage.removeItem('selectedValue');
           }
         });
 
-        //option value on change
+        // Event listener untuk perubahan pada #show_value
         $('#show_value').on('change', function() {
           var selectedValue = $(this).val();
-          var selectedField = $('#show_field').val();
+          localStorage.setItem('selectedValue', selectedValue);
+        });
 
-          if (selectedValue && selectedField) {
-            $.ajax({
-              url: '/admin/siakad/adjustment/show',
-              type: 'GET',
-              data: {
-                field: selectedField,
-                value: selectedValue,
-              },
-              dataType: 'json',
-              success: function(response) {
-                let tbody = '';
-                if (response.data.length > 0) {
-                  response.data.forEach((item, index) => {
-                    tbody += `
+        // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
+        function loadShowValueOptions(field, selectedValue = null) {
+          $.ajax({
+            url: '/admin/siakad/adjustment/search',
+            type: 'GET',
+            data: {
+              field: field
+            },
+            dataType: 'json',
+            success: function(response) {
+              $('#show_value').empty(); // Hapus opsi lama
+
+              // Tambahkan opsi default
+              $('#show_value').append('<option value="" disabled selected>-- Pilih Value --</option>');
+
+              $.each(response.value, function(index, value) {
+                $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+              });
+
+              // Setel nilai terpilih jika tersedia
+              if (selectedValue) {
+                $('#show_value').val(selectedValue);
+              }
+            },
+            error: function(xhr, status, error) {
+              console.log('Error:', error);
+            }
+          });
+        }
+      });
+
+      //option field on change
+      $('#show_field').on('change', function() {
+        var selectedField = $(this).val();
+
+        // console.log(selectedField);
+
+        if (selectedField) {
+          $.ajax({
+            url: '/admin/siakad/adjustment/search', // Endpoint yang dibuat
+            type: 'GET',
+            data: {
+              field: selectedField,
+            },
+            dataType: 'json',
+            success: function(response) {
+              // console.log(response);
+              $.each(response.value, function(index, value) {
+                $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+              });
+            },
+            error: function(xhr, status, error) {
+              console.log('Error:', error);
+            }
+          });
+        }
+      });
+
+      //option value on change
+      $('#show_value').on('change', function() {
+        var selectedValue = $(this).val();
+        var selectedField = $('#show_field').val();
+
+        if (selectedValue && selectedField) {
+          $.ajax({
+            url: '/admin/siakad/adjustment/show',
+            type: 'GET',
+            data: {
+              field: selectedField,
+              value: selectedValue,
+            },
+            dataType: 'json',
+            success: function(response) {
+              let tbody = '';
+              if (response.data.length > 0) {
+                response.data.forEach((item, index) => {
+                  tbody += `
                             <tr>
                                 <td><input type="checkbox" class="check-item" value="${item.recid}"></td>
                                 <td>${index + 1}</td>
@@ -870,80 +875,79 @@
                                 </td>
                             </tr>
                         `;
-                  });
-                } else {
-                  tbody = '<tr><td colspan="13" class="text-center">Tidak ada data yang tersedia.</td></tr>';
-                }
-
-
-                if ($.fn.DataTable.isDataTable('.table')) {
-                  $('.table').DataTable().destroy();
-                }
-
-                $('tbody').html(tbody);
-
-                $('.table').DataTable({
-                  "paging": true,
-                  "searching": true,
-                  "ordering": true,
-                  "info": true,
-                  "pageLength": 10
                 });
-
-              },
-              error: function(xhr, status, error) {
-                console.log('Error:', error);
+              } else {
+                tbody = '<tr><td colspan="13" class="text-center">Tidak ada data yang tersedia.</td></tr>';
               }
-            });
-          };
-        });
 
 
+              if ($.fn.DataTable.isDataTable('.table')) {
+                $('.table').DataTable().destroy();
+              }
 
+              $('tbody').html(tbody);
 
-        // Ceklis All
-        $('#checkAll').click(function() {
-          $('.check-item').prop('checked', $(this).prop('checked'));
-        });
+              $('.table').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "pageLength": 10
+              });
 
-        // Tombol Delete
-        $('#deleteSelected').click(function() {
-          let selectedIds = [];
-          $('.check-item:checked').each(function() {
-            selectedIds.push($(this).val());
+            },
+            error: function(xhr, status, error) {
+              console.log('Error:', error);
+            }
           });
+        };
+      });
 
-          // console.log(selectedIds);
 
-          if (selectedIds.length > 0) {
-            Swal.fire({
-              title: 'Are you sure?',
-              text: 'You will delete the selected items!',
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                $.ajax({
-                  url: '/admin/siakad/adjustment/drop', // Ubah sesuai endpoint backend Anda
-                  type: 'POST',
-                  data: {
-                    recids: selectedIds
-                  },
-                  success: function(response) {
-                    Swal.fire('Deleted!', 'The selected items have been deleted.', 'success')
-                      .then(() => location.reload());
-                  },
-                  error: function() {
-                    Swal.fire('Error!', 'There was an issue deleting the items.', 'error');
-                  }
-                });
-              }
-            });
-          } else {
-            Swal.fire('No items selected!', 'Please select items to delete.', 'info');
-          }
+
+
+      // Ceklis All
+      $('#checkAll').click(function() {
+        $('.check-item').prop('checked', $(this).prop('checked'));
+      });
+
+      // Tombol Delete
+      $('#deleteSelected').click(function() {
+        let selectedIds = [];
+        $('.check-item:checked').each(function() {
+          selectedIds.push($(this).val());
         });
+
+        // console.log(selectedIds);
+
+        if (selectedIds.length > 0) {
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will delete the selected items!',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/admin/siakad/adjustment/drop', // Ubah sesuai endpoint backend Anda
+                type: 'POST',
+                data: {
+                  recids: selectedIds
+                },
+                success: function(response) {
+                  Swal.fire('Deleted!', 'The selected items have been deleted.', 'success')
+                    .then(() => location.reload());
+                },
+                error: function() {
+                  Swal.fire('Error!', 'There was an issue deleting the items.', 'error');
+                }
+              });
+            }
+          });
+        } else {
+          Swal.fire('No items selected!', 'Please select items to delete.', 'info');
+        }
       });
     </script>
 
