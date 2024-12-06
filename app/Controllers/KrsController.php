@@ -6,13 +6,13 @@ class KrsController
   private $KrsModel;
   private $matkul1;
   private $matkul2;
-  
+
   public function __construct()
   {
     $this->checkLogin();
 
     $this->KrsModel = new KrsModel();
-    
+
     $this->matkul1 = $this->KrsModel->getMatakuliah(1);
     $this->matkul2 = $this->KrsModel->getMatakuliah(2);
     $this->matkul3 = $this->KrsModel->getMatakuliah(3);
@@ -27,13 +27,14 @@ class KrsController
     $this->advisor_id = $_SESSION['advisor_id'];
   }
 
-  public function checkLogin() {
+  public function checkLogin()
+  {
     if (!isset($_SESSION['user_loged'])) {
-        header("Location: /admin/login");
-        exit();
+      header("Location: /admin/login");
+      exit();
     }
   }
-  
+
   public function krs()
   {
 
@@ -53,53 +54,49 @@ class KrsController
     $KRS = $this->KrsModel->getStatusKRS('krs');
 
 
-    if($KRS->status=='Closed'){
+    if ($KRS->status == 'Closed') {
       include __DIR__ . '/../Views/others/page_krsClosed.php';
-    }
-    else{
+    } else {
       include __DIR__ . '/../Views/others/page_krs.php';
-
     }
-
-
   }
 
-    public function addData()
+  public function addData()
   {
     // Mengambil input JSON
-      $data = json_decode(file_get_contents('php://input'), true);
+    $data = json_decode(file_get_contents('php://input'), true);
 
-      // Validasi data
+    // Validasi data
 
-      $academic_year = $data[0]['academic_year'] ?? null;
-      $semester = $data[0]['semester'] ?? null;
-      $student_id = $data[0]['student_id'] ?? null;
-      $total_credits = $data[0]['total_credits'] ?? null;
-      $selected_course_ids = $data[0]['selected_course_ids'] ?? null;
+    $academic_year = $data[0]['academic_year'] ?? null;
+    $semester = $data[0]['semester'] ?? null;
+    $student_id = $data[0]['student_id'] ?? null;
+    $total_credits = $data[0]['total_credits'] ?? null;
+    $selected_course_ids = $data[0]['selected_course_ids'] ?? null;
 
-      $submission_date = date('Y-m-d');
+    $submission_date = date('Y-m-d');
 
-      if ($data === null) {
-        $response = [
-          'success' => false,
-          'message' => 'Invalid JSON input'
-        ];
-      } else {
-        $request = $this->KrsModel->addData($student_id, $semester, $academic_year, $total_credits, $submission_date);
+    if ($data === null) {
+      $response = [
+        'success' => false,
+        'message' => 'Invalid JSON input'
+      ];
+    } else {
+      $request = $this->KrsModel->addData($student_id, $semester, $academic_year, $total_credits, $submission_date);
 
-        if($request === true){
-          $this->KrsModel->addDataKrsCourses($student_id, $selected_course_ids);
-        }
-
-  
-        $response = [
-          'success' => $request,
-          'message' => $request ? 'Data successfully added' : 'Add data failed',
-          'data' => $data,
-        ];
+      if ($request === true) {
+        $this->KrsModel->addDataKrsCourses($student_id, $selected_course_ids);
       }
-      header('Content-Type: application/json');
-      echo json_encode($response);
+
+
+      $response = [
+        'success' => $request,
+        'message' => $request ? 'Data successfully added' : 'Add data failed',
+        'data' => $data,
+      ];
+    }
+    header('Content-Type: application/json');
+    echo json_encode($response);
   }
 
   public function deleteData()
@@ -120,15 +117,16 @@ class KrsController
 
   //persetujuan krs
 
-  public function indexPersetujuan(){
+  public function indexPersetujuan()
+  {
 
     $dataKRS = $this->KrsModel->getAllDataPersetujuan();
 
     include __DIR__ . '/../Views/others/page_persetujuanKrs.php';
-
   }
 
-  public function detailPersetujuan(){
+  public function detailPersetujuan()
+  {
     $krs_id = $_GET['krs_id'] ?? '';
 
     $detailProfil = $this->KrsModel->getDetailProfilKrsPersetujuan($krs_id);
@@ -141,76 +139,75 @@ class KrsController
   }
 
   // Assuming this is within your controller class
-public function updatePersetujuan()
-{
+  public function updatePersetujuan()
+  {
     // Make sure the request method is POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Retrieve the data sent via AJAX
-        $krs_id = $_POST['krs_id'];
-        $approval_status = $_POST['approval_status'];
-        $comments = $_POST['comments'] ?? ''; 
-        // error_log(print_r($_POST['comments'], true));
+      // Retrieve the data sent via AJAX
+      $krs_id = $_POST['krs_id'];
+      $approval_status = $_POST['approval_status'];
+      $comments = $_POST['comments'] ?? '';
+      // error_log(print_r($_POST['comments'], true));
 
-        // Validate the input data
-        if (empty($krs_id) || empty($approval_status)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid data provided.']);
-            return;
-        }
+      // Validate the input data
+      if (empty($krs_id) || empty($approval_status)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid data provided.']);
+        return;
+      }
 
-        $result = $this->KrsModel->updateApprovalStatus($krs_id, $approval_status, $this->advisor_id);
+      $result = $this->KrsModel->updateApprovalStatus($krs_id, $approval_status, $this->advisor_id);
 
-        // echo json_encode(['success' => true, 'krs id' => $approval_status]);
+      // echo json_encode(['success' => true, 'krs id' => $approval_status]);
 
-        header('Content-Type: application/json');
+      header('Content-Type: application/json');
 
-        if ($result) {
-
-
-             $this->KrsModel->addOrUpdateApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, $this->advisor_id);
-
-            echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
-        }
-        exit;
-    } else {
-        // Handle invalid request methods
-        header('Content-Type: application/json');
-
-        echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
-        exit;
-    }
-}
-
-public function updatePersetujuanByGeneral(){
-  // Make sure the request method is POST
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve the data sent via AJAX
-    $krs_id = $_POST['krs_id'];
-    $approval_status = $_POST['approval_status'];
-
-    $result = $this->KrsModel->updateApprovalStatusByGeneral($krs_id, $approval_status, $this->advisor_id);
+      if ($result) {
 
 
-    header('Content-Type: application/json');
-    // echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
-
-    if ($result) {
-         $this->KrsModel->addOrUpdateApprovalRecordByGeneral($krs_id, date('Y-m-d'), $approval_status, $this->advisor_id);
+        $this->KrsModel->addOrUpdateApprovalRecord($krs_id, date('Y-m-d'), $approval_status, $comments, $this->advisor_id);
 
         echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
-    } else {
+      } else {
         echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
+      }
+      exit;
+    } else {
+      // Handle invalid request methods
+      header('Content-Type: application/json');
+
+      echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+      exit;
     }
-    exit;
-} else {
-    // Handle invalid request methods
-    header('Content-Type: application/json');
+  }
 
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
-    exit;
-}
-}
+  public function updatePersetujuanByGeneral()
+  {
+    // Make sure the request method is POST
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      // Retrieve the data sent via AJAX
+      $krs_id = $_POST['krs_id'];
+      $approval_status = $_POST['approval_status'];
 
-        
+      $result = $this->KrsModel->updateApprovalStatusByGeneral($krs_id, $approval_status, $this->advisor_id);
+
+
+      header('Content-Type: application/json');
+      // echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+
+      if ($result) {
+        $this->KrsModel->addOrUpdateApprovalRecordByGeneral($krs_id, date('Y-m-d'), $approval_status, $this->advisor_id);
+
+        echo json_encode(['success' => true, 'message' => 'Approval status updated successfully.']);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update the approval status.']);
+      }
+      exit;
+    } else {
+      // Handle invalid request methods
+      header('Content-Type: application/json');
+
+      echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+      exit;
+    }
+  }
 }
