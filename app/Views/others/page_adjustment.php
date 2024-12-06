@@ -813,11 +813,10 @@
       $('#show_field').on('change', function() {
         var selectedField = $(this).val();
 
-        // console.log(selectedField);
 
         if (selectedField) {
           $.ajax({
-            url: '/admin/siakad/adjustment/search', // Endpoint yang dibuat
+            url: '/admin/siakad/adjustment/search',
             type: 'GET',
             data: {
               field: selectedField,
