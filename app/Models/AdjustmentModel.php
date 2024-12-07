@@ -13,7 +13,6 @@ class AdjustmentModel
   private $mhs_fakultas = 'mhs_fakultas';
   private $mhs_mahasiswa = 'mhs_mahasiswa';
 
-
   public function __construct()
   {
     global $mhs_adjustment;
@@ -90,7 +89,7 @@ class AdjustmentModel
 
   public function getOptionFilter()
   {
-    $query = "SELECT DISTINCT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'mhs_adjustment' AND column_name IN ('fakultas', 'prodi')";
+    $query = "SELECT DISTINCT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'mhs_adjustment' AND column_name IN ('fakultas', 'prodi', 'angkatan')";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -137,6 +136,20 @@ class AdjustmentModel
   public function getFieldValuesProdi($field)
   {
     $query = "SELECT DISTINCT b.ID, b.name, b.deskripsi FROM mhs_adjustment a LEFT JOIN mhs_prodi b ON b.ID = a.$field";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+
+    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    // error_log(json_encode($results));
+
+    return $results; // Kembalikan seluruh hasil sebagai array
+  }
+
+  public function getFieldValuesAngkatan($field)
+  {
+    $query = "SELECT DISTINCT b.ID_angkatan AS ID, b.nama AS deskripsi FROM mhs_adjustment a LEFT JOIN mhs_angkatan b ON b.ID_angkatan = a.$field";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
