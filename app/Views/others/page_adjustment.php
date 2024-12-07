@@ -28,28 +28,49 @@
             <div class="breadcrumb-item">Transaksi Tagihan</div>
           </div>
         </div>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <!-- Select Field -->
+                    <div class="col-12 col-md-5 col-lg-5">
+                      <div class="form-group">
+                        <label>Column Select</label>
+                        <select id="show_field" name="show_field" class="form-control">
+                          <option value="" selected disabled>-- Pilih Column --</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Select Value -->
+                    <div class="col-12 col-md-5 col-lg-5">
+                      <div class="form-group">
+                        <label>Value Select</label>
+                        <select id="show_value" name="show_value" class="form-control">
+                          <option value="" selected disabled>Pilih Value</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Filter Button -->
+                    <div class="col-12 col-md-5 col-lg-2 text-right">
+                      <button class="btn btn-primary" id="filter">
+                        <i class="fas fa-search text-white"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <div class="section-body">
           <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <div class="card-header">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <label for="show_field" class="form-label">Tampilkan</label>
-                        <select id="show_field" class="form-control" name="show_field" required>
-                          <option value="" selected disabled>Pilih Field</option>
-                        </select>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="show_value" class="form-label">Pilih</label>
-                        <select id="show_value" class="form-control" name="show_value" required>
-                          <option value="" selected disabled>Pilih Value</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
                   <div class="card-header-action">
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"></i>
@@ -740,171 +761,6 @@
     </script>
 
     <script>
-      $(document).ready(function() {
-        var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
-
-        // console.log(dataOptionFilter);
-
-        // Populate #show_field dengan opsi dari dataOptionFilter
-        $.each(dataOptionFilter, function(index, value) {
-          $('#show_field').append('<option value="' + value.column_name + '">' + value.column_name + '</option>');
-        });
-
-        // Ambil nilai dari localStorage untuk #show_field dan #show_value
-        var selectedField = localStorage.getItem('selectedField');
-        var selectedValue = localStorage.getItem('selectedValue');
-
-        if (selectedField) {
-          $('#show_field').val(selectedField);
-
-          loadShowValueOptions(selectedField, selectedValue);
-        }
-
-        $('#show_field').on('change', function() {
-          var selectedField = $(this).val();
-          localStorage.setItem('selectedField', selectedField);
-
-          if (selectedField) {
-            loadShowValueOptions(selectedField);
-          } else {
-            $('#show_value').empty();
-            localStorage.removeItem('selectedValue');
-          }
-        });
-
-        // Event listener untuk perubahan pada #show_value
-        $('#show_value').on('change', function() {
-          var selectedValue = $(this).val();
-          localStorage.setItem('selectedValue', selectedValue);
-        });
-
-        // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
-        function loadShowValueOptions(field, selectedValue = null) {
-          $.ajax({
-            url: '/admin/siakad/adjustment/search',
-            type: 'GET',
-            data: {
-              field: field
-            },
-            dataType: 'json',
-            success: function(response) {
-              $('#show_value').empty(); // Hapus opsi lama
-
-              // Tambahkan opsi default
-              $('#show_value').append('<option value="" disabled selected>-- Pilih Value --</option>');
-
-              $.each(response.value, function(index, value) {
-                $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
-              });
-
-              // Setel nilai terpilih jika tersedia
-              if (selectedValue) {
-                $('#show_value').val(selectedValue);
-              }
-            },
-            error: function(xhr, status, error) {
-              console.log('Error:', error);
-            }
-          });
-        }
-      });
-
-      //option field on change
-      $('#show_field').on('change', function() {
-        var selectedField = $(this).val();
-
-
-        if (selectedField) {
-          $.ajax({
-            url: '/admin/siakad/adjustment/search',
-            type: 'GET',
-            data: {
-              field: selectedField,
-            },
-            dataType: 'json',
-            success: function(response) {
-              // console.log(response);
-              $.each(response.value, function(index, value) {
-                $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
-              });
-            },
-            error: function(xhr, status, error) {
-              console.log('Error:', error);
-            }
-          });
-        }
-      });
-
-      //option value on change
-      $('#show_value').on('change', function() {
-        var selectedValue = $(this).val();
-        var selectedField = $('#show_field').val();
-
-        if (selectedValue && selectedField) {
-          $.ajax({
-            url: '/admin/siakad/adjustment/show',
-            type: 'GET',
-            data: {
-              field: selectedField,
-              value: selectedValue,
-            },
-            dataType: 'json',
-            success: function(response) {
-              let tbody = '';
-              if (response.data.length > 0) {
-                response.data.forEach((item, index) => {
-                  tbody += `
-                            <tr>
-                                <td><input type="checkbox" class="check-item" value="${item.recid}"></td>
-                                <td>${index + 1}</td>
-                                <td>${item.nim}</td>
-                                <td>${item.nama_fakultas}</td>
-                                <td>${item.nama_prodi}</td>
-                                <td>${item.nama_tagihan}</td>
-                                <td>${item.nama_angkatan}</td>
-                                <td>Rp. ${new Intl.NumberFormat('id-ID').format(item.nominal)}</td>
-                                <td>${item.qty}</td>
-                                <td>${item.adj_type}</td>
-                                <td>${item.keterangan}</td>
-                                <td>${item.adjustment}</td>
-                                <td>
-                                    <a class="btn btn-primary btn-sm btn-action mr-1 btn-edit" data-id="${item.recid}">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        `;
-                });
-              } else {
-                tbody = '<tr><td colspan="13" class="text-center">Tidak ada data yang tersedia.</td></tr>';
-              }
-
-
-              if ($.fn.DataTable.isDataTable('.table')) {
-                $('.table').DataTable().destroy();
-              }
-
-              $('tbody').html(tbody);
-
-              $('.table').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "pageLength": 10
-              });
-
-            },
-            error: function(xhr, status, error) {
-              console.log('Error:', error);
-            }
-          });
-        };
-      });
-
-
-
-
       // Ceklis All
       $('#checkAll').click(function() {
         $('.check-item').prop('checked', $(this).prop('checked'));
@@ -961,7 +817,126 @@
       });
     </script>
 
+    <script>
+      var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
+      console.log(dataOptionFilter);
 
+      $.each(dataOptionFilter, function(index, value) {
+        // Memeriksa apakah COLUMN_NAME ada, jika tidak, menggunakan column_name
+        var columnName = value.COLUMN_NAME || value.column_name;
+
+        // Menambahkan opsi ke dalam elemen #show_field
+        $('#show_field').append('<option value="' + columnName + '">' + columnName + '</option>');
+      });
+
+
+      var selectedField = localStorage.getItem('selectedField');
+      var selectedValue = localStorage.getItem('selectedValue');
+
+      if (selectedField) {
+        $('#show_field').val(selectedField);
+
+        loadShowValueOptions(selectedField, selectedValue);
+      }
+
+      $('#show_field').on('change', function() {
+        var selectedField = $(this).val();
+        localStorage.setItem('selectedField', selectedField);
+
+        if (selectedField) {
+          loadShowValueOptions(selectedField);
+        } else {
+          $('#show_value').empty();
+          localStorage.removeItem('selectedValue');
+        }
+      });
+
+      // Event listener untuk perubahan pada #show_value
+      $('#show_value').on('change', function() {
+        var selectedValue = $(this).val();
+        localStorage.setItem('selectedValue', selectedValue);
+      });
+      // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
+      function loadShowValueOptions(field, selectedValue = null) {
+        $.ajax({
+          url: '/admin/siakad/adjustment/search',
+          type: 'GET',
+          data: {
+            field: field
+          },
+          dataType: 'json',
+          success: function(response) {
+            $('#show_value').empty(); // Hapus opsi lama
+
+            // Tambahkan opsi default
+            $('#show_value').append('<option value="" disabled selected>-- Pilih Value --</option>');
+
+            $.each(response.value, function(index, value) {
+              $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+            });
+
+            // Setel nilai terpilih jika tersedia
+            if (selectedValue) {
+              $('#show_value').val(selectedValue);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.log('Error:', error);
+          }
+        });
+      }
+    </script>
+    <script>
+      $(document).ready(function() {
+        $('#filter').on('click', function(e) {
+          e.preventDefault(); // Mencegah submit form default jika tombol berada di dalam form
+
+          // Ambil nilai dari dropdown
+          var selectedField = $('#show_field').val();
+          var selectedValue = $('#show_value').val();
+
+          // Validasi apakah kedua dropdown sudah dipilih
+          if (!selectedField) {
+            alert('Silakan pilih Field terlebih dahulu!');
+            return;
+          }
+
+          if (!selectedValue) {
+            alert('Silakan pilih Value terlebih dahulu!');
+            return;
+          }
+
+          // Tampilkan nilai yang dipilih di console
+          console.log('Field:', selectedField);
+          console.log('Value:', selectedValue);
+
+          // Anda dapat menambahkan logika lain di sini, seperti mengirim data ke server menggunakan AJAX
+
+          if (selectedValue && selectedField) {
+            $.ajax({
+              url: '/admin/siakad/adjustment/show',
+              type: 'GET',
+              data: {
+                field: selectedField,
+                value: selectedValue,
+              },
+              dataType: 'json',
+              success: function(response) {
+                console.log(response);
+
+                if (response.success) {
+                  window.location.href = "/admin/siakad/adjustment";
+                }
+
+              },
+              error: function(xhr, status, error) {
+                console.log('Error:', error);
+              }
+            });
+          };
+        });
+      });
+    </script>
 
 </body>
 
