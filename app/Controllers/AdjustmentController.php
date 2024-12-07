@@ -287,6 +287,13 @@ class AdjustmentController
       } else {
         echo json_encode(['success' => false, 'message' => 'value not found']);
       }
+    } else if ($field == 'angkatan') {
+      $value = $this->TagihanModel->getFieldValuesAngkatan($field);
+      if ($value) {
+        echo json_encode(['success' => true, 'value' => $value]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'value not found']);
+      }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
     }
