@@ -50,7 +50,6 @@ class AdjustmentController
     include __DIR__ . '/../Views/others/page_adjustment.php';
   }
 
-
   public function tagihanMhs()
   {
 
