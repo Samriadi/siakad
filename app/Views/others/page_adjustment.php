@@ -35,20 +35,29 @@
                 <div class="card-body">
                   <div class="row align-items-center">
                     <!-- Select Field -->
-                    <div class="col-12 col-md-5 col-lg-5">
+                    <div class="col-12 col-md-5 col-lg-3">
                       <div class="form-group">
-                        <label>Column Select</label>
+                        <label for="show_field">Fakultas</label>
                         <select id="show_field" name="show_field" class="form-control">
-                          <option value="" selected disabled>-- Pilih Column --</option>
+                          <option value="" selected disabled>Pilih Fakultas</option>
                         </select>
                       </div>
                     </div>
                     <!-- Select Value -->
-                    <div class="col-12 col-md-5 col-lg-5">
+                    <div class="col-12 col-md-5 col-lg-3">
                       <div class="form-group">
-                        <label>Value Select</label>
+                        <label for="show_value">Program Studi</label>
                         <select id="show_value" name="show_value" class="form-control">
-                          <option value="" selected disabled>Pilih Value</option>
+                          <option value="" selected disabled>Pilih Prodi</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Select Value -->
+                    <div class="col-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                        <label for="show_angkatan">Angkatan</label>
+                        <select id="show_angkatan" name="show_angkatan" class="form-control">
+                          <option value="" selected disabled>Pilih Angkatan</option>
                         </select>
                       </div>
                     </div>
@@ -818,46 +827,55 @@
     </script>
 
     <script>
-      var dataOptionFilter = <?= json_encode($dataOptionFilter) ?>;
-      console.log(dataOptionFilter);
+      var dataOptionFakultas = <?= json_encode($dataOptionFakultas) ?>;
 
-      $.each(dataOptionFilter, function(index, value) {
-        // Memeriksa apakah COLUMN_NAME ada, jika tidak, menggunakan column_name
-        var columnName = value.COLUMN_NAME || value.column_name;
+      $.each(dataOptionFakultas, function(index, value) {
 
-        // Menambahkan opsi ke dalam elemen #show_field
-        $('#show_field').append('<option value="' + columnName + '">' + columnName + '</option>');
+        $('#show_field').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
       });
 
 
       var selectedField = localStorage.getItem('selectedField');
       var selectedValue = localStorage.getItem('selectedValue');
+      var selectedAngkatan = localStorage.getItem('selectedAngkatan');
 
       if (selectedField) {
         $('#show_field').val(selectedField);
 
-        loadShowValueOptions(selectedField, selectedValue);
+        loadShowValueOptions(selectedField, selectedValue, selectedAngkatan);
       }
 
       $('#show_field').on('change', function() {
         var selectedField = $(this).val();
+
+        loadShowValueOptions(selectedField);
+
+
         localStorage.setItem('selectedField', selectedField);
 
         if (selectedField) {
           loadShowValueOptions(selectedField);
         } else {
           $('#show_value').empty();
+          $('#show_angkatan').empty();
           localStorage.removeItem('selectedValue');
+          localStorage.removeItem('selectedAngkatan');
         }
       });
 
-      // Event listener untuk perubahan pada #show_value
       $('#show_value').on('change', function() {
         var selectedValue = $(this).val();
+
         localStorage.setItem('selectedValue', selectedValue);
       });
-      // Fungsi untuk memuat opsi di #show_value berdasarkan #show_field
-      function loadShowValueOptions(field, selectedValue = null) {
+
+      $('#show_angkatan').on('change', function() {
+        var selectedAngkatan = $(this).val();
+
+        localStorage.setItem('selectedAngkatan', selectedAngkatan);
+      });
+
+      function loadShowValueOptions(field, selectedValue = null, selectedAngkatan = null) {
         $.ajax({
           url: '/admin/siakad/adjustment/search',
           type: 'GET',
@@ -866,18 +884,26 @@
           },
           dataType: 'json',
           success: function(response) {
-            $('#show_value').empty(); // Hapus opsi lama
 
-            // Tambahkan opsi default
-            $('#show_value').append('<option value="" disabled selected>-- Pilih Value --</option>');
+            $('#show_value').empty();
 
-            $.each(response.value, function(index, value) {
+            $('#show_value').append('<option value="" disabled selected>Pilih Prodi</option>');
+
+            $.each(response.prodi, function(index, value) {
               $('#show_value').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
             });
 
-            // Setel nilai terpilih jika tersedia
-            if (selectedValue) {
+            $('#show_angkatan').empty();
+
+            $('#show_angkatan').append('<option value="" disabled selected>Pilih Angkatan</option>');
+
+            $.each(response.angkatan, function(index, value) {
+              $('#show_angkatan').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
+            });
+
+            if (selectedValue && selectedAngkatan) {
               $('#show_value').val(selectedValue);
+              $('#show_angkatan').val(selectedAngkatan);
             }
           },
           error: function(xhr, status, error) {
@@ -889,13 +915,11 @@
     <script>
       $(document).ready(function() {
         $('#filter').on('click', function(e) {
-          e.preventDefault(); // Mencegah submit form default jika tombol berada di dalam form
-
-          // Ambil nilai dari dropdown
+          e.preventDefault();
           var selectedField = $('#show_field').val();
           var selectedValue = $('#show_value').val();
+          var selectedAngkatan = $('#show_angkatan').val();
 
-          // Validasi apakah kedua dropdown sudah dipilih
           if (!selectedField) {
             alert('Silakan pilih Field terlebih dahulu!');
             return;
@@ -906,27 +930,24 @@
             return;
           }
 
-          // Tampilkan nilai yang dipilih di console
-          console.log('Field:', selectedField);
-          console.log('Value:', selectedValue);
+          if (!selectedAngkatan) {
+            alert('Silakan pilih Angkatan terlebih dahulu!');
+            return;
+          }
 
-          // Anda dapat menambahkan logika lain di sini, seperti mengirim data ke server menggunakan AJAX
 
-          if (selectedValue && selectedField) {
+          if (selectedValue && selectedField && selectedAngkatan) {
             $.ajax({
               url: '/admin/siakad/adjustment/show',
               type: 'GET',
               data: {
                 field: selectedField,
                 value: selectedValue,
+                angkatan: selectedAngkatan
               },
               dataType: 'json',
               success: function(response) {
-                console.log(response);
-
-                if (response.success) {
-                  window.location.href = "/admin/siakad/adjustment";
-                }
+                window.location.href = "/admin/siakad/adjustment";
 
               },
               error: function(xhr, status, error) {
