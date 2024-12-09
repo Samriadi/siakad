@@ -11,6 +11,7 @@ class AdjustmentController
   private $dataFakultas;
   private $tagihanMhs;
   private $optionFilter;
+  private $optionFakultas;
 
 
   public function __construct()
@@ -24,6 +25,7 @@ class AdjustmentController
     $this->dataTagihan = $this->TagihanModel->getAllAdjustment();
     $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
     $this->optionFilter = $this->TagihanModel->getOptionFilter();
+    $this->optionFakultas = $this->TagihanModel->getFieldValuesFakultas('fakultas');
   }
   public function checkLogin()
   {
@@ -36,9 +38,11 @@ class AdjustmentController
   public function index()
   {
 
-    if (isset($_SESSION['fieldNameFilter']) && isset($_SESSION['fieldValueFilter'])) {
+    if (isset($_SESSION['fieldNameFilter']) && isset($_SESSION['fieldValueFilter']) && isset($_SESSION['fieldAngkatanFilter'])) {
       $filters = [
-        $_SESSION['fieldNameFilter'] => $_SESSION['fieldValueFilter'],
+        'a.fakultas' => $_SESSION['fieldNameFilter'],
+        'a.prodi' => $_SESSION['fieldValueFilter'],
+        'a.angkatan' => $_SESSION['fieldAngkatanFilter']
       ];
       $data = $this->TagihanModel->getAllAdjustment($filters);
     } else {
@@ -46,6 +50,7 @@ class AdjustmentController
     }
 
     $dataOptionFilter = $this->optionFilter;
+    $dataOptionFakultas = $this->optionFakultas;
 
     include __DIR__ . '/../Views/others/page_adjustment.php';
   }
@@ -269,30 +274,14 @@ class AdjustmentController
   {
     $field = $_GET['field'] ?? null;
 
-    $_SESSION['fieldNameFilter'] = $field;
+    if ($field) {
+      $prodi = $this->TagihanModel->getFieldValuesProdi($field);
+      $angkatan = $this->TagihanModel->getFieldValuesAngkatan($field);
 
-
-    if ($field == 'fakultas') {
-      $value = $this->TagihanModel->getFieldValuesFakultas($field);
-
-      if ($value) {
-        echo json_encode(['success' => true, 'value' => $value]);
+      if ($prodi && $angkatan) {
+        echo json_encode(['success' => true, 'prodi' => $prodi, 'angkatan' => $angkatan]);
       } else {
-        echo json_encode(['success' => false, 'message' => 'value not found']);
-      }
-    } else if ($field == 'prodi') {
-      $value = $this->TagihanModel->getFieldValuesProdi($field);
-      if ($value) {
-        echo json_encode(['success' => true, 'value' => $value]);
-      } else {
-        echo json_encode(['success' => false, 'message' => 'value not found']);
-      }
-    } else if ($field == 'angkatan') {
-      $value = $this->TagihanModel->getFieldValuesAngkatan($field);
-      if ($value) {
-        echo json_encode(['success' => true, 'value' => $value]);
-      } else {
-        echo json_encode(['success' => false, 'message' => 'value not found']);
+        echo json_encode(['success' => false, 'prodi' => null, 'angkatan' => null]);
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
@@ -303,14 +292,20 @@ class AdjustmentController
   {
     $field = $_GET['field'] ?? null;
     $value = $_GET['value'] ?? null;
+    $angkatan = $_GET['angkatan'] ?? null;
 
-    $_SESSION['fieldNameFilter'] = $field;
-    $_SESSION['fieldValueFilter'] = $value;
+    if ($field && $value && $angkatan) {
 
-    if ($field && $value) {
+      $_SESSION['fieldNameFilter'] = $field;
+      $_SESSION['fieldValueFilter'] = $value;
+      $_SESSION['fieldAngkatanFilter'] = $angkatan;
+
       $filters = [
-        $_SESSION['fieldNameFilter'] => $_SESSION['fieldValueFilter'],
+        'a.fakultas' => $_SESSION['fieldNameFilter'],
+        'a.prodi' => $_SESSION['fieldValueFilter'],
+        'a.angkatan' => $_SESSION['fieldAngkatanFilter'],
       ];
+
 
       $result = $this->TagihanModel->getAllAdjustment($filters);
 
