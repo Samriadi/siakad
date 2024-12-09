@@ -40,6 +40,7 @@ class AdjustmentModel
 
   public function getAllAdjustment($conditions = [])
   {
+
     $query = "SELECT 
                 a.*,
                 e.nama_tagihan,
@@ -59,19 +60,15 @@ class AdjustmentModel
 
     if (!empty($conditions)) {
       $whereClauses = [];
+
       foreach ($conditions as $key => $value) {
-        $whereClauses[] = "$key = :$key";
+        $formattedValue = is_numeric($value) ? $value : "'$value'";
+        $whereClauses[] = "$key = $formattedValue";
       }
-      $query .= " WHERE a." . implode(" AND ", $whereClauses);
+      $query .= " WHERE " . implode(' AND ', $whereClauses);
     }
 
     $stmt = $this->db->prepare($query);
-
-    if (!empty($conditions)) {
-      foreach ($conditions as $key => $value) {
-        $stmt->bindValue(":$key", $value);
-      }
-    }
 
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -130,12 +127,12 @@ class AdjustmentModel
 
     // error_log(json_encode($results));
 
-    return $results; // Kembalikan seluruh hasil sebagai array
+    return $results;
   }
 
   public function getFieldValuesProdi($field)
   {
-    $query = "SELECT DISTINCT b.ID, b.name, b.deskripsi FROM mhs_adjustment a LEFT JOIN mhs_prodi b ON b.ID = a.$field";
+    $query = "SELECT DISTINCT a.ID, a.name, a.deskripsi FROM mhs_prodi a LEFT JOIN mhs_adjustment b ON b.fakultas = a.ID WHERE a.fakultas=$field";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -144,12 +141,12 @@ class AdjustmentModel
 
     // error_log(json_encode($results));
 
-    return $results; // Kembalikan seluruh hasil sebagai array
+    return $results;
   }
 
   public function getFieldValuesAngkatan($field)
   {
-    $query = "SELECT DISTINCT b.ID_angkatan AS ID, b.nama AS deskripsi FROM mhs_adjustment a LEFT JOIN mhs_angkatan b ON b.ID_angkatan = a.$field";
+    $query = "SELECT DISTINCT a.ID_angkatan AS ID, a.nama AS deskripsi FROM mhs_angkatan a LEFT JOIN mhs_adjustment b ON b.angkatan = a.ID_angkatan WHERE b.fakultas=$field";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -158,7 +155,7 @@ class AdjustmentModel
 
     // error_log(json_encode($results));
 
-    return $results; // Kembalikan seluruh hasil sebagai array
+    return $results;
   }
 
   public function getAll()
