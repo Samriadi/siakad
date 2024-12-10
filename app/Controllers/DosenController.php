@@ -5,6 +5,7 @@ class DosenController
 
   private $DosenModel;
   private $dataDosen;
+  private $dataPenugasan;
 
   public function __construct()
   {
@@ -14,10 +15,11 @@ class DosenController
     $this->dataDosen = $this->DosenModel->getAll();
     $this->dataPenugasan = $this->DosenModel->getAllPenugasan();
   }
-  public function checkLogin() {
+  public function checkLogin()
+  {
     if (!isset($_SESSION['user_loged'])) {
-        header("Location: /admin/login");
-        exit();
+      header("Location: /admin/login");
+      exit();
     }
   }
   public function index()
