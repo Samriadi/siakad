@@ -45,6 +45,14 @@ class TagihanModel
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
+  public function getTransaksiMhs()
+  {
+    $query = "SELECT nim, nama, prodi, angkatan, tagihan FROM $this->mhs_transaksi";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
   public function getAll()
   {
     $query = "SELECT 
