@@ -29,6 +29,7 @@
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Master Tagihan</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/adjustment">Transaksi Tagihan</a></li>
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/invoice">Tagihan Mahasiswa</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/invoice">Pembayaran Mahasiswa</a></li>
 
         </ul>
       </li>
