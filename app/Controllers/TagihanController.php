@@ -11,6 +11,7 @@ class TagihanController
   private $dataTagihan;
   private $tagihanMhs;
   private $selectedData;
+  private $transaksiMhs;
 
 
   public function __construct()
@@ -23,6 +24,7 @@ class TagihanController
     $this->ProdiModel = new ProdiModel();
     $this->dataTagihan = $this->TagihanModel->getAll();
     $this->tagihanMhs = $this->TagihanModel->getTagihanMhs();
+    $this->transaksiMhs = $this->TagihanModel->getTransaksiMhs();
   }
   public function checkLogin()
   {
@@ -43,27 +45,25 @@ class TagihanController
   {
     $data = $this->tagihanMhs;
     $dataSelected = $_SESSION['selectedData'];
-    // error_log("item selected prodi: " . print_r($dataSelected, true));
-
     include __DIR__ . '/../Views/others/page_tagihan_mhs.php';
+  }
+
+  public function transaksiMhs()
+  {
+    $data = $this->transaksiMhs;
+    include __DIR__ . '/../Views/others/page_transaksi_mhs.php';
   }
 
   public function selectData()
   {
     $id_fakultas = $_GET['fakultas_id'] ?? null;
 
-    error_log("item: " . print_r($id_fakultas, true));
-
     if ($id_fakultas) {
       $dataSelect = $this->ProdiModel->getAll(['fakultas' => $id_fakultas]);
 
-      error_log("item select: " . print_r($dataSelect, true));
-
       if ($dataSelect) {
-        // Hapus sesi sebelumnya
         unset($_SESSION['selectedData']);
 
-        // Isi sesi baru
         $_SESSION['selectedData'] = $dataSelect;
 
         echo json_encode(['success' => true, 'data' => $_SESSION['selectedData']]);
@@ -236,7 +236,6 @@ class TagihanController
 
   public function prosesInvoice()
   {
-    // Ambil data dari request (JSON)
     $inputData = json_decode(file_get_contents('php://input'), true);
 
     if (empty($inputData)) {
@@ -244,7 +243,6 @@ class TagihanController
       return;
     }
 
-    // Validasi data
     $errors = [];
     foreach ($inputData as $index => $item) {
       if (empty($item['nim']) || empty($item['nama']) || empty($item['prodi'] || empty($item['angkatan']))) {
@@ -257,7 +255,6 @@ class TagihanController
       return;
     }
 
-    // Simpan data ke database
     $result = $this->TagihanModel->prosesInvoice($inputData);
 
     if ($result) {
