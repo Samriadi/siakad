@@ -146,7 +146,7 @@ class AdjustmentModel
 
   public function getFieldValuesAngkatan($field)
   {
-    $query = "SELECT DISTINCT a.ID_angkatan AS ID, a.nama AS deskripsi FROM mhs_angkatan a LEFT JOIN mhs_adjustment b ON b.angkatan = a.ID_angkatan WHERE b.fakultas=$field";
+    $query = "SELECT DISTINCT a.ID_angkatan AS ID, a.nama AS deskripsi FROM mhs_angkatan a INNER JOIN mhs_adjustment b ON b.angkatan = a.ID_angkatan WHERE b.fakultas=$field";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
