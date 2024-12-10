@@ -182,14 +182,16 @@ addRouteGroup('/tagihan', 'TagihanController', [
     '/select' => 'selectData',
 ]);
 
+addRouteGroup('/invoice', 'FakultasController', ['' => 'selectFakultas']);
 addRouteGroup('/invoice-selected', 'TagihanController', [
     '' => 'tagihanMhs',
 ]);
-
 addRouteGroup('/invoice-find', 'TagihanController', [
     ''         => 'selectData',
     '/proses'  => 'prosesInvoice',
 ]);
+addRouteGroup('/transaksi', 'TagihanController', ['' => 'transaksiMhs']);
+
 
 // adjustment tagihan routes
 addRouteGroup('/adjustment', 'AdjustmentController', [
@@ -237,7 +239,6 @@ addRouteGroup('/fakultas', 'FakultasController', [
     '/include' => 'includeData',
 ]);
 
-addRouteGroup('/invoice', 'FakultasController', ['' => 'selectFakultas']);
 
 
 // Dispatch URL
