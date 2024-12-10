@@ -132,7 +132,7 @@ class AdjustmentModel
 
   public function getFieldValuesProdi($field)
   {
-    $query = "SELECT DISTINCT a.ID, a.name, a.deskripsi FROM mhs_prodi a INNER JOIN mhs_adjustment b ON b.prodi = a.ID WHERE a.fakultas = $field";
+    $query = "SELECT DISTINCT a.ID, a.name, a.deskripsi FROM mhs_prodi a INNER JOIN mhs_adjustment b ON b.prodi = a.ID WHERE b.fakultas = $field";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
