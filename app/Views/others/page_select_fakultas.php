@@ -43,7 +43,8 @@
                           <div class="card-body">
                             <h4><?= $value->name ?></h4>
                             <p><?= $value->deskripsi ?></p>
-                            <a href="#" class="card-cta" onclick="handleTagihanMahasiswa(<?= $value->ID ?>)">Tagihan Mahasiswa <i class="fas fa-chevron-right"></i></a>
+                            <a href="#" class="card-cta" onclick="handleTagihanMahasiswa(<?= $value->ID ?>)">Tagihan <i class="fas fa-chevron-right"></i></a><br>
+                            <a href="#" class="card-cta" onclick="handlePembayaranMahasiswa(<?= $value->ID ?>)">Pembayaran <i class="fas fa-chevron-right"></i></a>
                           </div>
                         </div>
                       </div>
@@ -72,8 +73,6 @@
       });
 
       function handleTagihanMahasiswa(id) {
-
-        console.log(id);
         $.ajax({
           url: '/admin/siakad/invoice-find',
           type: 'GET',
@@ -91,7 +90,26 @@
             console.error('Response:', xhr.responseText);
           }
         });
+      }
 
+      function handlePembayaranMahasiswa(id) {
+        $.ajax({
+          url: '/admin/siakad/invoice-find-paying',
+          type: 'GET',
+          data: {
+            fakultas_id: id
+          },
+          dataType: 'json',
+          success: function(response) {
+            console.log('Response:', response);
+            window.location.href = '/admin/siakad/invoice-selected-paying';
+          },
+          error: function(xhr, status, error) {
+            console.error('Error:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+          }
+        });
       }
     </script>
 
