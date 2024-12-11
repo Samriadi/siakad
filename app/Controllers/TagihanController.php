@@ -51,8 +51,9 @@ class TagihanController
   public function transaksiMhs()
   {
     $data = $this->transaksiMhs;
+    $dataSelectedPaying = $_SESSION['selectedPaying'];
     include __DIR__ . '/../Views/others/page_transaksi_mhs.php';
-  }
+  } 
 
   public function selectData()
   {
@@ -67,6 +68,27 @@ class TagihanController
         $_SESSION['selectedData'] = $dataSelect;
 
         echo json_encode(['success' => true, 'data' => $_SESSION['selectedData']]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
+  public function payingData()
+  {
+    $id_fakultas = $_GET['fakultas_id'] ?? null;
+
+    if ($id_fakultas) {
+      $payingData = $this->ProdiModel->getAll(['fakultas' => $id_fakultas]);
+
+      if ($payingData) {
+        unset($_SESSION['selectedPaying']);
+
+        $_SESSION['selectedPaying'] = $payingData;
+
+        echo json_encode(['success' => true, 'data' => $_SESSION['selectedPaying']]);
       } else {
         echo json_encode(['success' => false, 'message' => 'Data not found']);
       }
