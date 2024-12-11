@@ -835,9 +835,26 @@
       });
 
 
-      var selectedField = localStorage.getItem('selectedField');
-      var selectedValue = localStorage.getItem('selectedValue');
-      var selectedAngkatan = localStorage.getItem('selectedAngkatan');
+      // Ambil nilai dari session yang diekspor oleh PHP
+      var sessionField = <?= json_encode($_SESSION['fieldNameFilter'] ?? '') ?>;
+      var sessionValue = <?= json_encode($_SESSION['fieldValueFilter'] ?? '') ?>;
+      var sessionAngkatan = <?= json_encode($_SESSION['fieldAngkatanFilter'] ?? '') ?>;
+
+      // Jika nilai session tersedia, gunakan nilai tersebut. Jika tidak, gunakan localStorage.
+      var selectedField = sessionField || localStorage.getItem('selectedField');
+      var selectedValue = sessionValue || localStorage.getItem('selectedValue');
+      var selectedAngkatan = sessionAngkatan || localStorage.getItem('selectedAngkatan');
+
+      // Simpan kembali nilai yang digunakan ke localStorage untuk keperluan di masa depan
+      if (sessionField) {
+        localStorage.setItem('selectedField', sessionField);
+      }
+      if (sessionValue) {
+        localStorage.setItem('selectedValue', sessionValue);
+      }
+      if (sessionAngkatan) {
+        localStorage.setItem('selectedAngkatan', sessionAngkatan);
+      }
 
       if (selectedField) {
         $('#show_field').val(selectedField);
