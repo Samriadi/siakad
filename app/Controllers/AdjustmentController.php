@@ -137,6 +137,11 @@ class AdjustmentController
         'message' => 'No data provided',
       ];
     } else {
+
+      $_SESSION['fieldNameFilter'] = $dataArray[0]['fakultas'];
+      $_SESSION['fieldValueFilter'] = $dataArray[0]['prodi'];
+      $_SESSION['fieldAngkatanFilter'] = $dataArray[0]['angkatan'];
+
       $request = $this->TagihanModel->addData($dataArray[0]);
 
       if ($request === 'success') {
