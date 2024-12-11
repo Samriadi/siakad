@@ -190,6 +190,13 @@ addRouteGroup('/invoice-find', 'TagihanController', [
     ''         => 'selectData',
     '/proses'  => 'prosesInvoice',
 ]);
+addRouteGroup('/invoice-find-paying', 'TagihanController', [
+    ''         => 'payingData',
+]);
+addRouteGroup('/invoice-selected-paying', 'TagihanController', [
+    ''         => 'transaksiMhs',
+]);
+
 addRouteGroup('/transaksi', 'TagihanController', ['' => 'transaksiMhs']);
 
 
