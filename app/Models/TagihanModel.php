@@ -222,17 +222,29 @@ class TagihanModel
                                     SET tagihan = ? 
                                     WHERE nim = ?";
             $stmtUpdate = $this->db->prepare($updateQuery);
-            $stmtUpdate->execute([$newTagihan, $item['nim']]);
+            $req = $stmtUpdate->execute([$newTagihan, $item['nim']]);
+
+            if ($req) {
+              $deleteQuery = "DELETE FROM vw_hit_tagihan WHERE nim = ?";
+              $stmtDelete = $this->db->prepare($deleteQuery);
+              $stmtDelete->execute([$item['nim']]);
+            }
           } else {
             $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan) VALUES (?, ?, ?, ?, ?)";
             $stmtInsert = $this->db->prepare($insertQuery);
-            $stmtInsert->execute([
+            $req = $stmtInsert->execute([
               $item['nim'],
               $item['nama'],
               $item['prodi'],
               $item['angkatan'],
               $nominal
             ]);
+
+            if ($req) {
+              $deleteQuery = "DELETE FROM vw_hit_tagihan WHERE nim = ?";
+              $stmtDelete = $this->db->prepare($deleteQuery);
+              $stmtDelete->execute([$item['nim']]);
+            }
           }
         } else {
           error_log("Invalid data: " . print_r($item, true));
