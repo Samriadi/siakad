@@ -197,11 +197,8 @@ addRouteGroup('/invoice-selected-paying', 'TagihanController', [
     ''         => 'transaksiMhs',
 ]);
 
-addRouteGroup('/transaksi', 'TagihanController', ['' => 'transaksiMhs']);
-
-
-// adjustment tagihan routes
-addRouteGroup('/adjustment', 'AdjustmentController', [
+// transaksi tagihan routes
+addRouteGroup('/transaksi', 'AdjustmentController', [
     '' => 'index',
     '/fetch' => 'fetchData',
     '/add' => 'addData',
