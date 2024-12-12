@@ -210,8 +210,8 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
           $stmt = $this->db->prepare($query);
           $result = $stmt->execute([
             $data['fakultas'],
@@ -224,6 +224,9 @@ class AdjustmentModel
             $adjType,
             $data['adjust'],
             $data['qty'],
+            $data['periode_pembayaran'],
+            $data['awal_pembayaran'],
+            $data['akhir_pembayaran']
 
           ]);
         }
@@ -237,8 +240,8 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
-        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty) 
-		SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ? FROM vw_mhs WHERE NIM<>'' ";
+        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty, periode, from_date, to_date) 
+	    	SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ? FROM vw_mhs WHERE NIM<>'' ";
 
         if ($data['prodi'] <> '11111')
           $query .= "AND kode_prodi=? ";
@@ -260,7 +263,10 @@ class AdjustmentModel
           $data['adj_type'],
           $data['adjust'],
           $data['prodi'],
-          $data['angkatan']
+          $data['angkatan'],
+          $data['periode_pembayaran'],
+          $data['awal_pembayaran'],
+          $data['akhir_pembayaran'],
         ]);
       }
 
@@ -279,7 +285,7 @@ class AdjustmentModel
     // error_log("data: " . print_r($data, true));
 
     try {
-      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , qty = :qty, keterangan = :keterangan, nim = :nim, adjustment = :adjustment WHERE recid = :recid";
+      $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , qty = :qty, keterangan = :keterangan, nim = :nim, adjustment = :adjustment, periode = :periode, from_date = :from_date, to_date = :to_date WHERE recid = :recid";
       $stmt = $this->db->prepare($query);
       $result = $stmt->execute([
         ':prodi' => $data['prodi'],
@@ -290,6 +296,9 @@ class AdjustmentModel
         ':keterangan' => $data['keterangan'],
         ':nim' => $data['nim'],
         ':adjustment' => $data['adjustment'],
+        ':periode' => $data['periode_pembayaran'],
+        ':from_date' => $data['awal_pembayaran'],
+        ':to_date' => $data['akhir_pembayaran'],
         ':recid' => $data['recid']
       ]);
 
