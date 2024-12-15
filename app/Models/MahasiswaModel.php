@@ -8,7 +8,8 @@ class MahasiswaModel
     private $mhs_ortu = 'mhs_ortu';
     private $pmb_ortu = 'pmb_ortu';
     private $pmb_nim = 'pmb_nim';
-	private $mhs_prodi = 'mhs_prodi';
+    private $mhs_prodi = 'mhs_prodi';
+    private $mhs_fakultas = 'mhs_fakultas';
 
     public function __construct()
     {
@@ -17,47 +18,49 @@ class MahasiswaModel
         global $mhs_ortu;
         global $pmb_ortu;
         global $pmb_nim;
-		global $mhs_prodi;
+        global $mhs_prodi;
+        global $mhs_fakultas;
 
         $this->mhs_mahasiswa = $mhs_mahasiswa;
         $this->pmb_mahasiswa = $pmb_mahasiswa;
         $this->mhs_ortu = $mhs_ortu;
         $this->pmb_ortu = $pmb_ortu;
         $this->pmb_nim = $pmb_nim;
-		$this->mhs_prodi = $mhs_prodi;
+        $this->mhs_prodi = $mhs_prodi;
+        $this->mhs_fakultas = $mhs_fakultas;
 
         $this->db = Database::getInstance();
     }
 
     public function getAll()
     {
-        $query = "SELECT * FROM $this->mhs_mahasiswa";
+        $query = "SELECT a.*, b.deskripsi AS nama_prodi, c.deskripsi AS nama_fakultas FROM $this->mhs_mahasiswa a LEFT JOIN $this->mhs_prodi b ON b.ID = a.kode_prodi LEFT JOIN $this->mhs_fakultas c ON C.ID = b.fakultas";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-    
 
-    public function countBy($catgy, $catName, $where="")
+
+    public function countBy($catgy, $catName, $where = "")
     {
-		if ($where) $where = " WHERE status='$where' ";
-		
+        if ($where) $where = " WHERE status='$where' ";
+
         $query = "SELECT prodi.$catgy AS $catName,COUNT(*) AS jumlah FROM $this->mhs_mahasiswa AS mhs 
 		LEFT JOIN $this->mhs_prodi AS prodi ON mhs.kode_prodi=prodi.ID $where GROUP BY prodi.$catgy";
-        
-		$stmt = $this->db->prepare($query);
+
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-  
+
     public function countAll()
-{
-    $query = "SELECT COUNT(*) as total FROM $this->mhs_mahasiswa";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    
-    return $stmt->fetch(PDO::FETCH_OBJ)->total;
-}
+    {
+        $query = "SELECT COUNT(*) as total FROM $this->mhs_mahasiswa";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_OBJ)->total;
+    }
 
 
 
@@ -191,7 +194,7 @@ class MahasiswaModel
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-   
+
 
     public function importDataOrtu()
     {
@@ -281,20 +284,19 @@ class MahasiswaModel
     public function deleteData($id)
     {
         try {
-    
+
             // Delete from the mahasiswa table
             $stmtMahasiswa = $this->db->prepare("DELETE FROM {$this->mhs_mahasiswa} WHERE ID = :id");
             $stmtMahasiswa->execute([':id' => $id]);
-            
+
             return true;
         } catch (PDOException $e) {
             // Rollback the transaction in case of an error
-            $this->db->rollBack();
             // Optionally log $e->getMessage() for debugging
             return false;
         }
     }
-    
+
 
     public function deleteDataOrtu($id)
     {
@@ -308,13 +310,14 @@ class MahasiswaModel
             return false;
         }
     }
-    public function saveMahasiswaAndOrangtua($data) {
+    public function saveMahasiswaAndOrangtua($data)
+    {
         error_log("mahasiswa data: " . print_r($data['nama'], true));
-    
+
         $sqlMahasiswa = "INSERT INTO mhs_mahasiswa (NamaLengkap, tempat_lahir, tgl_lahir, jenkel, Agama, kewarganegaraan, nik, NIS, alamat, rtrw, kelurahan, kecamatan, kabupaten, propinsi, WANumber, Email, status, nama_ayah, nama_ibu, nik_ayah, nik_ibu, phone_ayah, phone_ibu, tglahir_ayah, tglahir_ibu, agama_ayah, agama_ibu, job_ayah, job_ibu, salary_ayah, salary_ibu, alamat_ayah, alamat_ibu) 
         VALUES (:nama, :tempatLahir, :tanggalLahir, :jenkel, :agama, :kewarganegaraan, :nik, :nis, :alamat, :rtrw, :kelurahan, :kecamatan, :kabupaten, :propinsi, :waNumber, :email, :status, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
         $stmt = $this->db->prepare($sqlMahasiswa);
-    
+
         $stmt->bindParam(':nama', $data['nama']);
         $stmt->bindParam(':tempatLahir', $data['tempatLahir']);
         $stmt->bindParam(':tanggalLahir', $data['tanggalLahir']);
@@ -353,7 +356,7 @@ class MahasiswaModel
 
         error_log("mahasiswa data: " . print_r($result, true));
 
-    
+
         // Execute and check if successful
         if (!$result) {
             error_log("Error inserting mahasiswa data: " . print_r($stmt->errorInfo(), true));
@@ -367,22 +370,16 @@ class MahasiswaModel
         // $sqlOrangtua = "INSERT INTO mhs_ortu (maba_id, nama_ayah, nama_ibu, nik_ayah, nik_ibu, phone_ayah, phone_ibu, tglahir_ayah, tglahir_ibu, agama_ayah, agama_ibu, job_ayah, job_ibu, salary_ayah, salary_ibu, alamat_ayah, alamat_ibu) 
         // VALUES (:maba_id, :nama_ayah, :nama_ibu, :nik_ayah, :nik_ibu, :phone_ayah, :phone_ibu, :tglahir_ayah, :tglahir_ibu, :agama_ayah, :agama_ibu, :job_ayah, :job_ibu, :salary_ayah, :salary_ibu, :alamat_ayah, :alamat_ibu)";
         // $stmt = $this->db->prepare($sqlOrangtua);
-    
+
         // // Bind parameters for orangtua
         // $stmt->bindParam(':maba_id', $lastID);
-   
-    
+
+
         // if (!$stmt->execute()) {
         //     error_log("Error inserting orangtua data: " . print_r($stmt->errorInfo(), true));
         //     return false;
         // }
-    
+
         return true;
     }
-    
-
-    
-          
-    
-   
 }
