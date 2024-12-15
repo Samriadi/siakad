@@ -64,6 +64,9 @@
                                                                     <th scope="col">Nim</th>
                                                                     <th scope="col">Jenis Kelamin</th>
                                                                     <th scope="col">Tanggal Lahir</th>
+                                                                    <th scope="col">Fakultas</th>
+                                                                    <th scope="col">Prodi</th>
+                                                                    <th scope="col">Angkatan</th>
                                                                     <!-- <th scope="col">Action</th> -->
                                                                 </tr>
                                                             </thead>
@@ -110,6 +113,9 @@
                                                                         <td><?= $value->Nim ?></td>
                                                                         <td><?= $value->jenkel ?></td>
                                                                         <td><?= $value->tgl_lahir ?></td>
+                                                                        <td><?= $value->nama_fakultas ?></td>
+                                                                        <td><?= $value->nama_prodi ?></td>
+                                                                        <td><?= $value->angkatan ?></td>
                                                                         <!-- <td>
                                                                             <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->ID ?>" onclick="confirmDelete(this)">
                                                                                 <i class="fas fa-trash-alt"></i>
