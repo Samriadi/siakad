@@ -116,6 +116,40 @@ class AdjustmentModel
     return $result ? $result->nominal : null;
   }
 
+
+  public function getTotalNominal($selectedPaytype, $fakultas, $prodi, $angkatan)
+  {
+    $total_nominal = 0;
+    $all_data = [];
+    foreach ($selectedPaytype as $jenis_tagihan) {
+      $query = "SELECT jenis_tagihan, nominal FROM mhs_tagihan WHERE jenis_tagihan = :jenis_tagihan AND angkatan = :angkatan AND prodi = :prodi AND fakultas = :fakultas";
+
+      $stmt = $this->db->prepare($query);
+
+      $stmt->bindParam(':jenis_tagihan', $jenis_tagihan, PDO::PARAM_INT);
+      $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
+      $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
+      $stmt->bindParam(':fakultas', $fakultas, PDO::PARAM_STR);
+      $stmt->execute();
+
+      $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($data) {
+        $total_nominal += $data['nominal'];
+        $all_data[] = $data;
+      } else {
+        error_log("No data found for jenis_tagihan $jenis_tagihan");
+      }
+    }
+
+
+    return ['total_nominal' => $total_nominal, 'data' => $all_data];
+  }
+
+
+
+
+
   public function getFieldValuesFakultas($field)
   {
     $query = "SELECT DISTINCT b.ID, b.name, b.deskripsi FROM mhs_adjustment a LEFT JOIN mhs_fakultas b ON b.ID = a.$field";
@@ -277,6 +311,75 @@ class AdjustmentModel
     }
   }
 
+  public function addDataMultiTagihan($data)
+  {
+    try {
+      // Ensure $data is an array
+      if (!is_array($data)) {
+        throw new Exception("Expected an array, but received: " . gettype($data));
+      }
+
+      // Loop through each main data entry
+      foreach ($data as $item) {
+        // Ensure $item is an array
+        if (!is_array($item)) {
+          throw new Exception("Each item should be an array, but received: " . gettype($item));
+        }
+
+        // Extract values from the main entry
+        $fakultas = $item['fakultas'];
+        $prodi = $item['prodi'];
+        $angkatan = $item['angkatan'];
+        $keterangan = $item['keterangan'];
+        $nim = $item['nim'];
+        $periode = $item['periode_pembayaran'];
+        $awal_pembayaran = $item['awal_pembayaran'];
+        $akhir_pembayaran = $item['akhir_pembayaran'];
+        $adjust = $item['adjust'];
+        $qty = 1;
+        $adjType = "normal";
+
+
+        foreach ($item['tagihan'] as $tagihan) {
+          if (!is_array($tagihan)) {
+            throw new Exception("Each tagihan should be an array, but received: " . gettype($tagihan));
+          }
+          $jenis_tagihan = $tagihan['jenis_tagihan'];
+          $nominal = $tagihan['nominal'];
+
+          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          $stmt = $this->db->prepare($query);
+          $result = $stmt->execute([
+            $fakultas,
+            $prodi,
+            $jenis_tagihan,
+            $angkatan,
+            $nominal,
+            $keterangan,
+            $nim,
+            $periode,
+            $awal_pembayaran,
+            $akhir_pembayaran,
+            $adjust,
+            $adjType,
+            $qty
+          ]);
+
+          if (!$result) {
+            return 'error';
+          }
+        }
+      }
+
+      return 'success';
+    } catch (Exception $e) {
+      error_log($e->getMessage());
+      return 'error';
+    }
+  }
+
+
 
 
   public function updateData($data)
@@ -388,5 +491,26 @@ class AdjustmentModel
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getPaytypeMultiTagihan($fakultas, $prodi, $angkatan)
+  {
+
+    $query = "SELECT a.*, b.nama_tagihan 
+              FROM mhs_tagihan a 
+              LEFT JOIN mhs_paytype b ON b.recid = a.jenis_tagihan 
+              WHERE fakultas = :fakultas AND prodi = :prodi AND angkatan = :angkatan";
+
+    $stmt = $this->db->prepare($query);
+
+    $stmt->bindParam(':fakultas', $fakultas, PDO::PARAM_STR);
+    $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
+    $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    return $result ? $result : null;
   }
 }
