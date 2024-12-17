@@ -63,6 +63,17 @@ class AdjustmentController
     include __DIR__ . '/../Views/others/page_tagihan_mhs.php';
   }
 
+  public function multiTagihan()
+  {
+
+    $dataPaytype = $this->PembayaranModel->getAll();
+    $dataProdi = $this->TagihanModel->getDataProdi();
+    $dataAngkatan = $this->TagihanModel->getDataAngkatan();
+    $dataFakultas = $this->FakultasModel->getAll();
+
+    include __DIR__ . '/../Views/others/page_multiTagihan.php';
+  }
+
   public function fetchData()
   {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
@@ -143,6 +154,45 @@ class AdjustmentController
       $_SESSION['fieldAngkatanFilter'] = $dataArray[0]['angkatan'];
 
       $request = $this->TagihanModel->addData($dataArray[0]);
+
+      if ($request === 'success') {
+        $response = [
+          'success' => true,
+          'message' => 'Data berhasil ditambahkan',
+        ];
+      } elseif ($request === 'exists') {
+        $response = [
+          'success' => false,
+          'message' => 'Data sudah ada',
+        ];
+      } else {
+        $response = [
+          'success' => false,
+          'message' => 'Gagal menambahkan data',
+        ];
+      }
+    }
+
+    // Set response header dan kirim JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+  }
+
+  public function addDataMultiTagihan()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
+
+    error_log("dataArray: " . print_r($dataArray, true));
+
+    if (empty($dataArray) || !isset($dataArray[0])) {
+      $response = [
+        'success' => false,
+        'message' => 'No data provided',
+      ];
+    } else {
+
+      $request = $this->TagihanModel->addDataMultiTagihan($dataArray);
 
       if ($request === 'success') {
         $response = [
@@ -255,6 +305,27 @@ class AdjustmentController
     echo json_encode($response);
   }
 
+
+  public function getTotalNominal()
+  {
+    $selectedPaytype = $_GET['selectedPaytype'] ?? null;
+    $fakultas = $_GET['fakultas'] ?? null;
+    $prodi = $_GET['prodi'] ?? null;
+    $angkatan = $_GET['angkatan'] ?? null;
+
+    if ($selectedPaytype) {
+      $data = $this->TagihanModel->getTotalNominal($selectedPaytype, $fakultas, $prodi, $angkatan);
+
+      if ($data) {
+        echo json_encode(['success' => true, 'data' => $data['data'], 'totalNominal' => $data['total_nominal']]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
   public function getNominal()
   {
     $fakultas = $_GET['fakultas'] ?? null;
@@ -267,6 +338,28 @@ class AdjustmentController
 
       if ($nominal || $nominal === 0) {
         echo json_encode(['success' => true, 'nominal' => $nominal]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+  public function getPaytypeMultiTagihan()
+  {
+    $fakultas = $_GET['fakultas'] ?? null;
+    $prodi = $_GET['prodi'] ?? null;
+    $angkatan = $_GET['angkatan'] ?? null;
+    error_log("fakultas: " . print_r($fakultas, true));
+
+
+    if ($fakultas && $prodi && $angkatan) {
+      $dataPaytype = $this->TagihanModel->getPaytypeMultiTagihan($fakultas, $prodi, $angkatan);
+
+      error_log("dataPaytype: " . print_r($dataPaytype, true));
+
+      if ($dataPaytype) {
+        echo json_encode(['success' => true, 'data' => $dataPaytype]);
       } else {
         echo json_encode(['success' => false, 'message' => 'Data not found']);
       }
