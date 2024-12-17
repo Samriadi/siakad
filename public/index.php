@@ -197,6 +197,13 @@ addRouteGroup('/invoice-selected-paying', 'TagihanController', [
     ''         => 'transaksiMhs',
 ]);
 
+addRouteGroup('/multi-transaksi', 'AdjustmentController', [
+    ''         => 'multiTagihan',
+    '/getPaytype' => 'getPaytypeMultiTagihan',
+    '/getTotalNominal' => 'getTotalNominal',
+    '/add' => 'addDataMultiTagihan',
+]);
+
 // transaksi tagihan routes
 addRouteGroup('/transaksi', 'AdjustmentController', [
     '' => 'index',
