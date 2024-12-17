@@ -29,53 +29,7 @@
           </div>
         </div>
         <div class="section-body">
-          <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row align-items-center">
-                    <!-- Select Field -->
-                    <div class="col-12 col-md-5 col-lg-3">
-                      <div class="form-group">
-                        <label for="show_field">Fakultas</label>
-                        <select id="show_field" name="show_field" class="form-control">
-                          <option value="" selected disabled>Pilih Fakultas</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- Select Value -->
-                    <div class="col-12 col-md-5 col-lg-3">
-                      <div class="form-group">
-                        <label for="show_value">Program Studi</label>
-                        <select id="show_value" name="show_value" class="form-control">
-                          <option value="" selected disabled>Pilih Prodi</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- Select Value -->
-                    <div class="col-12 col-md-5 col-lg-3">
-                      <div class="form-group">
-                        <label for="show_angkatan">Angkatan</label>
-                        <select id="show_angkatan" name="show_angkatan" class="form-control">
-                          <option value="" selected disabled>Pilih Angkatan</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- Filter Button -->
-                    <div class="col-12 col-md-5 col-lg-2 text-right">
-                      <button class="btn btn-primary" id="filter">
-                        <i class="fas fa-search text-white"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-
-        <div class="section-body">
           <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
@@ -87,6 +41,50 @@
                   </div>
                 </div>
                 <div class="card-body">
+
+                  <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <!-- Select Field -->
+                            <div class="col-12 col-md-5 col-lg-3">
+                              <div class="form-group">
+                                <label for="show_field">Fakultas</label>
+                                <select id="show_field" name="show_field" class="form-control">
+                                  <option value="" selected disabled>Pilih Fakultas</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!-- Select Value -->
+                            <div class="col-12 col-md-5 col-lg-3">
+                              <div class="form-group">
+                                <label for="show_value">Program Studi</label>
+                                <select id="show_value" name="show_value" class="form-control">
+                                  <option value="" selected disabled>Pilih Prodi</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!-- Select Value -->
+                            <div class="col-12 col-md-5 col-lg-3">
+                              <div class="form-group">
+                                <label for="show_angkatan">Angkatan</label>
+                                <select id="show_angkatan" name="show_angkatan" class="form-control">
+                                  <option value="" selected disabled>Pilih Angkatan</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!-- Filter Button -->
+                            <div class="col-12 col-md-5 col-lg-2 text-right">
+                              <button class="btn btn-primary" id="filter">
+                                <i class="fas fa-search text-white"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="table-responsive">
                     <table id="exampleTable" class="table table-hover">
                       <thead>
