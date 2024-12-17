@@ -53,7 +53,7 @@ class TagihanController
     $data = $this->transaksiMhs;
     $dataSelectedPaying = $_SESSION['selectedPaying'];
     include __DIR__ . '/../Views/others/page_transaksi_mhs.php';
-  } 
+  }
 
   public function selectData()
   {
