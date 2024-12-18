@@ -6,6 +6,18 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>SIAKAD - Master Tagihan</title>
   <?php include '../app/Views/others/layouts/header.php'; ?>
+  <style>
+    input[disabled] {
+      background-color: #fff !important;
+      /* Warna latar belakang normal */
+      color: #495057 !important;
+      /* Warna teks normal */
+      opacity: 1 !important;
+      /* Menghilangkan efek transparan */
+      border: 1px solid #ced4da !important;
+      /* Border normal */
+    }
+  </style>
 
 <body>
   <div id="app">
@@ -80,10 +92,17 @@
                   <div class="form-group">
                     <label class="d-block">Jenis Tagihan</label>
                     <div id="checkbox-container"></div>
+                    <div id="info-container">
+                      <div class="alert alert-info py-2 px-3" role="alert" id="info-alert">
+                        Silakan pilih opsi Fakultas, Program Studi dan Angkatan terlebih dahulu!
+                      </div>
+                    </div>
+
+
                   </div>
                   <div class="form-group">
                     <label>Nominal</label>
-                    <input type="number" class="form-control" id="nominal" nama="nominal">
+                    <input type="number" class="form-control" id="nominal" name="nominal" disabled>
                   </div>
                   <div class="form-group">
                     <label>Keterangan</label>
@@ -91,7 +110,7 @@
                   </div>
                 </div>
                 <div class="card-footer text-right">
-                  <button class="btn btn-primary mr-1" type="submit" id="submit">Submit</button>
+                  <button class="btn btn-primary mr-1" type="submit" id="submit">Simpan</button>
                 </div>
               </div>
             </div>
@@ -109,6 +128,7 @@
           var dataProdi = <?php echo json_encode($dataProdi); ?>;
           var dataAngkatan = <?php echo json_encode($dataAngkatan); ?>;
           var dataFakultas = <?php echo json_encode($dataFakultas); ?>;
+
 
 
           $('#fakultas').empty().append('<option value="" selected disabled></option>');
@@ -155,9 +175,13 @@
               },
               dataType: 'json',
               success: function(response) {
-                $('#checkbox-container').empty().append();
-                response.data.forEach(item => {
-                  const checkboxHTML = `
+                console.log(response);
+                if (response.success == true) {
+                  $('#info-alert').hide();
+                  $('#warning-alert').hide();
+                  $('#checkbox-container').empty().append();
+                  response.data.forEach(item => {
+                    const checkboxHTML = `
                       <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" id="checkbox${item.jenis_tagihan}" value="${item.jenis_tagihan}">
                           <label class="form-check-label" for="checkbox${item.jenis_tagihan}">
@@ -165,10 +189,20 @@
                           </label>
                       </div>
                   `;
-                  $('#checkbox-container').append(checkboxHTML);
+                    $('#checkbox-container').append(checkboxHTML);
 
-                });
-
+                  });
+                } else {
+                  $('#checkbox-container').empty().append();
+                  $('#info-container').empty().append();
+                  $('#info-alert').hide();
+                  const infoHTML = `
+                      <div class="alert alert-warning py-2 px-3" role="alert" id="warning-alert">
+                        Tidak ada jenis tagihan ditemukan!
+                      </div>
+                  `;
+                  $('#info-container').append(infoHTML);
+                }
               },
               error: function(xhr, status, error) {
                 console.log('Error:', error);
