@@ -19,6 +19,7 @@ class MahasiswaModel
         global $pmb_ortu;
         global $pmb_nim;
         global $mhs_prodi;
+        global $vw_akses;
         global $mhs_fakultas;
 
         $this->mhs_mahasiswa = $mhs_mahasiswa;
@@ -27,19 +28,28 @@ class MahasiswaModel
         $this->pmb_ortu = $pmb_ortu;
         $this->pmb_nim = $pmb_nim;
         $this->mhs_prodi = $mhs_prodi;
+        $this->vw_akses = $vw_akses;
         $this->mhs_fakultas = $mhs_fakultas;
 
         $this->db = Database::getInstance();
     }
 
+    public function getAccess($userLogin)
+    {
+        $query = "SELECT * FROM $this->vw_akses WHERE user_id=?";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$userLogin]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public function getAll()
     {
-        $query = "SELECT a.*, b.deskripsi AS nama_prodi, c.deskripsi AS nama_fakultas FROM $this->mhs_mahasiswa a LEFT JOIN $this->mhs_prodi b ON b.ID = a.kode_prodi LEFT JOIN $this->mhs_fakultas c ON C.ID = b.fakultas";
+        $query = "SELECT a.*, b.deskripsi AS nama_prodi, c.deskripsi AS nama_fakultas FROM $this->mhs_mahasiswa a LEFT JOIN $this->mhs_prodi b ON b.ID = a.kode_prodi LEFT JOIN $this->mhs_fakultas c ON c.ID = b.fakultas";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-
 
     public function countBy($catgy, $catName, $where = "")
     {
@@ -292,6 +302,7 @@ class MahasiswaModel
             return true;
         } catch (PDOException $e) {
             // Rollback the transaction in case of an error
+            $this->db->rollBack();
             // Optionally log $e->getMessage() for debugging
             return false;
         }
