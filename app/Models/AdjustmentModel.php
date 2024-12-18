@@ -516,6 +516,6 @@ class AdjustmentModel
 
     $result = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    return $result ? $result : null;
+    return $result;
   }
 }
