@@ -37,36 +37,42 @@
                   <h4>Multi Tagihan</h4>
                 </div>
                 <div class="card-body">
-                  <div class="form-group">
-                    <label>Fakultas</label>
-                    <select class="form-control" id="fakultas" name="fakultas">
-                    </select>
+                  <div class="form-row">
+                    <div class="form-group col-md-4">
+                      <label>Fakultas</label>
+                      <select class="form-control" id="fakultas" name="fakultas">
+                      </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>Program Studi</label>
+                      <select class="form-control" id="prodi" name="prodi">
+                      </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>Angkatan</label>
+                      <select class="form-control" id="angkatan" name="angkatan">
+                      </select>
+                    </div>
                   </div>
-                  <div class="form-group">
-                    <label>Program Studi</label>
-                    <select class="form-control" id="prodi" name="prodi">
-                    </select>
+
+                  <div class="form-row">
+                    <div class="form-group col-md-4">
+                      <label>Periode</label>
+                      <select class="form-control" id="periode" name="periode">
+                        <option value="2023/2024">2023/2024</option>
+                        <option value="2024/2025">2024/2025</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>From</label>
+                      <input type="date" class="form-control" id="from" name="from">
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>To</label>
+                      <input type="date" class="form-control" id="to" name="to">
+                    </div>
                   </div>
-                  <div class="form-group">
-                    <label>Angkatan</label>
-                    <select class="form-control" id="angkatan" name="angkatan">
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Periode</label>
-                    <select class="form-control" id="periode" name="periode">
-                      <option value="2023/2024">2023/2024</option>
-                      <option value="2024/2025">2024/2025</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>From</label>
-                    <input type="date" class="form-control" id="from" nama="from">
-                  </div>
-                  <div class="form-group">
-                    <label>To</label>
-                    <input type="date" class="form-control" id="to" nama="to">
-                  </div>
+
                   <div class="form-group">
                     <label>NIM</label>
                     <input type="text" class="form-control" id="nim" nama="nim">
