@@ -274,34 +274,39 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
-        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty, periode, from_date, to_date) 
-	    	SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ? FROM vw_mhs WHERE NIM<>'' ";
+        $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty, periode, from_date, to_date)
+          SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ?, ?, ?, ?, ?
+          FROM vw_mhs WHERE NIM <> ''";
 
-        if ($data['prodi'] <> '11111')
-          $query .= "AND kode_prodi=? ";
-        else
-          $query .= "AND kode_prodi<>? ";
+        if ($data['prodi'] <> '11111') {
+          $query .= " AND kode_prodi = ? ";
+        } else {
+          $query .= " AND kode_prodi <> ? ";
+        }
 
-        if ($data['angkatan'] <> "Semua Angkatan")
-          $query .= "AND id_angkatan=? ";
-        else
-          $query .= "AND id_angkatan<>? ";
+        if ($data['angkatan'] <> "Semua Angkatan") {
+          $query .= " AND id_angkatan = ? ";
+        } else {
+          $query .= " AND id_angkatan <> ? ";
+        }
 
-        $stmt = $this->db->prepare($query);
-        $result = $stmt->execute([
+        $params = [
           $data['fakultas'],
           $data['jenis_tagihan'],
           $data['nominal'],
-          $data['qty'],
           $data['keterangan'],
           $data['adj_type'],
           $data['adjust'],
-          $data['prodi'],
-          $data['angkatan'],
+          $data['qty'],
           $data['periode_pembayaran'],
           $data['awal_pembayaran'],
           $data['akhir_pembayaran'],
-        ]);
+          $data['prodi'],
+          $data['angkatan'],
+        ];
+
+        $stmt = $this->db->prepare($query);
+        $result = $stmt->execute($params);
       }
 
       return $result ? 'success' : 'error';
