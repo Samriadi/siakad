@@ -183,8 +183,6 @@ class AdjustmentController
   {
     $dataArray = json_decode(file_get_contents('php://input'), true);
 
-    error_log("dataArray: " . print_r($dataArray, true));
-
     if (empty($dataArray) || !isset($dataArray[0])) {
       $response = [
         'success' => false,

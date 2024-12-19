@@ -319,19 +319,15 @@ class AdjustmentModel
   public function addDataMultiTagihan($data)
   {
     try {
-      // Ensure $data is an array
       if (!is_array($data)) {
         throw new Exception("Expected an array, but received: " . gettype($data));
       }
 
-      // Loop through each main data entry
       foreach ($data as $item) {
-        // Ensure $item is an array
         if (!is_array($item)) {
           throw new Exception("Each item should be an array, but received: " . gettype($item));
         }
 
-        // Extract values from the main entry
         $fakultas = $item['fakultas'];
         $prodi = $item['prodi'];
         $angkatan = $item['angkatan'];
@@ -345,34 +341,85 @@ class AdjustmentModel
         $adjType = "normal";
 
 
-        foreach ($item['tagihan'] as $tagihan) {
-          if (!is_array($tagihan)) {
-            throw new Exception("Each tagihan should be an array, but received: " . gettype($tagihan));
+        if ($nim == null) {
+          $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, periode, from_date, to_date, adjustment, adj_type, qty) 
+          SELECT DISTINCT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ?, ?, ?, ?, ?
+          FROM vw_mhs WHERE NIM <> ''";
+
+          if ($item['prodi'] <> '11111') {
+            $query .= " AND kode_prodi = ? ";
+          } else {
+            $query .= " AND kode_prodi <> ? ";
           }
-          $jenis_tagihan = $tagihan['jenis_tagihan'];
-          $nominal = $tagihan['nominal'];
 
+          if ($item['angkatan'] <> "Semua Angkatan") {
+            $query .= " AND id_angkatan = ? ";
+          } else {
+            $query .= " AND id_angkatan <> ? ";
+          }
+
+          foreach ($item['tagihan'] as $tagihan) {
+            if (!is_array($tagihan)) {
+              throw new Exception("Each tagihan should be an array, but received: " . gettype($tagihan));
+            }
+            $jenis_tagihan = $tagihan['jenis_tagihan'];
+            $nominal = $tagihan['nominal'];
+
+            error_log('query: ' . $query);
+
+            $stmt = $this->db->prepare($query);
+            $result = $stmt->execute([
+              $fakultas,
+              $jenis_tagihan,
+              $nominal,
+              $keterangan,
+              $periode,
+              $awal_pembayaran,
+              $akhir_pembayaran,
+              $adjust,
+              $adjType,
+              $qty,
+              $prodi,
+              $angkatan
+            ]);
+
+            if (!$result) {
+              return 'error';
+            }
+          }
+        } else {
           $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-          $stmt = $this->db->prepare($query);
-          $result = $stmt->execute([
-            $fakultas,
-            $prodi,
-            $jenis_tagihan,
-            $angkatan,
-            $nominal,
-            $keterangan,
-            $nim,
-            $periode,
-            $awal_pembayaran,
-            $akhir_pembayaran,
-            $adjust,
-            $adjType,
-            $qty
-          ]);
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-          if (!$result) {
-            return 'error';
+          foreach ($item['tagihan'] as $tagihan) {
+            if (!is_array($tagihan)) {
+              throw new Exception("Each tagihan should be an array, but received: " . gettype($tagihan));
+            }
+            $jenis_tagihan = $tagihan['jenis_tagihan'];
+            $nominal = $tagihan['nominal'];
+
+            $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $result = $stmt->execute([
+              $fakultas,
+              $prodi,
+              $jenis_tagihan,
+              $angkatan,
+              $nominal,
+              $keterangan,
+              $nim,
+              $periode,
+              $awal_pembayaran,
+              $akhir_pembayaran,
+              $adjust,
+              $adjType,
+              $qty
+            ]);
+
+            if (!$result) {
+              return 'error';
+            }
           }
         }
       }
