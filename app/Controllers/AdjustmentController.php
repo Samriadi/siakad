@@ -173,7 +173,6 @@ class AdjustmentController
       }
     }
 
-    // Set response header dan kirim JSON response
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;
@@ -210,7 +209,6 @@ class AdjustmentController
       }
     }
 
-    // Set response header dan kirim JSON response
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;
