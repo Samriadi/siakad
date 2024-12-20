@@ -55,6 +55,30 @@ class TagihanController
     include __DIR__ . '/../Views/others/page_transaksi_mhs.php';
   }
 
+  public function pelunasanTagihan()
+  {
+    include __DIR__ . '/../Views/others/page_pelunasan.php';
+  }
+
+  public function searchTagihan()
+  {
+    $nim = $_GET['nim'] ?? null;
+
+    if ($nim) {
+      $dataTagihan = $this->TagihanModel->searchTagihan($nim);
+      error_log("data tagihan: " . print_r($dataTagihan, true));
+
+
+      if ($dataTagihan) {
+        echo json_encode(['success' => true, 'data' => $dataTagihan]);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Data not found']);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    }
+  }
+
   public function selectData()
   {
     $id_fakultas = $_GET['fakultas_id'] ?? null;
