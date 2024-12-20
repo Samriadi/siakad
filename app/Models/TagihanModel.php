@@ -258,4 +258,12 @@ class TagihanModel
       return false;
     }
   }
+
+  public function searchTagihan($nim)
+  {
+    $query = "SELECT * FROM mhs_adjustment WHERE nim = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute([$nim]);
+    return $stmt->fetch(PDO::FETCH_OBJ);
+  }
 }
