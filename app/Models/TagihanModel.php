@@ -261,9 +261,51 @@ class TagihanModel
 
   public function searchTagihan($nim)
   {
-    $query = "SELECT * FROM mhs_adjustment WHERE nim = ?";
+    $query = "SELECT a.*, b.deskripsi AS nama_fakultas, c.deskripsi AS nama_prodi, d.nama_tagihan, e.nama AS tahun_angkatan FROM mhs_adjustment a LEFT JOIN mhs_fakultas b ON b.ID = a.fakultas LEFT JOIN mhs_prodi c ON c.ID = a.prodi LEFT JOIN mhs_paytype d ON d.recid = a.jenis_tagihan LEFT JOIN mhs_angkatan e ON e.ID_angkatan = a.angkatan WHERE nim = ?";
     $stmt = $this->db->prepare($query);
     $stmt->execute([$nim]);
-    return $stmt->fetch(PDO::FETCH_OBJ);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function savePembayaranTagihan($data)
+  {
+    try {
+      foreach ($data as $item) {
+        $nim = $item['nim'];
+        $nominalPembayaran = $item['nominal_pembayaran'];
+        $tanggalTransaksi = $item['tgl_transaksi'];
+
+        $insertHeaderQuery = "INSERT INTO mhs_pembayaran_header (nim, tgl_transaksi, jumlah_pembayaran) VALUES (?, ?, ?)";
+        $headerStmt = $this->db->prepare($insertHeaderQuery);
+        $headerInserted = $headerStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran]);
+
+        if (!$headerInserted) {
+          continue;
+        }
+
+        $getHeaderIdQuery = "SELECT id FROM mhs_pembayaran_header WHERE nim = ? AND tgl_transaksi = ? AND jumlah_pembayaran = ?";
+        $headerIdStmt = $this->db->prepare($getHeaderIdQuery);
+        $headerIdStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran]);
+        $headerIdResult = $headerIdStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (empty($headerIdResult['id'])) {
+          continue;
+        }
+
+        $idPembayaranHeader = $headerIdResult['id'];
+
+        $insertDetailQuery = "INSERT INTO mhs_pembayaran_detail (id_pembayaran_header, id_jenis_transaksi) VALUES (?, ?)";
+        $detailStmt = $this->db->prepare($insertDetailQuery);
+
+        foreach ($item['tagihan'] as $idTagihan) {
+          $detailStmt->execute([$idPembayaranHeader, $idTagihan]);
+        }
+      }
+
+      return 'success';
+    } catch (Exception $e) {
+      error_log($e->getMessage());
+      return 'error';
+    }
   }
 }
