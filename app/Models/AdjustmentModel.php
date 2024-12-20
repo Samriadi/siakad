@@ -396,9 +396,7 @@ class AdjustmentModel
             }
             $jenis_tagihan = $tagihan['jenis_tagihan'];
             $nominal = $tagihan['nominal'];
-
-            $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
             $stmt = $this->db->prepare($query);
             $result = $stmt->execute([
               $fakultas,
