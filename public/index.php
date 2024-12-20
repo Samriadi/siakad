@@ -204,6 +204,11 @@ addRouteGroup('/multi-transaksi', 'AdjustmentController', [
     '/add' => 'addDataMultiTagihan',
 ]);
 
+addRouteGroup('/pelunasan', 'TagihanController', [
+    ''         => 'pelunasanTagihan',
+    '/search' => 'searchTagihan',
+]);
+
 // transaksi tagihan routes
 addRouteGroup('/transaksi', 'AdjustmentController', [
     '' => 'index',
