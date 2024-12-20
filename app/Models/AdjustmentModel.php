@@ -365,7 +365,6 @@ class AdjustmentModel
             $jenis_tagihan = $tagihan['jenis_tagihan'];
             $nominal = $tagihan['nominal'];
 
-            error_log('query: ' . $query);
 
             $stmt = $this->db->prepare($query);
             $result = $stmt->execute([
