@@ -52,7 +52,7 @@
                     <label>NIM</label>
                     <div class="d-flex align-items-center">
                       <input type="text" class="form-control mr-2" id="nim" name="nim" style="flex: 1;">
-                      <button class="btn btn-primary py-2" type="button" id="cari">
+                      <button class="btn btn-info py-2" type="button" id="cari">
                         <i class="fas fa-search"></i>
                       </button>
                     </div>
@@ -60,15 +60,15 @@
                   <div class="form-row">
                     <div class="form-group col-md-4">
                       <label>Fakultas</label>
-                      <input type="text" class="form-control" id="fakultas" name="fakultas">
+                      <input type="text" class="form-control" id="fakultas" name="fakultas" disabled>
                     </div>
                     <div class="form-group col-md-4">
                       <label>Program Studi</label>
-                      <input type="text" class="form-control" id="prodi" name="prodi">
+                      <input type="text" class="form-control" id="prodi" name="prodi" disabled>
                     </div>
                     <div class="form-group col-md-4">
                       <label>Angkatan</label>
-                      <input type="text" class="form-control" id="angkatan" name="angkatan">
+                      <input type="text" class="form-control" id="angkatan" name="angkatan" disabled>
                     </div>
 
                   </div>
@@ -77,13 +77,19 @@
                     <div id="checkbox-container"></div>
                     <div id="info-container">
                       <div class="alert alert-info py-2 px-3" role="alert" id="info-alert">
-                        Silakan pilih opsi Fakultas, Program Studi dan Angkatan terlebih dahulu!
+                        Masukkan NIM terlebih dahulu untuk menampilkan jenis tagihan!
                       </div>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label>Nominal Tagihan</label>
-                    <input type="number" class="form-control" id="nominal" name="nominal" disabled>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Nominal Tagihan</label>
+                      <input type="number" class="form-control" id="nominal" name="nominal" disabled>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Nominal Pembayaran</label>
+                      <input type="number" class="form-control" id="nominal_pembayaran" name="nominal_pembayaran">
+                    </div>
                   </div>
                 </div>
                 <div class="card-footer text-right">
@@ -102,26 +108,114 @@
         $(document).ready(function() {
           $('#cari').click(function() {
             var nim = $('#nim').val();
-
-            console.log(nim);
             $.ajax({
               url: '/admin/siakad/pelunasan/search',
               method: 'GET',
+
               data: {
                 nim: nim
               },
               dataType: 'json',
               success: function(response) {
                 var data = response.data;
-                $('#fakultas').val(data.fakultas);
-                $('#prodi').val(data.prodi);
-                $('#angkatan').val(data.angkatan);
+                $('#fakultas').val(data[0].nama_fakultas);
+                $('#prodi').val(data[0].nama_prodi);
+                $('#angkatan').val(data[0].tahun_angkatan);
                 console.log(response);
+                $('#info-alert').hide();
+                $('#checkbox-container').empty().append();
+                let totalNominal = 0;
+
+                function updateTotalNominal() {
+                  totalNominal = 0;
+                  $('.form-check-input:checked').each(function() {
+                    const jenisTagihan = parseInt($(this).val());
+                    const item = response.data.find(item => item.jenis_tagihan === jenisTagihan);
+                    if (item && item.nominal) {
+                      totalNominal += parseFloat(item.nominal);
+                    }
+                  });
+                  $('#nominal').val(totalNominal);
+                }
+
+                response.data.forEach(item => {
+                  const checkboxHTML = `
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="checkbox${item.jenis_tagihan}" value="${item.jenis_tagihan}">
+                      <label class="form-check-label" for="checkbox${item.jenis_tagihan}">
+                          ${item.nama_tagihan}
+                      </label>
+                  </div>
+                  `;
+                  $('#checkbox-container').append(checkboxHTML);
+                });
+
+                $('#checkbox-container').on('change', '.form-check-input', function() {
+                  updateTotalNominal();
+                });
+
+
               },
               error: function(xhr, status, error) {
                 console.log('Error:', error);
               }
             });
+          });
+
+          let selectedCheckboxValues = [];
+
+          $('#checkbox-container').on('change', '.form-check-input', function() {
+            selectedCheckboxValues = [];
+
+            $('.form-check-input:checked').each(function() {
+              selectedCheckboxValues.push($(this).val());
+            });
+          });
+
+          $('#submit').on('click', async function(event) {
+            event.preventDefault();
+
+            var arrayData = [{
+              nim: $('#nim').val(),
+              tgl_transaksi: new Date().toISOString().slice(0, 10),
+              nominal_pembayaran: $('#nominal_pembayaran').val(),
+              tagihan: selectedCheckboxValues,
+
+            }];
+
+            try {
+              let response = await $.ajax({
+                url: '/admin/siakad/pelunasan/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(arrayData),
+                dataType: 'json',
+              });
+
+              if (response.success) {
+                await Swal.fire(
+                  'Added!',
+                  response.message,
+                  'success'
+                ).then(() => {
+                  location.reload();
+                });
+              } else {
+                await Swal.fire({
+                  text: response.message,
+                  icon: 'warning',
+                  confirmButtonText: 'OK'
+                });
+              }
+
+            } catch (error) {
+              console.error('AJAX Error:', error);
+              await Swal.fire({
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
           });
         });
       </script>
