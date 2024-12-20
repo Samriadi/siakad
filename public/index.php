@@ -207,6 +207,7 @@ addRouteGroup('/multi-transaksi', 'AdjustmentController', [
 addRouteGroup('/pelunasan', 'TagihanController', [
     ''         => 'pelunasanTagihan',
     '/search' => 'searchTagihan',
+    '/save' => 'saveTagihan',
 ]);
 
 // transaksi tagihan routes
