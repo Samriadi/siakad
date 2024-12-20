@@ -79,6 +79,38 @@ class TagihanController
     }
   }
 
+  public function saveTagihan()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
+
+    if (empty($dataArray)) {
+      $response = [
+        'success' => false,
+        'message' => 'No data provided',
+      ];
+    } else {
+      $request = $this->TagihanModel->savePembayaranTagihan($dataArray);
+
+      if ($request === 'success') {
+        $response = [
+          'success' => true,
+          'message' => 'Data berhasil ditambahkan',
+        ];
+      } else {
+        $response = [
+          'success' => false,
+          'message' => 'Gagal menambahkan data',
+        ];
+      }
+    }
+
+    // Set response header dan kirim JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+  }
+
+
   public function selectData()
   {
     $id_fakultas = $_GET['fakultas_id'] ?? null;
