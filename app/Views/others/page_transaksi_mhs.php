@@ -21,7 +21,7 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Pembayaran</h1>
+          <h1>Daftar Transaksi & Status Pembayaran</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="/admin/siakad/invoice">Invoice</a></div>
@@ -34,7 +34,7 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Pembayaran Mahasiswa - Fakultas <?= $dataSelectedPaying[0]->nama_fakultas ?></h4>
+                  <h4>Transaksi Mahasiswa - Fakultas <?= $dataSelectedPaying[0]->nama_fakultas ?></h4>
                   <div class="card-header-action">
                     <!--
                     <a class="btn btn-primary" id="btn-add">
@@ -77,6 +77,8 @@
                                     <th scope="col">Nama Mahasiswa</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
+									<th scope="col">ID Transaksi</th>
+									<th scope="col">VA Number</th>
                                     <th scope="col">Nominal</th>
                                   </tr>
                                 </thead>
@@ -93,6 +95,8 @@
                                         <td><?= $value->nama ?></td>
                                         <td><?= $value->prodi ?></td>
                                         <td><?= $value->angkatan ?></td>
+										<td><?= $value->trans_id ?></td>
+										<td><?= $value->va_number ?></td>
                                         <td><?= 'Rp. ' . number_format($value->tagihan ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
