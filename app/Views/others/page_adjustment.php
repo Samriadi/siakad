@@ -21,7 +21,7 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Transaksi Tagihan</h1>
+          <h1>Penginputan Transaksi Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
@@ -29,62 +29,68 @@
           </div>
         </div>
         <div class="section-body">
+          <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <!-- Select Field -->
+                    <div class="col-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                        <label for="show_field">Fakultas</label>
+                        <select id="show_field" name="show_field" class="form-control">
+                          <option value="" selected disabled>Pilih Fakultas</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Select Value -->
+                    <div class="col-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                        <label for="show_value">Program Studi</label>
+                        <select id="show_value" name="show_value" class="form-control">
+                          <option value="" selected disabled>Pilih Prodi</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Select Value -->
+                    <div class="col-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                        <label for="show_angkatan">Angkatan</label>
+                        <select id="show_angkatan" name="show_angkatan" class="form-control">
+                          <option value="" selected disabled>Pilih Angkatan</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Filter Button -->
+                    <div class="col-12 col-md-5 col-lg-2 text-right">
+                      <button class="btn btn-primary" id="filter">
+                        <i class="fas fa-search text-white"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+
+        <div class="section-body">
           <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
                   <div class="card-header-action">
                     <a class="btn btn-primary" id="btn-add">
-                      <i class="fas fa-plus text-white"></i>
+                      <i class="fas fa-plus text-white"> Per-Tagihan</i>
                     </a>
+					&nbsp;&nbsp;&nbsp;
+                    <a href="/admin/siakad/multi-transaksi" class="btn btn-primary" id="btn-multi">
+                      <i class="fas fa-plus text-white"> Multi Tagihan</i>
+                    </a>					
                   </div>
                 </div>
                 <div class="card-body">
-
-                  <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <!-- Select Field -->
-                            <div class="col-12 col-md-5 col-lg-3">
-                              <div class="form-group">
-                                <label for="show_field">Fakultas</label>
-                                <select id="show_field" name="show_field" class="form-control">
-                                  <option value="" selected disabled>Pilih Fakultas</option>
-                                </select>
-                              </div>
-                            </div>
-                            <!-- Select Value -->
-                            <div class="col-12 col-md-5 col-lg-3">
-                              <div class="form-group">
-                                <label for="show_value">Program Studi</label>
-                                <select id="show_value" name="show_value" class="form-control">
-                                  <option value="" selected disabled>Pilih Prodi</option>
-                                </select>
-                              </div>
-                            </div>
-                            <!-- Select Value -->
-                            <div class="col-12 col-md-5 col-lg-3">
-                              <div class="form-group">
-                                <label for="show_angkatan">Angkatan</label>
-                                <select id="show_angkatan" name="show_angkatan" class="form-control">
-                                  <option value="" selected disabled>Pilih Angkatan</option>
-                                </select>
-                              </div>
-                            </div>
-                            <!-- Filter Button -->
-                            <div class="col-12 col-md-5 col-lg-2 text-right">
-                              <button class="btn btn-primary" id="filter">
-                                <i class="fas fa-search text-white"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div class="table-responsive">
                     <table id="exampleTable" class="table table-hover">
                       <thead>
@@ -223,32 +229,7 @@
 
 
                 <div style="border-bottom:2px solid #abb2b9; padding-bottom:10px;">
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="add_nominal">Nominal</label>
-                      <input type="number" class="form-control" id="add_nominal" name="nominal" disabled>
-                      <small class="form-text text-danger" id="nominalValidation">nominal tagihan tidak ada!</small>
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="add_qty">Quantity</label>
-                      <input type="number" class="form-control" id="add_qty" name="qty">
-                    </div>
-                  </div>
-
-
-
-                  <div class="form-group">
-                    <label for="add_keterangan">Keterangan</label>
-                    <input type="text" class="form-control" id="add_keterangan" name="keterangan">
-                  </div>
-
-                  <!--
-                <div class="form-group">                 
-                  <label for="add_adjustment">Adjustment</label>
-                  <input type="number" class="form-control" id="add_adjustment" name="adjust">                  
-                </div>
-				-->
-
+				
                   <div class="form-row">
                     <div class="form-group col-md-4">
                       <label for="add_periode_pembayaran">Periode</label>
@@ -266,7 +247,33 @@
                       <input type="date" class="form-control" id="add_akhir_pembayaran" name="akhir_pembayaran">
                     </div>
                   </div>
+				
+				
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="add_nominal">Nominal</label>
+                      <input type="number" class="form-control" id="add_nominal" name="nominal" disabled>
+                      <small class="form-text text-danger" id="nominalValidation">nominal tagihan tidak ada!</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="add_qty">Quantity</label>
+                      <input type="number" class="form-control" id="add_qty" name="qty" value="1">
+                    </div>
+                  </div>
 
+
+
+                  <div class="form-group">
+                    <label for="add_keterangan">Keterangan</label>
+                    <input type="text" class="form-control" id="add_keterangan" name="keterangan">
+                  </div>
+
+                  <!--
+                <div class="form-group">                 
+                  <label for="add_adjustment">Adjustment</label>
+                  <input type="number" class="form-control" id="add_adjustment" name="adjust">                  
+                </div>
+				-->
 
                   <input type="hidden" id="add_adjustment" name="adjust">
                 </div>
