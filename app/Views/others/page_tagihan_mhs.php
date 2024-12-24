@@ -21,7 +21,7 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Tagihan</h1>
+          <h1>Penerbitan Data Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="/admin/siakad/invoice">Invoice</a></div>
@@ -80,6 +80,7 @@
                                     <th scope="col">Nama Mahasiswa</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
+									<th scope="col">Periode</th>
                                     <th scope="col">Nominal</th>
                                   </tr>
                                 </thead>
@@ -98,6 +99,7 @@
                                                       "nama" => $value->NamaLengkap,
                                                       "prodi" => $value->prodi_name,
                                                       "angkatan" => $value->angkatan,
+													  "periode" => $value->periode,
                                                       "nominal" => $value->nominal
                                                     ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
                                         </td>
@@ -106,6 +108,7 @@
                                         <td><?= $value->NamaLengkap ?></td>
                                         <td><?= $value->prodi_name ?></td>
                                         <td><?= $value->angkatan ?></td>
+										<td><?= $value->periode ?></td>
                                         <td><?= 'Rp. ' . number_format($value->nominal ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
