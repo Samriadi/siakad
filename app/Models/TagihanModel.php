@@ -1,5 +1,4 @@
 <?php
-
 class TagihanModel
 {
   private $db;
@@ -38,7 +37,7 @@ class TagihanModel
 
   public function getTagihanMhs()
   {
-    $query = "SELECT nim AS Nim,NamaLengkap,prodi AS prodi_name,angkatan,tagihan AS nominal FROM vw_hit_tagihan";
+    $query = "SELECT nim AS Nim,NamaLengkap,prodi AS prodi_name,angkatan,tagihan AS nominal,periode FROM vw_hit_tagihan";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -47,7 +46,7 @@ class TagihanModel
 
   public function getTransaksiMhs()
   {
-    $query = "SELECT nim, nama, prodi, angkatan, tagihan FROM $this->mhs_transaksi";
+    $query = "SELECT nim, nama, prodi, angkatan, tagihan, va_number, trans_id, pay_type FROM $this->mhs_transaksi";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -202,17 +201,26 @@ class TagihanModel
     $stmt->execute([$id_fakultas]);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
+  
 
   public function prosesInvoice($data)
-  {
+  {	
     try {
+	  require "../../../va/function.php";
+	  require "../../../va/bni/crvac.php";
+	  
+	  
       foreach ($data as $item) {
         if (isset($item['nim'], $item['nama'], $item['prodi'], $item['angkatan'])) {
           $nominal = isset($item['nominal']) && $item['nominal'] !== '' ? $item['nominal'] : 0;
+		  
+		  $TransID = get_transid($item['nim'],"MHS");
+		  //$VA = "9006282282829292"; $payType="c";
+		  $VA = CRVAC($TransID,30,$nominal); $payType = "c";
 
-          $checkQuery = "SELECT tagihan FROM $this->mhs_transaksi WHERE nim = ?";
+          $checkQuery = "SELECT tagihan FROM $this->mhs_transaksi WHERE nim = ? AND periode = ?";
           $stmtCheck = $this->db->prepare($checkQuery);
-          $stmtCheck->execute([$item['nim']]);
+          $stmtCheck->execute([$item['nim'],$item['periode']]);
           $existingRecord = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
           if ($existingRecord) {
@@ -220,32 +228,30 @@ class TagihanModel
 
             $updateQuery = "UPDATE $this->mhs_transaksi 
                                     SET tagihan = ? 
-                                    WHERE nim = ?";
+                                    WHERE nim = ? AND periode = ?";
             $stmtUpdate = $this->db->prepare($updateQuery);
-            $req = $stmtUpdate->execute([$newTagihan, $item['nim']]);
-
-            if ($req) {
-              $deleteQuery = "DELETE FROM vw_hit_tagihan WHERE nim = ?";
-              $stmtDelete = $this->db->prepare($deleteQuery);
-              $stmtDelete->execute([$item['nim']]);
-            }
+            $req = $stmtUpdate->execute([$newTagihan, $item['nim'], $item['periode']]);
           } else {
-            $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan) VALUES (?, ?, ?, ?, ?)";
+			  
+			//writeLog("INSERT INTO mhs_transaksi (nim, nama, prodi, angkatan, tagihan, periode, trans_id, va_number, pay_type) VALUES ({$item['nim']}, {$item['nama']}, {$item['prodi']}, {$item['angkatan']}, $nominal, {$item['periode']}, $TransID, $VA, $payType)");
+			
+            $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan, periode, trans_id, va_number, pay_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmtInsert = $this->db->prepare($insertQuery);
             $req = $stmtInsert->execute([
               $item['nim'],
               $item['nama'],
               $item['prodi'],
               $item['angkatan'],
-              $nominal
+              $nominal,
+			  $item['periode'],
+			  $TransID,
+			  $VA,
+			  $payType
             ]);
 
-            if ($req) {
-              $deleteQuery = "DELETE FROM vw_hit_tagihan WHERE nim = ?";
-              $stmtDelete = $this->db->prepare($deleteQuery);
-              $stmtDelete->execute([$item['nim']]);
-            }
           }
+		  
+		  sleep(1);
         } else {
           error_log("Invalid data: " . print_r($item, true));
           return false;
@@ -253,7 +259,9 @@ class TagihanModel
       }
 
       return true;
+	  
     } catch (PDOException $e) {
+	  $this->db->rollBack();
       error_log("Database Error: " . $e->getMessage());
       return false;
     }
