@@ -43,8 +43,8 @@
                           <div class="card-body">
                             <h4><?= $value->name ?></h4>
                             <p><?= $value->deskripsi ?></p>
-                            <a href="#" class="card-cta" onclick="handleTagihanMahasiswa(<?= $value->ID ?>)">Tagihan <i class="fas fa-chevron-right"></i></a><br>
-                            <a href="#" class="card-cta" onclick="handlePembayaranMahasiswa(<?= $value->ID ?>)">Pembayaran <i class="fas fa-chevron-right"></i></a>
+                            <a href="#" class="card-cta" onclick="handleTagihanMahasiswa(<?= $value->ID ?>)">Penerbitan Tagihan <i class="fas fa-chevron-right"></i></a><br><br>
+                            <a href="#" class="card-cta" onclick="handlePembayaranMahasiswa(<?= $value->ID ?>)">Status Pembayaran<i class="fas fa-chevron-right"></i></a>
                           </div>
                         </div>
                       </div>
