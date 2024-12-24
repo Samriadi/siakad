@@ -21,11 +21,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Paytype</h1>
+          <h1>Payment Type Master</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Paytype</div>
+            <div class="breadcrumb-item">Payment Type</div>
           </div>
         </div>
 
@@ -34,7 +34,7 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Data Paytype</h4>
+                  <h4>Daftar Payment Type</h4>
                   <div class="card-header-action">
                     <a class="btn btn-primary" data-toggle="modal" data-target="#addModal">
                       <i class="fas fa-plus text-white"></i>
@@ -48,16 +48,23 @@
                         <tr>
                           <th scope="col">No</th>
                           <th scope="col">Nama Tagihan</th>
-                          <th scope="col">Periode Tagihan</th>
+						  <th scope="col">Kategori Tagihan</th>
+                          <th scope="col">Syarat KRS</th>
                           <th class="w-15">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($PembayaranData as $key => $value) : ?>
+                        <?php foreach ($PembayaranData as $key => $value) : 
+						if (strtolower($value->jenis_tagihan) == "krs")
+						$jenis = "Ya";
+					    else
+						$jenis = "Tidak";
+						?>
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
                             <td><?= $value->nama_tagihan ?></td>
-                            <td><?= $value->jenis_tagihan ?></td>
+							<td><?= $value->catgy_tagihan ?></td>
+                            <td><?= $jenis ?></td>
                             <td style="white-space: nowrap;">
                               <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-id="<?= $value->recid ?>">
                                 <i class="fas fa-pencil-alt"></i>
@@ -92,17 +99,25 @@
           </div>
           <div class="modal-body">
             <div class="card-body">
+			  <div class="form-row">
+			      <label for="add_nama_tagihan">Nama Tagihan</label>
+                  <input type="text" class="form-control" id="add_nama_tagihan">
+			  </div>
+			  <br>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="add_nama_tagihan">Nama Tagihan</label>
-                  <input type="text" class="form-control" id="add_nama_tagihan">
+                 <label for="add_catgy_tagihan">Kategori</label>
+                  <select class="form-control" id="add_catgy_tagihan">
+				    <option value="Semester">Persemester</option>
+                    <option value="Berulang">Berulang</option>
+					<option value="Sekali">Sekali Saja</option>
+                  </select>
                 </div>
                 <div class="form-group col-md-6">
-                <label for="add_jenis_tagihan">Periode Tagihan</label>
+                <label for="add_jenis_tagihan">Syarat KRS</label>
                   <select class="form-control" id="add_jenis_tagihan">
-                    <option value="Persemester">Persemester</option>
-                    <option value="Sekali">Sekali</option>
-                    <option value="Tertentu">Tertentu</option>
+				    <option value="General">Tidak</option>
+                    <option value="KRS">Ya</option>                   
                   </select>
                 </div>
               </div>
@@ -128,17 +143,25 @@
           </div>
           <div class="modal-body">
             <div class="card-body">
+			  <div class="form-row">
+                  <label for="nama_tagihan">Nama Tagihan</label>
+                  <input type="text" class="form-control" id="nama_tagihan">			  
+			  </div>
+			  <br>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="nama_tagihan">Nama Tagihan</label>
-                  <input type="text" class="form-control" id="nama_tagihan">
+                 <label for="catgy_tagihan">Kategori</label>
+                  <select class="form-control" id="catgy_tagihan">
+				    <option value="Semester">Persemester</option>
+                    <option value="Berulang">Berulang</option>
+					<option value="Sekali">Sekali Saja</option>
+                  </select> 
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="jenis_tagihan">Periode Tagihan</label>
+                  <label for="jenis_tagihan">Syarat KRS</label>
                   <select class="form-control" id="jenis_tagihan">
-                    <option value="Persemester">Persemester</option>
-                    <option value="Sekali">Sekali</option>
-                    <option value="Tertentu">Tertentu</option>
+                    <option value="KRS">Ya</option>
+                    <option value="General">Tidak</option>
                   </select>
                 </div>
               </div>
@@ -162,6 +185,7 @@
         var arrayData = [{
             nama_tagihan: $('#add_nama_tagihan').val(),
             jenis_tagihan: $('#add_jenis_tagihan').val(),
+			catgy_tagihan: $('#add_catgy_tagihan').val(),
         }];
 
         console.log(arrayData);
@@ -218,6 +242,7 @@
                 var data = response.data;
                 $('#nama_tagihan').val(data.nama_tagihan);
                 $('#jenis_tagihan').val(data.jenis_tagihan);
+				$('#catgy_tagihan').val(data.catgy_tagihan);
             } else {
                 console.log('Data tidak ditemukan');
             }
@@ -228,7 +253,8 @@
             var arrayData = [{
             id: id,
             nama_tagihan: $('#nama_tagihan').val(),
-            jenis_tagihan: $('#jenis_tagihan').val()
+            jenis_tagihan: $('#jenis_tagihan').val(),
+			catgy_tagihan: $('#catgy_tagihan').val()
             }];
 
             $.ajax({
