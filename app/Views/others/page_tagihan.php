@@ -21,11 +21,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Data Tagihan</h1>
+          <h1>Master Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Invoice</a></div>
-            <div class="breadcrumb-item">Master Tagihan</div>
+            <div class="breadcrumb-item">Master Tagihann</div>
           </div>
         </div>
 
@@ -34,7 +34,7 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Master Tagihan</h4>
+                  <h4>Daftar Master Tagihan</h4>
                   <div class="card-header-action">
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"></i>
@@ -96,7 +96,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addModalLabel">Add Data</h5>
+            <h5 class="modal-title" id="addModalLabel">Add Master Tagihan</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -156,7 +156,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Edit Data</h5>
+            <h5 class="modal-title" id="editModalLabel">Edit Master Tagihan</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
