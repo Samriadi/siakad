@@ -203,7 +203,6 @@ addRouteGroup('/multi-transaksi', 'AdjustmentController', [
     '/getTotalNominal' => 'getTotalNominal',
     '/add' => 'addDataMultiTagihan',
 ]);
-
 addRouteGroup('/pelunasan', 'TagihanController', [
     ''         => 'pelunasanTagihan',
     '/search' => 'searchTagihan',
