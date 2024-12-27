@@ -6,6 +6,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>SIAKAD - Tagihan</title>
   <?php include '../app/Views/others/layouts/header.php'; ?>
+
   <style>
     input[disabled] {
       background-color: #fff !important;
@@ -33,7 +34,7 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
-          <h1>Tagihan</h1>
+          <h1>Data Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="#">Tagihan</a></div>
@@ -45,59 +46,51 @@
             <div class="col-12 col-md-12 col-lg-12">
               <div class="card">
                 <div class="card-body">
-                  <div class="form-group">
-                    <label>NIM</label>
-                    <div class="d-flex align-items-center">
-                      <input type="text" class="form-control" id="nim" name="nim" disabled>
-                    </div>
-                  </div>
                   <div class="form-row">
-                    <div class="form-group col-md-4">
-                      <label>Fakultas</label>
-                      <input type="text" class="form-control" id="fakultas" name="fakultas" disabled>
+                    <div class="form-group col-md-6">
+                      <label>NIM</label>
+                      <input type="number" class="form-control" id="nim" name="nim" disabled>
                     </div>
-                    <div class="form-group col-md-4">
-                      <label>Program Studi</label>
-                      <input type="text" class="form-control" id="prodi" name="prodi" disabled>
+                    <div class="form-group col-md-6">
+                      <label>Nama</label>
+                      <input type="text" class="form-control" id="nama" name="nama" disabled>
                     </div>
-                    <div class="form-group col-md-4">
-                      <label>Angkatan</label>
-                      <input type="text" class="form-control" id="angkatan" name="angkatan" disabled>
-                    </div>
-
                   </div>
-                  <div class="form-group">
-                    <label class="d-block">Jenis Tagihan</label>
-                    <input type="text" class="form-control" id="jenis_tagihan" name="jenis_tagihan" disabled>
-
-                  </div>
-                  <div class="form-group">
-                    <label>Nominal Tagihan</label>
-                    <input type="number" class="form-control" id="nominal" name="nominal" disabled>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-md">
+                      <tr>
+                        <th scope="col">Tagihan</th>
+                        <th scope="col">Periode</th>
+                        <th scope="col">Virtual Account</th>
+                      </tr>
+                      <?php foreach ($data as $key => $value) : ?>
+                        <tr>
+                          <td>Rp. <?= $value->tagihan ?></td>
+                          <td><?= $value->periode ?></td>
+                          <td><?= $value->va_number ?></td>
+                        </tr>
+                      <?php endforeach ?>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+    </div>
+    </section>
 
-      <!-- Footer -->
-      <?php include '../app/Views/others/layouts/footer.php'; ?>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script>
-        var data = <?php echo json_encode($data); ?>;
+    <!-- Footer -->
+    <?php include '../app/Views/others/layouts/footer.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+      var data = <?php echo json_encode($data); ?>;
+      $(document).ready(function() {
         $('#nim').val(data[0].nim);
-        $('#fakultas').val(data[0].nama_fakultas);
-        $('#prodi').val(data[0].nama_prodi);
-        $('#angkatan').val(data[0].tahun_angkatan);
-        $('#nominal').val(data[0].nominal);
-        $('#jenis_tagihan').val(data[0].nama_tagihan);
-
-        console.log(data)
-      </script>
-
+        $('#nama').val(data[0].nama);
+      });
+    </script>
 </body>
 
 </html>
