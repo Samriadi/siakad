@@ -25,13 +25,21 @@
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Pembayaran</span></a>
         <ul class="dropdown-menu">
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Master Tagihan</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/transaksi">Transaksi Tagihan</a></li>
-          <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/multi-transaksi">Multi Tagihan</a></li> -->
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/invoice">Tagihan Mahasiswa</a></li>
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/pelunasan">Pembayaran Tunai</a></li>
 
+          <?php if ($_SESSION['level_loged'] == 'admin') : ?>
+
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/tagihan">Master Tagihan</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/transaksi">Transaksi Tagihan</a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/multi-transaksi">Multi Tagihan</a></li> -->
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/invoice">Tagihan Mahasiswa</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/pelunasan">Pembayaran Tunai</a></li>
+
+          <?php endif ?>
+
+          <?php if ($_SESSION['level_loged'] == 'mahasiswa') : ?>
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/myinvoice">Tagihan Saya</a></li>
+          <?php endif ?>
         </ul>
       </li>
 

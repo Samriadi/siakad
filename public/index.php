@@ -256,6 +256,8 @@ addRouteGroup('/fakultas', 'FakultasController', [
 ]);
 
 
+addRouteGroup('/myinvoice', 'TagihanController', ['' => 'myInvoice']);
+
 
 // Dispatch URL
 $url = isset($_GET['url']) ? '/' . $_GET['url'] : '/';

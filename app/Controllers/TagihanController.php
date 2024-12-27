@@ -60,6 +60,12 @@ class TagihanController
     include __DIR__ . '/../Views/others/page_pelunasan.php';
   }
 
+  public function myInvoice()
+  {
+    $data = $this->TagihanModel->getMyInvoice();
+    include __DIR__ . '/../Views/others/page_tagihanSaya.php';
+  }
+
   public function searchTagihan()
   {
     $nim = $_GET['nim'] ?? null;
