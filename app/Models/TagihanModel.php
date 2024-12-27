@@ -50,11 +50,7 @@ class TagihanModel
 
     $nim = $_SESSION['user_loged'];
 
-    $query = "SELECT a.*, b.deskripsi AS nama_fakultas, c.deskripsi AS nama_prodi, d.nama_tagihan, e.nama AS tahun_angkatan FROM mhs_adjustment a
-    LEFT JOIN mhs_fakultas b ON b.ID = a.fakultas
-    LEFT JOIN mhs_prodi c ON c.ID = a.prodi
-    LEFT JOIN mhs_paytype d ON d.recid = a.jenis_tagihan
-    LEFT JOIN mhs_angkatan e ON e.ID_angkatan = a.angkatan
+    $query = "SELECT * FROM mhs_transaksi
     WHERE nim = '$nim'";
 
     $stmt = $this->db->prepare($query);
