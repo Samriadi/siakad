@@ -77,8 +77,8 @@
                                     <th scope="col">Nama Mahasiswa</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
-									<th scope="col">ID Transaksi</th>
-									<th scope="col">VA Number</th>
+                                    <th scope="col">ID Transaksi</th>
+                                    <th scope="col">VA Number</th>
                                     <th scope="col">Nominal</th>
                                   </tr>
                                 </thead>
@@ -95,8 +95,8 @@
                                         <td><?= $value->nama ?></td>
                                         <td><?= $value->prodi ?></td>
                                         <td><?= $value->angkatan ?></td>
-										<td><?= $value->trans_id ?></td>
-										<td><?= $value->va_number ?></td>
+                                        <td><?= $value->trans_id ?></td>
+                                        <td><?= $value->va_number ?></td>
                                         <td><?= 'Rp. ' . number_format($value->tagihan ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
