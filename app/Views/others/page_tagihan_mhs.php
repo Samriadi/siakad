@@ -120,7 +120,8 @@
                                 </tbody>
                               </table>
                             </div>
-                            <button class="btn btn-primary mt-3" onclick="getSelectedData('<?= $item->ID ?>')">Proses Data</button>
+                            <button class="btn btn-primary mt-3" onclick="getSelectedData(this, '<?= $item->ID ?>')">Proses Data</button>
+
                           </div>
                         </div>
                       </div>
@@ -137,33 +138,25 @@
     </section>
 
 
-    <!-- Footer -->
     <?php include '../app/Views/others/layouts/footer.php'; ?>
 
     <script>
-      // Storage for all selected data
       const selectedDataStorage = {};
 
-      // Function to update selected data
       function updateSelectedData(tabId, data, isSelected) {
         if (isSelected) {
           if (!selectedDataStorage[tabId]) {
             selectedDataStorage[tabId] = new Set();
           }
-          // Store JSON data as string
           selectedDataStorage[tabId].add(data);
         } else {
           selectedDataStorage[tabId]?.delete(data);
         }
       }
 
-      // Function to get all selected data across all pages
-      function getSelectedData(tabId) {
+      function getSelectedData(button, tabId) {
         try {
-          // Parse JSON untuk semua data terpilih
           const selectedData = Array.from(selectedDataStorage[tabId] || []).map(item => JSON.parse(item));
-
-          // console.log('Data Terpilih:', selectedData);
           if (selectedData.length === 0) {
             Swal.fire({
               icon: 'warning',
@@ -172,8 +165,6 @@
             });
             return;
           }
-
-          // SweetAlert2 konfirmasi
           Swal.fire({
             title: 'Konfirmasi Proses',
             text: `Anda akan memproses ${selectedData.length} data. Lanjutkan?`,
@@ -183,7 +174,16 @@
             cancelButtonText: 'Batal',
           }).then((result) => {
             if (result.isConfirmed) {
-              // Jika pengguna mengonfirmasi, kirim data ke server
+              button.disabled = true;
+              Swal.fire({
+                title: 'Sedang diproses...',
+                text: 'Mohon tunggu beberapa saat.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+
               fetch('/admin/siakad/invoice-find/proses', {
                   method: 'POST',
                   headers: {
@@ -193,15 +193,31 @@
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                  // console.log('Server Response:', data);
+                  Swal.close();
+                  button.disabled = false;
                   Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
                     text: 'Data berhasil diproses!',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    customClass: {
+                      timerProgressBar: 'custom-progress-bar',
+                    },
                   });
+                  const style = document.createElement('style');
+                  style.innerHTML = `
+                    .swal2-timer-progress-bar.custom-progress-bar {
+                      background-color:rgb(0, 255, 8) !important;
+                    }
+                  `;
+                  document.head.appendChild(style);
                 })
                 .catch((error) => {
                   console.error('Error:', error);
+                  Swal.close();
+                  button.disabled = false;
                   Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
@@ -222,68 +238,51 @@
 
 
       document.addEventListener("DOMContentLoaded", function() {
-        const selectedDataStorage = {}; // Penyimpanan sementara di memory
-
+        const selectedDataStorage = {};
         <?php foreach ($dataSelected as $item): ?>
-            (function() { // Membuat lingkup lokal untuk setiap tab
+            (function() {
               const selectAllCheckbox = document.querySelector("#select-all-<?= $item->ID ?>");
               const rowCheckboxes = document.querySelectorAll(".row-checkbox-<?= $item->ID ?>");
-
-              // Set "select-all" checkbox ke false saat halaman pertama dimuat
               if (selectAllCheckbox) {
                 selectAllCheckbox.checked = false;
               }
-
-              // Initialize storage untuk tab ini
               selectedDataStorage["<?= $item->ID ?>"] = new Set();
-
               const loadCheckboxStatus = () => {
                 rowCheckboxes.forEach((checkbox) => {
                   const uniqueKey = checkbox.dataset.unique;
                   const isChecked = localStorage.getItem(uniqueKey) === "true";
                   checkbox.checked = isChecked;
 
-                  // Perbarui penyimpanan sementara jika checkbox dicentang
                   if (isChecked) {
                     selectedDataStorage["<?= $item->ID ?>"].add(checkbox.value);
                   }
                 });
               };
-
               const saveCheckboxStatus = (checkbox) => {
                 const uniqueKey = checkbox.dataset.unique;
                 localStorage.setItem(uniqueKey, checkbox.checked);
               };
-
-              // Event listener untuk checkbox "select-all"
               selectAllCheckbox?.addEventListener("change", function() {
                 const isChecked = this.checked;
-
                 rowCheckboxes.forEach(checkbox => {
                   checkbox.checked = isChecked;
-                  saveCheckboxStatus(checkbox); // Simpan status checkbox individu
+                  saveCheckboxStatus(checkbox);
                   updateSelectedData("<?= $item->ID ?>", checkbox.value, isChecked);
                 });
               });
-
-              // Event listener untuk checkbox per baris
               rowCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener("change", function() {
-                  saveCheckboxStatus(this); // Simpan status checkbox individu
+                  saveCheckboxStatus(this);
                   updateSelectedData("<?= $item->ID ?>", this.value, this.checked);
-
-                  // Cek apakah semua checkbox per baris sudah dicentang untuk memperbarui "select-all"
                   if (!this.checked) {
-                    selectAllCheckbox.checked = false; // Jika ada satu yang tidak dicentang
+                    selectAllCheckbox.checked = false;
                   } else if (Array.from(rowCheckboxes).every(cb => cb.checked)) {
-                    selectAllCheckbox.checked = true; // Jika semua dicentang
+                    selectAllCheckbox.checked = true;
                   }
                 });
               });
-
-              // Muat status checkbox saat halaman pertama dimuat
               loadCheckboxStatus();
-            })(); // Fungsi anonim langsung dijalankan
+            })();
         <?php endforeach; ?>
       });
     </script>
