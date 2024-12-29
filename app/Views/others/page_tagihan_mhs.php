@@ -104,7 +104,6 @@
                                                       "periode" => $value->periode,
                                                       "nominal" => $value->nominal
                                                     ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
-
                                         </td>
                                         <th scope="row"><?= $counter++ ?></th>
                                         <td><?= $value->Nim ?></td>
@@ -140,7 +139,6 @@
 
     <!-- Footer -->
     <?php include '../app/Views/others/layouts/footer.php'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
       // Storage for all selected data
@@ -178,7 +176,7 @@
           // SweetAlert2 konfirmasi
           Swal.fire({
             title: 'Konfirmasi Proses',
-            text: `Anda akan memproses ${selectedData.length}data . Lanjutkan ? `,
+            text: `Anda akan memproses ${selectedData.length} data. Lanjutkan?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Ya, Proses',
@@ -222,53 +220,75 @@
         }
       }
 
-      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-          const uniqueKey = this.dataset.unique;
-          localStorage.setItem(uniqueKey, this.checked);
-        });
-      });
-
 
       document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-          const uniqueKey = checkbox.dataset.unique;
-          const checked = localStorage.getItem(uniqueKey) === 'true';
-          checkbox.checked = checked;
-        });
+        const selectedDataStorage = {}; // Penyimpanan sementara di memory
+
         <?php foreach ($dataSelected as $item): ?>
-          const selectAllCheckbox<?= $item->ID ?> = document.querySelector("#select-all-<?= $item->ID ?>");
-          const rowCheckboxes<?= $item->ID ?> = document.querySelectorAll(".row-checkbox-<?= $item->ID ?>");
+            (function() { // Membuat lingkup lokal untuk setiap tab
+              const selectAllCheckbox = document.querySelector("#select-all-<?= $item->ID ?>");
+              const rowCheckboxes = document.querySelectorAll(".row-checkbox-<?= $item->ID ?>");
 
-          // Initialize storage for this tab
-          selectedDataStorage["<?= $item->ID ?>"] = new Set();
-
-          // Event listener for "Select All" checkbox
-          selectAllCheckbox<?= $item->ID ?>.addEventListener("change", function() {
-
-            const isChecked = this.checked;
-
-            rowCheckboxes<?= $item->ID ?>.forEach(checkbox => {
-              checkbox.checked = isChecked;
-              updateSelectedData("<?= $item->ID ?>", checkbox.value, isChecked);
-            });
-
-          });
-
-          // Event listener for row checkboxes
-          rowCheckboxes<?= $item->ID ?>.forEach(checkbox => {
-            checkbox.addEventListener("change", function() {
-              updateSelectedData("<?= $item->ID ?>", this.value, this.checked);
-              if (!this.checked) {
-                selectAllCheckbox<?= $item->ID ?>.checked = false;
-              } else if (Array.from(rowCheckboxes<?= $item->ID ?>).every(cb => cb.checked)) {
-                selectAllCheckbox<?= $item->ID ?>.checked = true;
+              // Set "select-all" checkbox ke false saat halaman pertama dimuat
+              if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
               }
-            });
-          });
+
+              // Initialize storage untuk tab ini
+              selectedDataStorage["<?= $item->ID ?>"] = new Set();
+
+              const loadCheckboxStatus = () => {
+                rowCheckboxes.forEach((checkbox) => {
+                  const uniqueKey = checkbox.dataset.unique;
+                  const isChecked = localStorage.getItem(uniqueKey) === "true";
+                  checkbox.checked = isChecked;
+
+                  // Perbarui penyimpanan sementara jika checkbox dicentang
+                  if (isChecked) {
+                    selectedDataStorage["<?= $item->ID ?>"].add(checkbox.value);
+                  }
+                });
+              };
+
+              const saveCheckboxStatus = (checkbox) => {
+                const uniqueKey = checkbox.dataset.unique;
+                localStorage.setItem(uniqueKey, checkbox.checked);
+              };
+
+              // Event listener untuk checkbox "select-all"
+              selectAllCheckbox?.addEventListener("change", function() {
+                const isChecked = this.checked;
+
+                rowCheckboxes.forEach(checkbox => {
+                  checkbox.checked = isChecked;
+                  saveCheckboxStatus(checkbox); // Simpan status checkbox individu
+                  updateSelectedData("<?= $item->ID ?>", checkbox.value, isChecked);
+                });
+              });
+
+              // Event listener untuk checkbox per baris
+              rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function() {
+                  saveCheckboxStatus(this); // Simpan status checkbox individu
+                  updateSelectedData("<?= $item->ID ?>", this.value, this.checked);
+
+                  // Cek apakah semua checkbox per baris sudah dicentang untuk memperbarui "select-all"
+                  if (!this.checked) {
+                    selectAllCheckbox.checked = false; // Jika ada satu yang tidak dicentang
+                  } else if (Array.from(rowCheckboxes).every(cb => cb.checked)) {
+                    selectAllCheckbox.checked = true; // Jika semua dicentang
+                  }
+                });
+              });
+
+              // Muat status checkbox saat halaman pertama dimuat
+              loadCheckboxStatus();
+            })(); // Fungsi anonim langsung dijalankan
         <?php endforeach; ?>
       });
     </script>
+
+
 
     <script>
       $(document).ready(function() {
