@@ -80,7 +80,7 @@
                                     <th scope="col">Nama Mahasiswa</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
-									<th scope="col">Periode</th>
+                                    <th scope="col">Periode</th>
                                     <th scope="col">Nominal</th>
                                   </tr>
                                 </thead>
@@ -94,21 +94,24 @@
                                       <tr>
                                         <td>
                                           <input type="checkbox" class="row-checkbox-<?= $item->ID ?>"
+                                            id="checkbox-<?= $item->ID ?>"
+                                            data-unique="<?= $value->Nim ?>-<?= $item->periode ?>"
                                             value='<?= json_encode([
                                                       "nim" => $value->Nim,
                                                       "nama" => $value->NamaLengkap,
                                                       "prodi" => $value->prodi_name,
                                                       "angkatan" => $value->angkatan,
-													  "periode" => $value->periode,
+                                                      "periode" => $value->periode,
                                                       "nominal" => $value->nominal
                                                     ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+
                                         </td>
                                         <th scope="row"><?= $counter++ ?></th>
                                         <td><?= $value->Nim ?></td>
                                         <td><?= $value->NamaLengkap ?></td>
                                         <td><?= $value->prodi_name ?></td>
                                         <td><?= $value->angkatan ?></td>
-										<td><?= $value->periode ?></td>
+                                        <td><?= $value->periode ?></td>
                                         <td><?= 'Rp. ' . number_format($value->nominal ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
@@ -137,6 +140,7 @@
 
     <!-- Footer -->
     <?php include '../app/Views/others/layouts/footer.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
       // Storage for all selected data
@@ -174,7 +178,7 @@
           // SweetAlert2 konfirmasi
           Swal.fire({
             title: 'Konfirmasi Proses',
-            text: `Anda akan memproses ${selectedData.length} data. Lanjutkan?`,
+            text: `Anda akan memproses ${selectedData.length}data . Lanjutkan ? `,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Ya, Proses',
@@ -218,8 +222,20 @@
         }
       }
 
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const uniqueKey = this.dataset.unique;
+          localStorage.setItem(uniqueKey, this.checked);
+        });
+      });
+
 
       document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+          const uniqueKey = checkbox.dataset.unique;
+          const checked = localStorage.getItem(uniqueKey) === 'true';
+          checkbox.checked = checked;
+        });
         <?php foreach ($dataSelected as $item): ?>
           const selectAllCheckbox<?= $item->ID ?> = document.querySelector("#select-all-<?= $item->ID ?>");
           const rowCheckboxes<?= $item->ID ?> = document.querySelectorAll(".row-checkbox-<?= $item->ID ?>");
@@ -229,11 +245,14 @@
 
           // Event listener for "Select All" checkbox
           selectAllCheckbox<?= $item->ID ?>.addEventListener("change", function() {
+
             const isChecked = this.checked;
+
             rowCheckboxes<?= $item->ID ?>.forEach(checkbox => {
               checkbox.checked = isChecked;
               updateSelectedData("<?= $item->ID ?>", checkbox.value, isChecked);
             });
+
           });
 
           // Event listener for row checkboxes
@@ -250,8 +269,6 @@
         <?php endforeach; ?>
       });
     </script>
-
-
 
     <script>
       $(document).ready(function() {
