@@ -290,22 +290,29 @@ class TagihanModel
   public function savePembayaranTagihan($data)
   {
     try {
+
+
       foreach ($data as $item) {
+
+        error_log(print_r($item['selectedCheckboxValues'], true));
+
         $nim = $item['nim'];
         $nominalPembayaran = $item['nominal_pembayaran'];
         $tanggalTransaksi = $item['tgl_transaksi'];
+        $periode = $item['selectedCheckboxValues'][0]['periode'];
+        $referensi = $item['referensi'];
 
-        $insertHeaderQuery = "INSERT INTO mhs_pembayaran_header (nim, tgl_transaksi, jumlah_pembayaran) VALUES (?, ?, ?)";
+        $insertHeaderQuery = "INSERT INTO mhs_pembayaran_header (nim, tgl_transaksi, jumlah_pembayaran, periode, ID_referensi) VALUES (?, ?, ?, ?, ?)";
         $headerStmt = $this->db->prepare($insertHeaderQuery);
-        $headerInserted = $headerStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran]);
+        $headerInserted = $headerStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran, $periode, $referensi]);
 
         if (!$headerInserted) {
           continue;
         }
 
-        $getHeaderIdQuery = "SELECT id FROM mhs_pembayaran_header WHERE nim = ? AND tgl_transaksi = ? AND jumlah_pembayaran = ?";
+        $getHeaderIdQuery = "SELECT id FROM mhs_pembayaran_header WHERE nim = ? AND tgl_transaksi = ? AND jumlah_pembayaran = ? AND periode = ? AND ID_referensi = ?";
         $headerIdStmt = $this->db->prepare($getHeaderIdQuery);
-        $headerIdStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran]);
+        $headerIdStmt->execute([$nim, $tanggalTransaksi, $nominalPembayaran, $periode, $referensi]);
         $headerIdResult = $headerIdStmt->fetch(PDO::FETCH_ASSOC);
 
         if (empty($headerIdResult['id'])) {
@@ -314,11 +321,11 @@ class TagihanModel
 
         $idPembayaranHeader = $headerIdResult['id'];
 
-        $insertDetailQuery = "INSERT INTO mhs_pembayaran_detail (id_pembayaran_header, id_jenis_transaksi, periode) VALUES (?, ?, ?)";
+        $insertDetailQuery = "INSERT INTO mhs_pembayaran_detail (id_pembayaran_header, id_jenis_transaksi) VALUES (?, ?)";
         $detailStmt = $this->db->prepare($insertDetailQuery);
 
         foreach ($item['selectedCheckboxValues'] as $key) {
-          $detailStmt->execute([$idPembayaranHeader, $key['id'], $key['periode']]);
+          $detailStmt->execute([$idPembayaranHeader, $key['id']]);
         }
       }
 
