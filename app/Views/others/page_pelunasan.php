@@ -118,6 +118,7 @@
               dataType: 'json',
               success: function(response) {
                 var data = response.data;
+                console.log(data);
                 $('#fakultas').val(data[0].nama_fakultas);
                 $('#prodi').val(data[0].nama_prodi);
                 $('#angkatan').val(data[0].tahun_angkatan);
@@ -141,9 +142,9 @@
                 response.data.forEach(item => {
                   const checkboxHTML = `
                   <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="checkbox${item.jenis_tagihan}" value="${item.jenis_tagihan}">
+                      <input class="form-check-input" type="checkbox" id="checkbox${item.jenis_tagihan}" value="${item.jenis_tagihan},${item.periode}">
                       <label class="form-check-label" for="checkbox${item.jenis_tagihan}">
-                          ${item.nama_tagihan}
+                          ${item.nama_tagihan} - ${item.periode}
                       </label>
                   </div>
                   `;
@@ -169,17 +170,38 @@
 
             $('.form-check-input:checked').each(function() {
               selectedCheckboxValues.push($(this).val());
+
+              console.log(selectedCheckboxValues);
             });
           });
 
           $('#submit').on('click', async function(event) {
             event.preventDefault();
 
+            let ids = [];
+            let periods = [];
+
+            selectedCheckboxValues.forEach(item => {
+              let [id, period] = item.split(',');
+              ids.push(id);
+              periods.push(period);
+            });
+
+            let result = selectedCheckboxValues.map(item => {
+              let [id, periode] = item.split(',');
+              return {
+                id,
+                periode
+              };
+            });
+
             var arrayData = [{
               nim: $('#nim').val(),
               tgl_transaksi: new Date().toISOString().slice(0, 10),
               nominal_pembayaran: $('#nominal_pembayaran').val(),
-              tagihan: selectedCheckboxValues,
+              tagihan: ids,
+              periode: periods,
+              selectedCheckboxValues: result
 
             }];
 
