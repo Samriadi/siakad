@@ -244,15 +244,15 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
           $stmt = $this->db->prepare($query);
+          $newNominal = $data['nominal'] * $data['qty'];
           $result = $stmt->execute([
             $data['fakultas'],
             $data['prodi'],
             $data['jenis_tagihan'],
             $data['angkatan'],
-            $data['nominal'],
+            $newNominal,
             $data['keterangan'],
             $Nim[$I],
             $adjType,
@@ -290,10 +290,12 @@ class AdjustmentModel
           $query .= " AND id_angkatan <> ? ";
         }
 
+        $newNominal = $data['nominal'] * $data['qty'];
+
         $params = [
           $data['fakultas'],
           $data['jenis_tagihan'],
-          $data['nominal'],
+          $newNominal,
           $data['keterangan'],
           $data['adj_type'],
           $data['adjust'],
@@ -396,23 +398,29 @@ class AdjustmentModel
             }
             $jenis_tagihan = $tagihan['jenis_tagihan'];
             $nominal = $tagihan['nominal'];
-            
+
             $stmt = $this->db->prepare($query);
-            $result = $stmt->execute([
-              $fakultas,
-              $prodi,
-              $jenis_tagihan,
-              $angkatan,
-              $nominal,
-              $keterangan,
-              $nim,
-              $periode,
-              $awal_pembayaran,
-              $akhir_pembayaran,
-              $adjust,
-              $adjType,
-              $qty
-            ]);
+
+            $ArrNIM = explode(",", $nim);
+
+            $n = count($ArrNIM);
+            for ($I = 0; $I < $n; $I++) {
+              $result = $stmt->execute([
+                $fakultas,
+                $prodi,
+                $jenis_tagihan,
+                $angkatan,
+                $nominal,
+                $keterangan,
+                $ArrNIM[$I],
+                $periode,
+                $awal_pembayaran,
+                $akhir_pembayaran,
+                $adjust,
+                $adjType,
+                $qty
+              ]);
+            }
 
             if (!$result) {
               return 'error';
@@ -439,11 +447,12 @@ class AdjustmentModel
     try {
       $query = "UPDATE $this->mhs_adjustment SET prodi = :prodi, jenis_tagihan = :jenis_tagihan, angkatan = :angkatan, nominal = :nominal , qty = :qty, keterangan = :keterangan, nim = :nim, adjustment = :adjustment, periode = :periode, from_date = :from_date, to_date = :to_date WHERE recid = :recid";
       $stmt = $this->db->prepare($query);
+      $newNominal = $data['satuan_nominal'] * $data['qty'];
       $result = $stmt->execute([
         ':prodi' => $data['prodi'],
         ':jenis_tagihan' => $data['jenis_tagihan'],
         ':angkatan' => $data['angkatan'],
-        ':nominal' => $data['nominal'],
+        ':nominal' => $newNominal,
         ':qty' => $data['qty'],
         ':keterangan' => $data['keterangan'],
         ':nim' => $data['nim'],
