@@ -84,10 +84,10 @@
                     <a class="btn btn-primary" id="btn-add">
                       <i class="fas fa-plus text-white"> Per-Tagihan</i>
                     </a>
-					&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                     <a href="/admin/siakad/multi-transaksi" class="btn btn-primary" id="btn-multi">
                       <i class="fas fa-plus text-white"> Multi Tagihan</i>
-                    </a>					
+                    </a>
                   </div>
                 </div>
                 <div class="card-body">
@@ -229,7 +229,7 @@
 
 
                 <div style="border-bottom:2px solid #abb2b9; padding-bottom:10px;">
-				
+
                   <div class="form-row">
                     <div class="form-group col-md-4">
                       <label for="add_periode_pembayaran">Periode</label>
@@ -247,8 +247,8 @@
                       <input type="date" class="form-control" id="add_akhir_pembayaran" name="akhir_pembayaran">
                     </div>
                   </div>
-				
-				
+
+
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="add_nominal">Nominal</label>
@@ -591,6 +591,8 @@
           nominalEditValidation.style.display = "none";
 
           var id = $(this).data('id');
+          var currentQty = 0;
+          var satNominal = 0;
 
 
           $.ajax({
@@ -666,6 +668,10 @@
                 $('#periode_pembayaran').val(data.periode);
                 $('#awal_pembayaran').val(data.from_date);
                 $('#akhir_pembayaran').val(data.to_date);
+
+                currentQty = data.qty;
+                satNominal = data.nominal / currentQty;
+
 
 
                 // if (data.adj_type === "replace") {
@@ -747,7 +753,8 @@
               adjustment: $('#adjustment').val(),
               periode_pembayaran: $('#periode_pembayaran').val(),
               awal_pembayaran: $('#awal_pembayaran').val(),
-              akhir_pembayaran: $('#akhir_pembayaran').val()
+              akhir_pembayaran: $('#akhir_pembayaran').val(),
+              satuan_nominal: satNominal
               // adjtype: $('#adjtype').prop('checked') ? "replace" : "normal"
             }];
 
