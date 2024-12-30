@@ -82,13 +82,17 @@
                     </div>
                   </div>
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label>Nominal Tagihan</label>
                       <input type="number" class="form-control" id="nominal" name="nominal" disabled>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label>Nominal Pembayaran</label>
                       <input type="number" class="form-control" id="nominal_pembayaran" name="nominal_pembayaran">
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>Referensi</label>
+                      <input type="text" class="form-control" id="referensi" name="referensi">
                     </div>
                   </div>
                 </div>
@@ -152,8 +156,33 @@
                 });
 
                 $('#checkbox-container').on('change', '.form-check-input', function() {
-                  updateTotalNominal();
+                  const selectedValues = [];
+                  const periods = [];
+
+                  // Mengumpulkan semua checkbox yang tercentang
+                  $('.form-check-input:checked').each(function() {
+                    const value = $(this).val();
+                    const [jenisTagihan, periode] = value.split(','); // Memisahkan value menjadi jenisTagihan dan periode
+                    selectedValues.push(value);
+                    periods.push(periode);
+                  });
+
+                  // Validasi: jika periode berbeda, tampilkan alert
+                  const uniquePeriods = [...new Set(periods)]; // Menghapus duplikat pada array periode
+                  if (uniquePeriods.length > 1) {
+                    Swal.fire({
+                      text: 'Anda hanya dapat memilih tagihan dengan periode yang sama.',
+                      icon: 'info',
+                      confirmButtonText: 'OK',
+                    });
+
+                    // Membatalkan centang checkbox yang baru diubah
+                    $(this).prop('checked', false);
+                  } else {
+                    updateTotalNominal();
+                  }
                 });
+
 
 
               },
@@ -195,13 +224,14 @@
               };
             });
 
+            console.log(result);
+
             var arrayData = [{
               nim: $('#nim').val(),
               tgl_transaksi: new Date().toISOString().slice(0, 10),
               nominal_pembayaran: $('#nominal_pembayaran').val(),
-              tagihan: ids,
-              periode: periods,
-              selectedCheckboxValues: result
+              selectedCheckboxValues: result,
+              referensi: $('#referensi').val()
 
             }];
 
