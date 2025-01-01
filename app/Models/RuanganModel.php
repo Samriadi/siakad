@@ -39,13 +39,17 @@ class RuanganModel
   public function addData(array $data): bool
   {
     try {
-      $query = "INSERT INTO {$this->table} (ID_angkatan, nama, deskripsi) VALUES (?, ?, ?)";
+      $query = "INSERT INTO {$this->table} (name, capacity, description) VALUES (?, ?, ?)";
       $stmt = $this->db->prepare($query);
-      return $stmt->execute([
-        $data['ID_angkatan'],
-        $data['nama'],
-        $data['deskripsi']
+      $req = $stmt->execute([
+        $data['name'],
+        $data['capacity'],
+        $data['description']
       ]);
+
+      if ($req) {
+        return true;
+      }
     } catch (PDOException $e) {
       error_log("Add Data Error: " . $e->getMessage());
       return false;
