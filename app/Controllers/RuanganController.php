@@ -79,27 +79,27 @@ class RuanganController
 
 
 
-  // public function updateData()
-  // {
-  //   $dataArray = json_decode(file_get_contents('php://input'), true);
+  public function updateData()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
 
-  //   if ($dataArray === null) {
-  //     $response = [
-  //       'success' => false,
-  //       'message' => 'Invalid JSON input'
-  //     ];
-  //   } else {
-  //     $request = $this->RuanganModel->updateData($dataArray[0]);
+    if ($dataArray === null) {
+      $response = [
+        'success' => false,
+        'message' => 'Invalid JSON input'
+      ];
+    } else {
+      $request = $this->RuanganModel->updateData($dataArray[0]);
 
-  //     $response = [
-  //       'success' => $request,
-  //       'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
-  //     ];
-  //   }
+      $response = [
+        'success' => $request,
+        'message' => $request ? 'Data berhasil diupdate' : 'Update failed',
+      ];
+    }
 
-  //   header('Content-Type: application/json');
-  //   echo json_encode($response);
-  // }
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
 
   // public function deleteData()
   // {
