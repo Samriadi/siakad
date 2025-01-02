@@ -77,7 +77,7 @@
       <ul class="sidebar-menu">
 
         <li class="menu-header">Setup</li>
-        <li class="dropdown">
+        <li class="dropdown mb-4">
           <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master Data</span></a>
           <ul class="dropdown-menu">
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
