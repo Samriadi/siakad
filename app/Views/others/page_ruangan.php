@@ -48,6 +48,8 @@
                           <th scope="col">Nama</th>
                           <th scope="col">Kapasitas</th>
                           <th scope="col">Deskripsi</th>
+                          <th scope="col">Action</th>
+
                         </tr>
                       </thead>
                       <tbody>
@@ -57,6 +59,11 @@
                             <td><?= $value->name ?></td>
                             <td><?= $value->capacity ?></td>
                             <td><?= $value->description ?></td>
+                            <td style="white-space: nowrap;">
+                              <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->ID_ruangan ?>">
+                                <i class="fas fa-pencil-alt"></i>
+                              </a>
+                            </td>
                           </tr>
                         <?php endforeach ?>
                       </tbody>
@@ -100,6 +107,41 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="add_submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addModalLabel">Edit Master Ruangan</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="edit_name">Name</label>
+                  <input type="text" class="form-control" id="edit_name">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="edit_capacity">Capacity</label>
+                  <input type="number" class="form-control" id="edit_capacity">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="edit_desc">Description</label>
+                <input type="text" class="form-control" id="edit_desc">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="edit_submit">Submit</button>
           </div>
         </div>
       </div>
@@ -155,6 +197,73 @@
               });
             }
           });
+        });
+
+        //edit data
+        $('.btn-edit').on('click', function() {
+
+          var id = $(this).data('id');
+          $.ajax({
+            url: '/admin/siakad/ruangan/fetch',
+            type: 'POST',
+            data: {
+              id: id,
+            },
+            dataType: 'json',
+            success: function(response) {
+              if (response.success) {
+                var data = response.data;
+
+                $('#edit_name').val(data.name);
+                $('#edit_capacity').val(data.capacity);
+                $('#edit_desc').val(data.description);
+
+                $('#editModal').modal('show');
+
+              } else {
+                console.log('Data tidak ditemukan');
+              }
+            }
+          });
+
+          $('#edit_submit').on('click', function() {
+
+            var arrayData = [{
+              ID: id,
+              name: $('#edit_name').val(),
+              capacity: $('#edit_capacity').val(),
+              description: $('#edit_desc').val()
+            }];
+
+            $.ajax({
+              url: '/admin/siakad/prodi/update',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(arrayData),
+              dataType: 'json',
+              success: function(response) {
+                if (response.success) {
+                  Swal.fire({
+                    text: 'Your data has been updated.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    willClose: () => {
+                      window.location.reload();
+                    }
+                  });
+                } else {
+                  Swal.fire({
+                    text: 'An error occurred during updated.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                  });
+
+                }
+              }
+            });
+
+          });
+
         });
 
         //paging
