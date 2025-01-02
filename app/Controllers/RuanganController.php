@@ -58,6 +58,24 @@ class RuanganController
     exit;
   }
 
+  public function fetchData()
+  {
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+    $selectedData = null;
+    foreach ($this->dataRuangan as $item) {
+      if ($item->ID_ruangan == $id) {
+        $selectedData = $item;
+        break;
+      }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode([
+      'success' => $selectedData !== null,
+      'data' => $selectedData,
+    ]);
+  }
 
 
 
@@ -71,7 +89,7 @@ class RuanganController
   //       'message' => 'Invalid JSON input'
   //     ];
   //   } else {
-  //     $request = $this->AngkatanModel->updateData($dataArray[0]);
+  //     $request = $this->RuanganModel->updateData($dataArray[0]);
 
   //     $response = [
   //       'success' => $request,
