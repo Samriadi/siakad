@@ -59,12 +59,13 @@ class RuanganModel
   public function updateData(array $data): bool
   {
     try {
-      $query = "UPDATE {$this->table} SET nama = :nama, deskripsi = :deskripsi WHERE ID_angkatan = :ID_angkatan";
+      $query = "UPDATE {$this->table} SET name = :name, capacity = :capacity, description = :description WHERE ID_ruangan = :ID_ruangan";
       $stmt = $this->db->prepare($query);
       return $stmt->execute([
-        ':nama' => $data['nama'],
-        ':deskripsi' => $data['deskripsi'],
-        ':ID_angkatan' => $data['ID_angkatan']
+        ':name' => $data['name'],
+        ':capacity' => $data['capacity'],
+        ':description' => $data['description'],
+        ':ID_ruangan' => $data['ID_ruangan']
       ]);
     } catch (PDOException $e) {
       error_log("Update Data Error: " . $e->getMessage());
