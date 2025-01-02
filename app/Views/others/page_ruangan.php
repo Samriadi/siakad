@@ -229,19 +229,22 @@
           $('#edit_submit').on('click', function() {
 
             var arrayData = [{
-              ID: id,
+              ID_ruangan: id,
               name: $('#edit_name').val(),
               capacity: $('#edit_capacity').val(),
               description: $('#edit_desc').val()
             }];
 
+            console.log(arrayData);
+
             $.ajax({
-              url: '/admin/siakad/prodi/update',
+              url: '/admin/siakad/ruangan/update',
               type: 'POST',
               contentType: 'application/json',
               data: JSON.stringify(arrayData),
               dataType: 'json',
               success: function(response) {
+                console.log(response);
                 if (response.success) {
                   Swal.fire({
                     text: 'Your data has been updated.',
