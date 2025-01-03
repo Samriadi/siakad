@@ -88,6 +88,7 @@
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/fakultas">Fakultas</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/angkatan">Angkatan</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/ruangan">Ruangan</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/siakad/kelas">Kelas</a></li>
             <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
               <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li> -->
             <?php endif ?>
