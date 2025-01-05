@@ -101,19 +101,19 @@ class RuanganController
     echo json_encode($response);
   }
 
-  // public function deleteData()
-  // {
-  //   header('Content-Type: application/json');
+  public function deleteData()
+  {
+    header('Content-Type: application/json');
 
-  //   if (!isset($_POST['id']) || empty($_POST['id'])) {
-  //     echo json_encode(['success' => false, 'message' => 'Invalid ID']);
-  //     return;
-  //   }
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+      echo json_encode(['success' => false, 'message' => 'Invalid ID']);
+      return;
+    }
 
-  //   $id = intval($_POST['id']);
+    $id = intval($_POST['id']);
 
-  //   $success = $this->AngkatanModel->deleteData($id);
+    $success = $this->RuanganModel->deleteData($id);
 
-  //   echo json_encode(['success' => $success]);
-  // }
+    echo json_encode(['success' => $success]);
+  }
 }
