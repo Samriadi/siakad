@@ -73,16 +73,16 @@ class RuanganModel
     }
   }
 
-  // public function deleteData(int $ID_angkatan): bool
-  // {
-  //   try {
-  //     $query = "DELETE FROM {$this->table} WHERE ID_angkatan = :ID_angkatan";
-  //     $stmt = $this->db->prepare($query);
-  //     $stmt->execute([':ID_angkatan' => $ID_angkatan]);
-  //     return $stmt->rowCount() > 0;
-  //   } catch (PDOException $e) {
-  //     error_log("Delete Data Error: " . $e->getMessage());
-  //     return false;
-  //   }
-  // }
+  public function deleteData(int $ID_ruangan): bool
+  {
+    try {
+      $query = "DELETE FROM {$this->table} WHERE ID_ruangan = :ID_ruangan";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute([':ID_ruangan' => $ID_ruangan]);
+      return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      error_log("Delete Data Error: " . $e->getMessage());
+      return false;
+    }
+  }
 }
