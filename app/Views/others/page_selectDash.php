@@ -1,15 +1,3 @@
-<script>
-  (function() {
-    const userModul = <?php echo json_encode($_SESSION['user_modul'] ?? null); ?>;
-    if (userModul) {
-      if (userModul === "pmb") {
-        window.location.href = "/admin";
-      } else if (userModul === "mhs") {
-        window.location.href = "/admin/siakad";
-      }
-    }
-  })();
-</script>
 <!DOCTYPE html>
 <html lang="en">
 
