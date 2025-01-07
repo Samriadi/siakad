@@ -34,7 +34,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="card-header-action">
-                    <a class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+                    <a class="btn btn-primary btn-add">
                       <i class="fas fa-plus text-white"></i>
                     </a>
                   </div>
@@ -45,9 +45,10 @@
                       <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
                         <tr>
                           <th scope="col">No</th>
-                          <th scope="col">Nama</th>
+                          <th scope="col">Nama Kelas</th>
+                          <th scope="col">Mata Kuliah</th>
+                          <th scope="col">Kurikulum</th>
                           <th scope="col">Kapasitas</th>
-                          <th scope="col">Deskripsi</th>
                           <th scope="col">Action</th>
 
                         </tr>
@@ -56,9 +57,10 @@
                         <?php foreach ($data as $key => $value) : ?>
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->name ?></td>
-                            <td><?= $value->capacity ?></td>
-                            <td><?= $value->description ?></td>
+                            <td><?= $value->nama_kelas ?></td>
+                            <td><?= $value->mata_kuliah ?></td>
+                            <td><?= $value->tahun_kurikulum ?></td>
+                            <td><?= $value->kapasitas ?></td>
                             <td style="white-space: nowrap;">
                               <a class="btn btn-primary btn-action mr-1 btn-edit" data-id="<?= $value->ID_ruangan ?>">
                                 <i class="fas fa-pencil-alt"></i>
@@ -81,7 +83,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addModalLabel">Add Master Ruangan</h5>
+            <h5 class="modal-title" id="addModalLabel">Add Master Kelas</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -90,17 +92,24 @@
             <div class="card-body">
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="add_name">Name</label>
+                  <label for="add_name">Nama Kelas</label>
                   <input type="text" class="form-control" id="add_name">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="add_capacity">Capacity</label>
-                  <input type="number" class="form-control" id="add_capacity">
+                  <label for="add_matkul">Mata Kuliah</label>
+                  <select class="form-control" id="add_matkul" name="add_matkul">
+                  </select>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="add_desc">Description</label>
-                <input type="text" class="form-control" id="add_desc">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="add_kurikulum">Tahun Kurikulum</label>
+                  <input type="text" class="form-control" id="add_kurikulum">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="add_kapasitas">Kapasitas</label>
+                  <input type="number" class="form-control" id="add_kapasitas">
+                </div>
               </div>
             </div>
           </div>
@@ -116,7 +125,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addModalLabel">Edit Master Ruangan</h5>
+            <h5 class="modal-title" id="addModalLabel">Edit Master Kelas</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -155,16 +164,39 @@
     <script>
       $(document).ready(function() {
 
+        $('.btn-add').on('click', function() {
+          $.ajax({
+            url: '/admin/siakad/kelas/prepare',
+            type: 'POST',
+            data: {},
+            dataType: 'json',
+            success: function(response) {
+              if (response.success) {
+                var options = '';
+                var data = response.data;
+                data.forEach(function(item) {
+                  options += '<option value="' + item.course_id + '">' + item.course_name + '</option>';
+                });
+                $('#add_matkul').html(options);
+                $('#addModal').modal('show');
+              } else {
+                console.log('Data tidak ditemukan');
+              }
+            }
+          });
+        });
+
         //add data
         $('#add_submit').on('click', function() {
           var arrayData = [{
-            name: $('#add_name').val(),
-            capacity: $('#add_capacity').val(),
-            description: $('#add_desc').val()
+            nama_kelas: $('#add_name').val(),
+            mata_kuliah: $('#add_matkul').val(),
+            tahun_kurikulum: $('#add_kurikulum').val(),
+            kapasitas: $('#add_kapasitas').val()
           }];
 
           $.ajax({
-            url: '/admin/siakad/ruangan/add',
+            url: '/admin/siakad/kelas/add',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(arrayData),
