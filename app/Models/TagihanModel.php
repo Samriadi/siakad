@@ -92,9 +92,7 @@ class TagihanModel
   public function addData($data)
   {
     try {
-      // Cek apakah data dengan kombinasi prodi, jenis_tagihan, dan angkatan sudah ada
-      $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan 
-                         WHERE fakultas = ? AND prodi = ? AND jenis_tagihan = ? AND angkatan = ?";
+      $checkQuery = "SELECT COUNT(*) FROM $this->mhs_tagihan WHERE fakultas = ? AND prodi = ? AND jenis_tagihan = ? AND angkatan = ? FOR UPDATE";
       $checkStmt = $this->db->prepare($checkQuery);
       $checkStmt->execute([
         $data['fakultas'],
@@ -103,30 +101,27 @@ class TagihanModel
         $data['angkatan']
       ]);
 
-      // Jika data sudah ada, kembalikan 'exists' untuk menandakan bahwa data duplikat
       if ($checkStmt->fetchColumn() > 0) {
         return 'exists';
+      } else {
+        $query = "INSERT INTO $this->mhs_tagihan (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $result = $stmt->execute([
+          $data['fakultas'],
+          $data['prodi'],
+          $data['jenis_tagihan'],
+          $data['angkatan'],
+          $data['nominal'],
+          $data['keterangan']
+        ]);
+        return $result ? 'success' : 'error';
       }
-
-      // Jika data belum ada, lanjutkan dengan insert
-      $query = "INSERT INTO $this->mhs_tagihan (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
-      $stmt = $this->db->prepare($query);
-      $result = $stmt->execute([
-        $data['fakultas'],
-        $data['prodi'],
-        $data['jenis_tagihan'],
-        $data['angkatan'],
-        $data['nominal'],
-        $data['keterangan']
-      ]);
-
-      return $result ? 'success' : 'error';
     } catch (PDOException $e) {
       error_log($e->getMessage());
       return 'error';
     }
   }
+
 
 
 
