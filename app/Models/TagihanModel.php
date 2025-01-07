@@ -67,21 +67,22 @@ class TagihanModel
 
   public function getAll()
   {
-    $query = "SELECT 
-                    a.*,
-                    b.nama_tagihan,
-                    c.deskripsi AS nama_prodi,
-                    e.name AS nama_fakultas,
-                    CASE 
-                        WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
-                        ELSE a.angkatan
-                    END AS nama_angkatan
-                FROM 
-                    $this->mhs_tagihan a
-                LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
-                LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
-                LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
-                LEFT JOIN $this->mhs_fakultas e ON e.ID = a.fakultas";
+    $query = "SELECT DISTINCT 
+                  a.*,
+                  b.nama_tagihan,
+                  c.deskripsi AS nama_prodi,
+                  e.name AS nama_fakultas,
+                  CASE 
+                      WHEN a.angkatan != 'Semua Angkatan' THEN d.nama
+                      ELSE a.angkatan
+                  END AS nama_angkatan
+              FROM 
+                  $this->mhs_tagihan a
+              LEFT JOIN $this->mhs_paytype b ON b.recid = a.jenis_tagihan
+              LEFT JOIN $this->mhs_prodi c ON c.ID = a.prodi 
+              LEFT JOIN $this->mhs_angkatan d ON d.ID_angkatan = a.angkatan AND a.angkatan != 'Semua Angkatan'
+              LEFT JOIN $this->mhs_fakultas e ON e.ID = a.fakultas;
+              ";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
