@@ -416,21 +416,31 @@ class AdjustmentModel
 
             $n = count($ArrNIM);
             for ($I = 0; $I < $n; $I++) {
-              $result = $stmt->execute([
-                $fakultas,
-                $prodi,
-                $jenis_tagihan,
-                $angkatan,
-                $nominal,
-                $keterangan,
+              $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
+                         WHERE nim = ? AND jenis_tagihan = ?";
+              $checkStmt = $this->db->prepare($checkQuery);
+              $checkStmt->execute([
                 $ArrNIM[$I],
-                $periode,
-                $awal_pembayaran,
-                $akhir_pembayaran,
-                $adjust,
-                $adjType,
-                $qty
+                $jenis_tagihan
               ]);
+
+              if ($checkStmt->fetchColumn() == 0) {
+                $result = $stmt->execute([
+                  $fakultas,
+                  $prodi,
+                  $jenis_tagihan,
+                  $angkatan,
+                  $nominal,
+                  $keterangan,
+                  $ArrNIM[$I],
+                  $periode,
+                  $awal_pembayaran,
+                  $akhir_pembayaran,
+                  $adjust,
+                  $adjType,
+                  $qty
+                ]);
+              }
             }
 
             if (!$result) {
