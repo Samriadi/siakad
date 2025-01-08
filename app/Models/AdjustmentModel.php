@@ -244,25 +244,36 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-          $stmt = $this->db->prepare($query);
-          $newNominal = $data['nominal'] * $data['qty'];
-          $result = $stmt->execute([
-            $data['fakultas'],
-            $data['prodi'],
-            $data['jenis_tagihan'],
-            $data['angkatan'],
-            $newNominal,
-            $data['keterangan'],
-            $Nim[$I],
-            $adjType,
-            $data['adjust'],
-            $data['qty'],
-            $data['periode_pembayaran'],
-            $data['awal_pembayaran'],
-            $data['akhir_pembayaran']
 
+          $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
+                         WHERE nim = ? AND jenis_tagihan = ?";
+          $checkStmt = $this->db->prepare($checkQuery);
+          $checkStmt->execute([
+            $Nim[$I],
+            $data['jenis_tagihan']
           ]);
+
+          if ($checkStmt->fetchColumn() == 0) {
+            $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $newNominal = $data['nominal'] * $data['qty'];
+            $result = $stmt->execute([
+              $data['fakultas'],
+              $data['prodi'],
+              $data['jenis_tagihan'],
+              $data['angkatan'],
+              $newNominal,
+              $data['keterangan'],
+              $Nim[$I],
+              $adjType,
+              $data['adjust'],
+              $data['qty'],
+              $data['periode_pembayaran'],
+              $data['awal_pembayaran'],
+              $data['akhir_pembayaran']
+
+            ]);
+          }
         }
 
         $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN mhs_mahasiswa AS mhs ON tagihan.nim=mhs.nim SET prodi = kode_prodi WHERE prodi is null AND tagihan.nim is not null";
