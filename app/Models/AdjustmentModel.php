@@ -416,8 +416,7 @@ class AdjustmentModel
 
             $n = count($ArrNIM);
             for ($I = 0; $I < $n; $I++) {
-              $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
-                         WHERE nim = ? AND jenis_tagihan = ?";
+              $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment WHERE nim = ? AND jenis_tagihan = ?";
               $checkStmt = $this->db->prepare($checkQuery);
               $checkStmt->execute([
                 $ArrNIM[$I],
