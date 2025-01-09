@@ -518,14 +518,59 @@
               }
             });
           }
-        }
+        };
 
-        // Tambahkan event listener pada dropdown
         $('#add_fakultas').on('change', updateNominal);
         $('#add_prodi').on('change', updateNominal);
         $('#add_angkatan').on('change', updateNominal);
         $('#add_jenis_tagihan').on('change', updateNominal);
+        $('#add_nim').on('input', function() {
+          var input = $(this).val().trim();
+          var lastNim = input.split(",").pop().trim(); // Ambil NIM terakhir yang sedang diketik
 
+          // Periksa jika panjangnya 8 karakter (selain koma) dan hanya angka
+          if (lastNim.length === 8 && /^[^\s,]+$/.test(lastNim)) {
+            cekNim(); // Panggil fungsi cekNim
+          }
+        });
+
+        let lastCheckedNIM = [];
+
+        function cekNim() {
+          var nim = $('#add_nim').val();
+          var prodi = $('#add_prodi').val();
+          var angkatan = $('#add_angkatan').val();
+
+          // Pisahkan NIM berdasarkan koma, hilangkan whitespace, dan buang yang kosong
+          var arrNIM = nim.split(",").map(n => n.trim()).filter(n => n !== "");
+          var newNIM = arrNIM.filter(n => !lastCheckedNIM.includes(n));
+
+          newNIM.forEach(function(value) {
+            $.ajax({
+              url: '/admin/siakad/transaksi/cekNim',
+              type: 'GET',
+              data: {
+                nim: value,
+                prodi: prodi,
+                angkatan: angkatan
+              },
+              dataType: 'json',
+              success: function(response) {
+                console.log(response);
+              },
+              error: function(xhr, status, error) {
+                console.log('Error:', error);
+              }
+            });
+          });
+
+          // Tambahkan NIM yang baru dicek ke lastCheckedNIM
+          lastCheckedNIM = lastCheckedNIM.concat(newNIM);
+        }
+
+
+
+        
         $('#add_submit').on('click', async function(event) {
           event.preventDefault();
 
