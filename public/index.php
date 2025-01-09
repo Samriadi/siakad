@@ -225,6 +225,7 @@ addRouteGroup('/transaksi', 'AdjustmentController', [
     '/drop' => 'dropData',
     '/search' => 'searchData',
     '/show' => 'showData',
+    '/cekNim' => 'cekNim',
 
 ]);
 
