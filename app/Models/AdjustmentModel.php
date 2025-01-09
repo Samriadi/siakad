@@ -617,4 +617,16 @@ class AdjustmentModel
 
     return $result;
   }
+
+  public function cekNim($nim, $prodi, $angkatan)
+  {
+    $query = "SELECT nim FROM $this->mhs_mahasiswa WHERE nim = :nim AND kode_prodi = :prodi AND angkatan = (SELECT nama FROM $this->mhs_angkatan WHERE ID_angkatan = :angkatan)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':nim', $nim, PDO::PARAM_STR);
+    $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
+    $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_OBJ);
+    return $result;
+  }
 }
