@@ -280,14 +280,21 @@ class AdjustmentModel
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
-        $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN (SELECT nim, ID_angkatan AS angkatan FROM mhs_mahasiswa JOIN mhs_angkatan ON RTRIM(angkatan)=RTRIM(nama)) AS mhs 
-			ON tagihan.nim = mhs.nim SET tagihan.angkatan = mhs.angkatan WHERE tagihan.angkatan is null AND tagihan.nim is not null";
+        $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN (SELECT nim, ID_angkatan AS angkatan FROM mhs_mahasiswa JOIN mhs_angkatan ON RTRIM(angkatan)=RTRIM(nama)) AS mhs ON tagihan.nim = mhs.nim SET tagihan.angkatan = mhs.angkatan WHERE tagihan.angkatan is null AND tagihan.nim is not null";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
       } else {
         $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, adj_type, adjustment, qty, periode, from_date, to_date)
-          SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ?, ?, ?, ?, ?
-          FROM vw_mhs WHERE NIM <> ''";
+        SELECT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ?, ?, ?, ?, ?
+        FROM vw_mhs 
+        WHERE NIM <> '' 
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM $this->mhs_adjustment 
+            WHERE $this->mhs_adjustment.nim = vw_mhs.NIM
+            AND $this->mhs_adjustment.jenis_tagihan = ?
+            AND $this->mhs_adjustment.periode = ?
+        )";
 
         if ($data['prodi'] <> '11111') {
           $query .= " AND kode_prodi = ? ";
@@ -314,6 +321,8 @@ class AdjustmentModel
           $data['periode_pembayaran'],
           $data['awal_pembayaran'],
           $data['akhir_pembayaran'],
+          $data['jenis_tagihan'],
+          $data['periode_pembayaran'],
           $data['prodi'],
           $data['angkatan'],
         ];
@@ -357,7 +366,15 @@ class AdjustmentModel
         if ($nim == null) {
           $query = "INSERT INTO $this->mhs_adjustment (nim, fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, periode, from_date, to_date, adjustment, adj_type, qty) 
           SELECT DISTINCT NIM, ?, kode_prodi, ?, id_angkatan, ?, ?, ?, ?, ?, ?, ?, ?
-          FROM vw_mhs WHERE NIM <> ''";
+          FROM vw_mhs 
+          WHERE NIM <> ''
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM $this->mhs_adjustment 
+              WHERE $this->mhs_adjustment.nim = vw_mhs.NIM
+              AND $this->mhs_adjustment.jenis_tagihan = ?
+              AND $this->mhs_adjustment.periode = ?
+          )";
 
           if ($item['prodi'] <> '11111') {
             $query .= " AND kode_prodi = ? ";
@@ -378,7 +395,6 @@ class AdjustmentModel
             $jenis_tagihan = $tagihan['jenis_tagihan'];
             $nominal = $tagihan['nominal'];
 
-
             $stmt = $this->db->prepare($query);
             $result = $stmt->execute([
               $fakultas,
@@ -391,6 +407,8 @@ class AdjustmentModel
               $adjust,
               $adjType,
               $qty,
+              $jenis_tagihan,
+              $periode,
               $prodi,
               $angkatan
             ]);
