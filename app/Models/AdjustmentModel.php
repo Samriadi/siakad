@@ -273,6 +273,10 @@ class AdjustmentModel
               $data['akhir_pembayaran']
 
             ]);
+          } else {
+            if ($n == 1) {
+              return 'exists';
+            }
           }
         }
 
@@ -457,6 +461,10 @@ class AdjustmentModel
                   $adjType,
                   $qty
                 ]);
+              } else {
+                if ($n == 1) {
+                  return 'exists';
+                }
               }
             }
 
