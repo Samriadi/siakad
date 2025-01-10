@@ -244,9 +244,8 @@ class AdjustmentModel
         $n = count($Nim);
 
         for ($I = 0; $I < $n; $I++) {
-
           $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment 
-                         WHERE nim = ? AND jenis_tagihan = ?";
+                   WHERE nim = ? AND jenis_tagihan = ?";
           $checkStmt = $this->db->prepare($checkQuery);
           $checkStmt->execute([
             $Nim[$I],
@@ -254,31 +253,48 @@ class AdjustmentModel
           ]);
 
           if ($checkStmt->fetchColumn() == 0) {
-            $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->db->prepare($query);
-            $newNominal = $data['nominal'] * $data['qty'];
-            $result = $stmt->execute([
-              $data['fakultas'],
-              $data['prodi'],
-              $data['jenis_tagihan'],
-              $data['angkatan'],
-              $newNominal,
-              $data['keterangan'],
-              $Nim[$I],
-              $adjType,
-              $data['adjust'],
-              $data['qty'],
-              $data['periode_pembayaran'],
-              $data['awal_pembayaran'],
-              $data['akhir_pembayaran']
+            $angkatanQuery = "SELECT id_angkatan FROM $this->mhs_angkatan 
+                          WHERE nama = (SELECT angkatan FROM $this->mhs_mahasiswa WHERE nim = ?)";
+            $angkatanStmt = $this->db->prepare($angkatanQuery);
+            $angkatanStmt->execute([$Nim[$I]]);
+            $idAngkatan = $angkatanStmt->fetchColumn();
 
-            ]);
+            if ($idAngkatan) {
+              $query = "INSERT INTO $this->mhs_adjustment 
+                      (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, adj_type, adjustment, qty, periode, from_date, to_date) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+              $stmt = $this->db->prepare($query);
+              $newNominal = $data['nominal'] * $data['qty'];
+
+              $result = $stmt->execute([
+                $data['fakultas'],
+                $data['prodi'],
+                $data['jenis_tagihan'],
+                $idAngkatan,
+                $newNominal,
+                $data['keterangan'],
+                $Nim[$I],
+                $adjType,
+                $data['adjust'],
+                $data['qty'],
+                $data['periode_pembayaran'],
+                $data['awal_pembayaran'],
+                $data['akhir_pembayaran']
+              ]);
+
+              if (!$result) {
+                error_log("Failed to insert data for NIM: $Nim[$I]");
+              }
+            } else {
+              error_log("id_angkatan not found for NIM: $Nim[$I]");
+            }
           } else {
             if ($n == 1) {
               return 'exists';
             }
           }
         }
+
 
         $query = "UPDATE $this->mhs_adjustment AS tagihan JOIN mhs_mahasiswa AS mhs ON tagihan.nim=mhs.nim SET prodi = kode_prodi WHERE prodi is null AND tagihan.nim is not null";
         $stmt = $this->db->prepare($query);
@@ -422,38 +438,45 @@ class AdjustmentModel
             }
           }
         } else {
-          $query = "INSERT INTO $this->mhs_adjustment (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          $query = "INSERT INTO $this->mhs_adjustment 
+          (fakultas, prodi, jenis_tagihan, angkatan, nominal, keterangan, nim, periode, from_date, to_date, adjustment, adj_type, qty) 
+          VALUES (?, ?, ?, 
+          (SELECT id_angkatan FROM $this->mhs_angkatan WHERE nama = (SELECT angkatan FROM $this->mhs_mahasiswa WHERE nim = ?)), 
+          ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
           foreach ($item['tagihan'] as $tagihan) {
-            if (!is_array($tagihan)) {
-              throw new Exception("Each tagihan should be an array, but received: " . gettype($tagihan));
+            if (!is_array($tagihan) || !isset($tagihan['jenis_tagihan'], $tagihan['nominal'])) {
+              throw new Exception("Each tagihan should be an array with 'jenis_tagihan' and 'nominal'.");
             }
+
             $jenis_tagihan = $tagihan['jenis_tagihan'];
             $nominal = $tagihan['nominal'];
 
             $stmt = $this->db->prepare($query);
 
             $ArrNIM = explode(",", $nim);
-
             $n = count($ArrNIM);
+
             for ($I = 0; $I < $n; $I++) {
+              $currentNim = trim($ArrNIM[$I]);
+
+              if (empty($currentNim)) {
+                throw new Exception("NIM cannot be empty. Found an empty value in the list.");
+              }
+
               $checkQuery = "SELECT COUNT(*) FROM $this->mhs_adjustment WHERE nim = ? AND jenis_tagihan = ?";
               $checkStmt = $this->db->prepare($checkQuery);
-              $checkStmt->execute([
-                $ArrNIM[$I],
-                $jenis_tagihan
-              ]);
+              $checkStmt->execute([$currentNim, $jenis_tagihan]);
 
               if ($checkStmt->fetchColumn() == 0) {
                 $result = $stmt->execute([
                   $fakultas,
                   $prodi,
                   $jenis_tagihan,
-                  $angkatan,
+                  $currentNim,
                   $nominal,
                   $keterangan,
-                  $ArrNIM[$I],
+                  $currentNim,
                   $periode,
                   $awal_pembayaran,
                   $akhir_pembayaran,
@@ -461,15 +484,15 @@ class AdjustmentModel
                   $adjType,
                   $qty
                 ]);
+
+                if (!$result) {
+                  throw new Exception("Failed to insert adjustment data for NIM: $currentNim, jenis_tagihan: $jenis_tagihan");
+                }
               } else {
                 if ($n == 1) {
                   return 'exists';
                 }
               }
-            }
-
-            if (!$result) {
-              return 'error';
             }
           }
         }
@@ -618,13 +641,11 @@ class AdjustmentModel
     return $result;
   }
 
-  public function cekNim($nim, $prodi, $angkatan)
+  public function cekNim($nim)
   {
-    $query = "SELECT nim FROM $this->mhs_mahasiswa WHERE nim = :nim AND kode_prodi = :prodi AND angkatan = (SELECT nama FROM $this->mhs_angkatan WHERE ID_angkatan = :angkatan)";
+    $query = "SELECT nim FROM $this->mhs_mahasiswa WHERE nim = :nim";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':nim', $nim, PDO::PARAM_STR);
-    $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
-    $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_OBJ);
     return $result;
