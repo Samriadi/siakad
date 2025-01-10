@@ -223,6 +223,8 @@
                       <label for="add_nim">NIM</label>
                       <input type="text" class="form-control" id="add_nim" name="nim">
                       (Pisahkan dengan Koma)
+                      <div id="info-container">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -403,7 +405,6 @@
       $(document).ready(function() {
         //add data
         $('#btn-add').on('click', function() {
-          $('#add_submit').prop('disabled', true);
           nominalValidation.style.display = "none";
 
           $.ajax({
@@ -423,7 +424,6 @@
                   $('#add_fakultas').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
                 });
 
-                // Event onchange untuk memfilter prodi berdasarkan fakultas
                 $('#add_fakultas').on('change', function() {
                   let selectedFakultas = $(this).val(); // Ambil ID fakultas yang dipilih
 
@@ -435,7 +435,6 @@
                     }
                   });
 
-                  // Tambahkan opsi lainnya berdasarkan fakultas yang dipilih
                   $.each(dataProdi, function(index, value) {
                     if (value.fakultas == selectedFakultas && value.name != 'ALL') {
                       $('#add_prodi').append('<option value="' + value.ID + '">' + value.deskripsi + '</option>');
@@ -447,12 +446,11 @@
 
                 $('#add_jenis_tagihan').empty().append('<option value="" selected disabled></option>');
 
-                // Menggunakan Set untuk melacak jenis tagihan unik
                 let uniqueTagihan = new Set();
 
                 $.each(dataPaytype, function(index, value) {
                   if (!uniqueTagihan.has(value.jenis_tagihan)) {
-                    uniqueTagihan.add(value.jenis_tagihan); // Tambahkan ke Set
+                    uniqueTagihan.add(value.jenis_tagihan);
                     $('#add_jenis_tagihan').append('<option value="' + value.jenis_tagihan + '">' + value.nama_tagihan + '</option>');
                   }
                 });
@@ -461,7 +459,6 @@
 
                 $('#add_angkatan').empty().append('<option value="" selected disabled></option>');
 
-                // Tambahkan opsi "Semua Angkatan" di awal
                 $('#add_angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
 
                 $.each(dataAngkatan, function(index, value) {
@@ -490,7 +487,7 @@
 
           if (selectedFakultas && selectedProdi && selectedAngkatan && selectedPaytype) {
             $.ajax({
-              url: '/admin/siakad/transaksi/getNominal', // Endpoint yang dibuat
+              url: '/admin/siakad/transaksi/getNominal',
               type: 'GET',
               data: {
                 fakultas: selectedFakultas,
@@ -524,111 +521,106 @@
         $('#add_prodi').on('change', updateNominal);
         $('#add_angkatan').on('change', updateNominal);
         $('#add_jenis_tagihan').on('change', updateNominal);
-        $('#add_nim').on('input', function() {
-          var input = $(this).val().trim();
-          var lastNim = input.split(",").pop().trim(); // Ambil NIM terakhir yang sedang diketik
 
-          // Periksa jika panjangnya 8 karakter (selain koma) dan hanya angka
-          if (lastNim.length === 8 && /^[^\s,]+$/.test(lastNim)) {
-            cekNim(); // Panggil fungsi cekNim
-          }
-        });
 
-        let lastCheckedNIM = [];
-
-        function cekNim() {
+        $('#add_submit').on('click', async function(event) {
+          event.preventDefault();
+          let lastCheckedNIM = [];
           var nim = $('#add_nim').val();
-          var prodi = $('#add_prodi').val();
-          var angkatan = $('#add_angkatan').val();
 
-          // Pisahkan NIM berdasarkan koma, hilangkan whitespace, dan buang yang kosong
+
           var arrNIM = nim.split(",").map(n => n.trim()).filter(n => n !== "");
           var newNIM = arrNIM.filter(n => !lastCheckedNIM.includes(n));
 
-          newNIM.forEach(function(value) {
-            $.ajax({
-              url: '/admin/siakad/transaksi/cekNim',
-              type: 'GET',
-              data: {
-                nim: value,
-                prodi: prodi,
-                angkatan: angkatan
-              },
-              dataType: 'json',
-              success: function(response) {
-                console.log(response);
-              },
-              error: function(xhr, status, error) {
-                console.log('Error:', error);
-              }
-            });
-          });
+          let notFoundNIM = [];
+          let validNIM = [];
 
-          // Tambahkan NIM yang baru dicek ke lastCheckedNIM
-          lastCheckedNIM = lastCheckedNIM.concat(newNIM);
-        }
+          for (const value of newNIM) {
+            try {
+              const response = await $.ajax({
+                url: '/admin/siakad/transaksi/cekNim',
+                type: 'GET',
+                data: {
+                  nim: value,
 
-
-
-        
-        $('#add_submit').on('click', async function(event) {
-          event.preventDefault();
-
-          // Ambil data dari input dan buat array
-          var arrayData = [{
-            fakultas: $('#add_fakultas').val(),
-            prodi: $('#add_prodi').val(),
-            jenis_tagihan: $('#add_jenis_tagihan').val(),
-            angkatan: $('#add_angkatan').val(),
-            nominal: $('#add_nominal').val(),
-            keterangan: $('#add_keterangan').val(),
-            nim: $('#add_nim').val(),
-            adj_type: $('#adj_type').prop('checked') ? "replace" : "normal",
-            adjust: 0,
-            qty: $('#add_qty').val(),
-            periode_pembayaran: $('#add_periode_pembayaran').val(),
-            awal_pembayaran: $('#add_awal_pembayaran').val(),
-            akhir_pembayaran: $('#add_akhir_pembayaran').val()
-
-          }];
-
-          try {
-            let response = await $.ajax({
-              url: '/admin/siakad/transaksi/add',
-              type: 'POST',
-              contentType: 'application/json',
-              data: JSON.stringify(arrayData),
-              dataType: 'json',
-            });
-
-            if (response.success) {
-              await Swal.fire(
-                'Added!',
-                response.message,
-                'success'
-              ).then(() => {
-                location.reload();
+                },
+                dataType: 'json'
               });
-            } else {
+
+              if (response.success) {
+                validNIM.push(value);
+              } else {
+                notFoundNIM.push(value);
+              }
+            } catch (error) {
+              console.log('Error:', error);
+            }
+          }
+
+          lastCheckedNIM = lastCheckedNIM.concat(newNIM);
+
+          if (notFoundNIM.length > 0) {
+            Swal.fire({
+              icon: 'error',
+              html: `<p>NIM tidak ditemukan:</p>${notFoundNIM.map(n => `${n}`).join(',')}`,
+              confirmButtonText: 'OK'
+            });
+          } else {
+            var arrayData = [{
+              fakultas: $('#add_fakultas').val(),
+              prodi: $('#add_prodi').val(),
+              jenis_tagihan: $('#add_jenis_tagihan').val(),
+              angkatan: $('#add_angkatan').val(),
+              nominal: $('#add_nominal').val(),
+              keterangan: $('#add_keterangan').val(),
+              nim: validNIM.join(","),
+              adj_type: $('#adj_type').prop('checked') ? "replace" : "normal",
+              adjust: 0,
+              qty: $('#add_qty').val(),
+              periode_pembayaran: $('#add_periode_pembayaran').val(),
+              awal_pembayaran: $('#add_awal_pembayaran').val(),
+              akhir_pembayaran: $('#add_akhir_pembayaran').val()
+
+            }];
+
+            try {
+              $('#add_submit').prop('disabled', true);
+              let response = await $.ajax({
+                url: '/admin/siakad/transaksi/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(arrayData),
+                dataType: 'json',
+              });
+
+              if (response.success) {
+                await Swal.fire(
+                  'Added!',
+                  response.message,
+                  'success'
+                ).then(() => {
+                  $('#add_submit').prop('disabled', false);
+                  location.reload();
+                });
+              } else {
+                $('#add_submit').prop('disabled', false);
+                await Swal.fire({
+                  text: response.message,
+                  icon: 'warning',
+                  confirmButtonText: 'OK'
+                });
+              }
+
+            } catch (error) {
+              $('#add_submit').prop('disabled', false);
               await Swal.fire({
-                text: response.message,
-                icon: 'warning',
+                text: 'Tagihan Sudah Ada.',
+                icon: 'Warning',
                 confirmButtonText: 'OK'
               });
             }
-
-          } catch (error) {
-            console.error('AJAX Error:', error);
-            await Swal.fire({
-              text: 'An unexpected error occurred.',
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
           }
         });
-
-
-
 
         //edit data
         $(document).on('click', '.btn-edit', function() {
