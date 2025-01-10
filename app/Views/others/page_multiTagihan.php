@@ -156,6 +156,7 @@
             $('#angkatan').append('<option value="' + value.ID_angkatan + '">' + value.nama + '</option>');
           });
 
+
           $('#fakultas').on('change', handleJenisTagihan);
           $('#prodi').on('change', handleJenisTagihan);
           $('#angkatan').on('change', handleJenisTagihan);
@@ -245,60 +246,98 @@
 
           $('#submit').on('click', async function(event) {
             event.preventDefault();
+            let lastCheckedNIM = [];
 
-            var arrayData = [{
-              fakultas: $('#fakultas').val(),
-              prodi: $('#prodi').val(),
-              tagihan: selectedPaytypes,
-              angkatan: $('#angkatan').val(),
-              keterangan: $('#keterangan').val(),
-              nim: $('#nim').val(),
-              adjust: 0,
-              periode_pembayaran: $('#periode').val(),
-              awal_pembayaran: $('#from').val(),
-              akhir_pembayaran: $('#to').val()
+            var nim = $('#nim').val();
+            var prodi = $('#prodi').val();
+            var angkatan = $('#angkatan').val();
 
-            }];
+            var arrNIM = nim.split(",").map(n => n.trim()).filter(n => n !== "");
+            var newNIM = arrNIM.filter(n => !lastCheckedNIM.includes(n));
 
-            try {
-              let response = await $.ajax({
-                url: '/admin/siakad/multi-transaksi/add',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(arrayData),
-                dataType: 'json',
-              });
+            let notFoundNIM = [];
+            let validNIM = [];
 
-              if (response.success) {
-                await Swal.fire(
-                  'Added!',
-                  response.message,
-                  'success'
-                ).then(() => {
-                  location.reload();
+            for (const value of newNIM) {
+              try {
+                const response = await $.ajax({
+                  url: '/admin/siakad/transaksi/cekNim',
+                  type: 'GET',
+                  data: {
+                    nim: value,
+                    prodi: prodi,
+                    angkatan: angkatan
+                  },
+                  dataType: 'json'
                 });
-              } else {
+
+                if (response.success) {
+                  validNIM.push(value);
+                } else {
+                  notFoundNIM.push(value);
+                }
+              } catch (error) {
+                console.log('Error:', error);
+              }
+            }
+
+            lastCheckedNIM = lastCheckedNIM.concat(newNIM);
+            if (notFoundNIM.length > 0) {
+              Swal.fire({
+                icon: 'error',
+                html: `<p>NIM tidak ditemukan:</p>${notFoundNIM.map(n => `${n}`).join(',')}`,
+                confirmButtonText: 'OK'
+              });
+            } else {
+              var arrayData = [{
+                fakultas: $('#fakultas').val(),
+                prodi: $('#prodi').val(),
+                tagihan: selectedPaytypes,
+                angkatan: $('#angkatan').val(),
+                keterangan: $('#keterangan').val(),
+                nim: validNIM.join(","),
+                adjust: 0,
+                periode_pembayaran: $('#periode').val(),
+                awal_pembayaran: $('#from').val(),
+                akhir_pembayaran: $('#to').val()
+
+              }];
+
+              try {
+                let response = await $.ajax({
+                  url: '/admin/siakad/multi-transaksi/add',
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(arrayData),
+                  dataType: 'json',
+                });
+
+                if (response.success) {
+                  await Swal.fire(
+                    'Added!',
+                    response.message,
+                    'success'
+                  ).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  await Swal.fire({
+                    text: response.message,
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                  });
+                }
+
+              } catch (error) {
+                console.error('AJAX Error:', error);
                 await Swal.fire({
-                  text: response.message,
-                  icon: 'warning',
+                  text: 'An unexpected error occurred.',
+                  icon: 'error',
                   confirmButtonText: 'OK'
                 });
               }
-
-            } catch (error) {
-              console.error('AJAX Error:', error);
-              await Swal.fire({
-                text: 'An unexpected error occurred.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-              });
             }
           });
-
-
-
-
-
         });
       </script>
 
