@@ -415,16 +415,14 @@ class AdjustmentController
   public function cekNim()
   {
     $nim = $_GET['nim'] ?? null;
-    $prodi = $_GET['prodi'] ?? null;
-    $angkatan = $_GET['angkatan'] ?? null;
 
     if ($nim) {
-      $result = $this->TagihanModel->cekNim($nim, $prodi, $angkatan);
+      $result = $this->TagihanModel->cekNim($nim);
 
       if ($result) {
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'message' => "{$nim} Ditemukan"]);
       } else {
-        echo json_encode(['success' => false, 'message' => 'NIM Tidak Ditemukan']);
+        echo json_encode(['success' => false, 'message' => "{$nim} Tidak Ditemukan"]);
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
