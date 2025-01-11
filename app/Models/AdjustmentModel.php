@@ -643,11 +643,15 @@ class AdjustmentModel
 
   public function cekNim($nim)
   {
-    $query = "SELECT nim FROM $this->mhs_mahasiswa WHERE nim = :nim";
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':nim', $nim, PDO::PARAM_STR);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_OBJ);
-    return $result;
+    try {
+      $query = "SELECT nim FROM $this->mhs_mahasiswa WHERE nim = :nim";
+      $stmt = $this->db->prepare($query);
+      $stmt->bindParam(':nim', $nim, PDO::PARAM_STR);
+      $stmt->execute();
+      return $stmt->fetch(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+      error_log("Database error: " . $e->getMessage());
+      return null;
+    }
   }
 }
