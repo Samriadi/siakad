@@ -229,12 +229,6 @@ class AdjustmentModel
         $data['angkatan']
       ]);
 
-      /*
-      if ($checkStmt->fetchColumn() == 0) {
-        return 'exists';
-      }
-	  */
-
       $ID = $data['nim'];
       $adjType = $data['adj_type'];
       if (!$adjType) $adjType = "normal";
