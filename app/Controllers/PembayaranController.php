@@ -4,6 +4,7 @@ class PembayaranController
 {
 
   private $PembayaranModel;
+  private $PembayaranData;
 
   public function __construct()
   {
