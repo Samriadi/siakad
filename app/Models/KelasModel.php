@@ -38,11 +38,17 @@ class KelasModel
 
   public function getAllMataKuliah()
   {
-    $query = "SELECT course_id, course_code, course_name FROM {$this->mhs_matakuliah}";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    try {
+      $query = "SELECT course_id, course_code, course_name FROM {$this->mhs_matakuliah}";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+      error_log("Error in getAllMataKuliah: " . $e->getMessage());
+      return []; // Kembalikan array kosong jika terjadi error
+    }
   }
+
 
 
   public function addData(array $data): bool
