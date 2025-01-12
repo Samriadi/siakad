@@ -605,14 +605,21 @@ class AdjustmentModel
 
   public function getDataAngkatan()
   {
-    $query = "SELECT DISTINCT a.ID_angkatan, a.nama, a.deskripsi
-                FROM $this->mhs_angkatan a 
-                LEFT JOIN $this->mhs_mahasiswa b ON b.angkatan = a.nama 
-                WHERE b.status = 'AKTIF';";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    try {
+      $query = "SELECT DISTINCT a.ID_angkatan, a.nama, a.deskripsi
+                  FROM $this->mhs_angkatan a 
+                  LEFT JOIN $this->mhs_mahasiswa b ON b.angkatan = a.nama 
+                  WHERE b.status = 'AKTIF';";
+
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+      error_log("Error in getDataAngkatan: " . $e->getMessage());
+      return [];
+    }
   }
+
 
   public function getPaytypeMultiTagihan($fakultas, $prodi, $angkatan)
   {
@@ -635,7 +642,7 @@ class AdjustmentModel
       return $result;
     } catch (PDOException $e) {
       error_log("Error in getPaytypeMultiTagihan: " . $e->getMessage());
-      return []; // Kembalikan array kosong jika terjadi error
+      return [];
     }
   }
 
