@@ -586,21 +586,27 @@ class AdjustmentModel
 
   public function getDataProdi($column = null, $value = null)
   {
-    $query = "SELECT * FROM $this->mhs_prodi";
+    try {
+      $query = "SELECT * FROM $this->mhs_prodi";
 
-    if ($column && $value) {
-      $query .= " WHERE $column = :value";
+      if ($column && $value) {
+        $query .= " WHERE $column = :value";
+      }
+
+      $stmt = $this->db->prepare($query);
+
+      if ($column && $value) {
+        $stmt->bindParam(':value', $value);
+      }
+
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+      error_log("Error in getDataProdi: " . $e->getMessage());
+      return []; // Kembalikan array kosong jika terjadi error
     }
-
-    $stmt = $this->db->prepare($query);
-
-    if ($column && $value) {
-      $stmt->bindParam(':value', $value);
-    }
-
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
+
 
 
   public function getDataAngkatan()
