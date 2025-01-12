@@ -243,8 +243,6 @@ class TagihanModel
             $req = $stmtUpdate->execute([$newTagihan, $item['nim'], $item['periode']]);
           } else {
 
-            //writeLog("INSERT INTO mhs_transaksi (nim, nama, prodi, angkatan, tagihan, periode, trans_id, va_number, pay_type) VALUES ({$item['nim']}, {$item['nama']}, {$item['prodi']}, {$item['angkatan']}, $nominal, {$item['periode']}, $TransID, $VA, $payType)");
-
             $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan, periode, trans_id, va_number, pay_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmtInsert = $this->db->prepare($insertQuery);
             $req = $stmtInsert->execute([
