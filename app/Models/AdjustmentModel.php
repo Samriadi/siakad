@@ -578,11 +578,17 @@ class AdjustmentModel
 
   public function getDataDosen()
   {
-    $query = "SELECT lecturer_id, name FROM $this->mhs_dosen";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    try {
+      $query = "SELECT lecturer_id, name FROM $this->mhs_dosen";
+      $stmt = $this->db->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+      error_log("Error in getDataDosen: " . $e->getMessage());
+      return [];
+    }
   }
+
 
   public function getDataProdi($column = null, $value = null)
   {
