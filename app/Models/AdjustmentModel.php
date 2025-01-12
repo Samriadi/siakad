@@ -616,24 +616,29 @@ class AdjustmentModel
 
   public function getPaytypeMultiTagihan($fakultas, $prodi, $angkatan)
   {
+    try {
+      $query = "SELECT a.*, b.nama_tagihan 
+                  FROM mhs_tagihan a 
+                  LEFT JOIN mhs_paytype b ON b.recid = a.jenis_tagihan 
+                  WHERE fakultas = :fakultas AND prodi = :prodi AND angkatan = :angkatan";
 
-    $query = "SELECT a.*, b.nama_tagihan 
-              FROM mhs_tagihan a 
-              LEFT JOIN mhs_paytype b ON b.recid = a.jenis_tagihan 
-              WHERE fakultas = :fakultas AND prodi = :prodi AND angkatan = :angkatan";
+      $stmt = $this->db->prepare($query);
 
-    $stmt = $this->db->prepare($query);
+      $stmt->bindParam(':fakultas', $fakultas, PDO::PARAM_STR);
+      $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
+      $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
 
-    $stmt->bindParam(':fakultas', $fakultas, PDO::PARAM_STR);
-    $stmt->bindParam(':prodi', $prodi, PDO::PARAM_STR);
-    $stmt->bindParam(':angkatan', $angkatan, PDO::PARAM_STR);
+      $stmt->execute();
 
-    $stmt->execute();
+      $result = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $result = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-    return $result;
+      return $result;
+    } catch (PDOException $e) {
+      error_log("Error in getPaytypeMultiTagihan: " . $e->getMessage());
+      return []; // Kembalikan array kosong jika terjadi error
+    }
   }
+
 
   public function cekNim($nim)
   {
