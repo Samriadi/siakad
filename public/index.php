@@ -189,10 +189,10 @@ addRouteGroup('/tagihan', 'TagihanController', [
 addRouteGroup('/invoice', 'FakultasController', ['' => 'selectFakultas']);
 addRouteGroup('/invoice-selected', 'TagihanController', [
     '' => 'tagihanMhs',
+    '/proses-va' => 'prosesData',
 ]);
 addRouteGroup('/invoice-find', 'TagihanController', [
     ''         => 'selectData',
-    '/proses'  => 'prosesInvoice',
 ]);
 addRouteGroup('/invoice-find-paying', 'TagihanController', [
     ''         => 'payingData',
