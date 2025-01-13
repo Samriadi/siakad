@@ -184,17 +184,15 @@
                 },
               });
 
-              fetch('/admin/siakad/invoice-find/proses', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(selectedData),
-                })
-                .then((response) => response.json())
-                .then((data) => {
+              $.ajax({
+                url: '/admin/siakad/invoice-selected/proses-va',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedData),
+                success: function(data) {
                   Swal.close();
                   button.disabled = false;
+                  console.log('response : ', data);
                   Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
@@ -208,13 +206,13 @@
                   });
                   const style = document.createElement('style');
                   style.innerHTML = `
-                    .swal2-timer-progress-bar.custom-progress-bar {
-                      background-color:rgb(0, 255, 8) !important;
-                    }
-                  `;
+                  .swal2-timer-progress-bar.custom-progress-bar {
+                    background-color:rgb(0, 255, 8) !important;
+                  }
+                `;
                   document.head.appendChild(style);
-                })
-                .catch((error) => {
+                },
+                error: function(xhr, status, error) {
                   console.error('Error:', error);
                   Swal.close();
                   button.disabled = false;
@@ -223,7 +221,9 @@
                     title: 'Gagal',
                     text: 'Terjadi kesalahan saat memproses data.',
                   });
-                });
+                }
+              });
+
             }
           });
         } catch (error) {
