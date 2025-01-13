@@ -318,7 +318,7 @@ class TagihanController
     echo json_encode($response);
   }
 
-  public function prosesInvoice()
+  public function prosesData()
   {
     $inputData = json_decode(file_get_contents('php://input'), true);
 
