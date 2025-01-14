@@ -192,13 +192,13 @@ addRouteGroup('/invoice-selected', 'TagihanController', [
     '/proses-va' => 'prosesData',
 ]);
 addRouteGroup('/invoice-find', 'TagihanController', [
-    ''         => 'selectData',
+    '' => 'selectData',
 ]);
 addRouteGroup('/invoice-find-paying', 'TagihanController', [
-    ''         => 'payingData',
+    '' => 'payingData',
 ]);
 addRouteGroup('/invoice-selected-paying', 'TagihanController', [
-    ''         => 'transaksiMhs',
+    '' => 'transaksiMhs',
 ]);
 
 addRouteGroup('/multi-transaksi', 'AdjustmentController', [
