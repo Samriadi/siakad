@@ -455,8 +455,6 @@
                   }
                 });
 
-
-
                 $('#add_angkatan').empty().append('<option value="" selected disabled></option>');
 
                 $('#add_angkatan').append('<option value="Semua Angkatan">Semua Angkatan</option>');
@@ -464,7 +462,6 @@
                 $.each(dataAngkatan, function(index, value) {
                   $('#add_angkatan').append('<option value="' + value.ID_angkatan + '">' + value.nama + '</option>');
                 });
-
 
                 $('#addModal').modal('show');
 
