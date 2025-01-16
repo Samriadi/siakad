@@ -16,12 +16,10 @@ class ProdiModel
 
   public function getAll($where = [])
   {
-    // Membuat query dasar dengan JOIN
     $query = "SELECT a.*, b.deskripsi AS nama_fakultas 
               FROM {$this->mhs_prodi} a 
               LEFT JOIN {$this->mhs_fakultas} b ON b.ID = a.fakultas";
 
-    // Menambahkan kondisi WHERE jika ada
     if (!empty($where)) {
       $conditions = [];
       foreach ($where as $column => $value) {
@@ -30,20 +28,16 @@ class ProdiModel
       $query .= " WHERE " . implode(" AND ", $conditions);
     }
 
-    // Menyiapkan statement
     $stmt = $this->db->prepare($query);
 
-    // Binding parameter jika ada kondisi
     if (!empty($where)) {
       foreach ($where as $column => $value) {
         $stmt->bindValue(":$column", $value);
       }
     }
 
-    // Eksekusi query
     $stmt->execute();
 
-    // Mengembalikan hasil sebagai objek
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
