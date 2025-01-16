@@ -45,7 +45,7 @@ class KelasModel
       return $stmt->fetchAll(PDO::FETCH_OBJ);
     } catch (PDOException $e) {
       error_log("Error in getAllMataKuliah: " . $e->getMessage());
-      return []; // Kembalikan array kosong jika terjadi error
+      return [];
     }
   }
 
