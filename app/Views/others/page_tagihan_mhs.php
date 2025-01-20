@@ -192,7 +192,6 @@
                 success: function(data) {
                   Swal.close();
                   button.disabled = false;
-                  console.log('response : ', data);
                   Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
@@ -203,7 +202,10 @@
                     customClass: {
                       timerProgressBar: 'custom-progress-bar',
                     },
+                  }).then(() => {
+                    location.reload();
                   });
+
                   const style = document.createElement('style');
                   style.innerHTML = `
                   .swal2-timer-progress-bar.custom-progress-bar {
