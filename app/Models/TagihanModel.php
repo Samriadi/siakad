@@ -37,7 +37,13 @@ class TagihanModel
 
   public function getTagihanMhs()
   {
-    $query = "SELECT nim AS Nim,NamaLengkap,prodi AS prodi_name,angkatan,tagihan AS nominal,periode FROM vw_hit_tagihan";
+    $query = "SELECT vh.nim AS Nim, vh.NamaLengkap, vh.prodi AS prodi_name, vh.angkatan, vh.tagihan AS nominal, vh.periode FROM vw_hit_tagihan vh 
+    LEFT JOIN mhs_paymentva mp ON vh.nim = mp.nim 
+    LEFT JOIN mhs_pembayaran_header mph ON vh.nim = mph.nim 
+    WHERE 
+    mp.nim IS NULL 
+    OR mph.nim IS NULL
+    OR vh.tagihan >= mp.nominal+mph.jumlah_pembayaran";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
