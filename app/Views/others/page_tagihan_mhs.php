@@ -249,17 +249,17 @@
                 selectAllCheckbox.checked = false;
               }
               selectedDataStorage["<?= $item->ID ?>"] = new Set();
-              const loadCheckboxStatus = () => {
-                rowCheckboxes.forEach((checkbox) => {
-                  const uniqueKey = checkbox.dataset.unique;
-                  const isChecked = localStorage.getItem(uniqueKey) === "true";
-                  checkbox.checked = isChecked;
+              // const loadCheckboxStatus = () => {
+              //   rowCheckboxes.forEach((checkbox) => {
+              //     const uniqueKey = checkbox.dataset.unique;
+              //     const isChecked = localStorage.getItem(uniqueKey) === "true";
+              //     checkbox.checked = isChecked;
 
-                  if (isChecked) {
-                    selectedDataStorage["<?= $item->ID ?>"].add(checkbox.value);
-                  }
-                });
-              };
+              //     if (isChecked) {
+              //       selectedDataStorage["<?= $item->ID ?>"].add(checkbox.value);
+              //     }
+              //   });
+              // };
               const saveCheckboxStatus = (checkbox) => {
                 const uniqueKey = checkbox.dataset.unique;
                 localStorage.setItem(uniqueKey, checkbox.checked);
@@ -283,7 +283,7 @@
                   }
                 });
               });
-              loadCheckboxStatus();
+              // loadCheckboxStatus();
             })();
         <?php endforeach; ?>
       });
