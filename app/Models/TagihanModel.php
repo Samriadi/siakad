@@ -43,7 +43,7 @@ class TagihanModel
     WHERE 
     mp.nim IS NULL 
     OR mph.nim IS NULL
-    OR vh.tagihan >= mp.nominal+mph.jumlah_pembayaran";
+    OR vh.tagihan > mp.nominal+mph.jumlah_pembayaran";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
