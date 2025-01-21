@@ -320,31 +320,47 @@ class TagihanController
 
   public function prosesData()
   {
+    // Decode the incoming JSON request
     $inputData = json_decode(file_get_contents('php://input'), true);
 
+    // Check if the input data is empty
     if (empty($inputData)) {
       echo json_encode(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
       return;
     }
 
+    // Initialize an array to store error messages
     $errors = [];
+
+    // Iterate over the input data and check for missing fields
     foreach ($inputData as $index => $item) {
-      if (empty($item['nim']) || empty($item['nama']) || empty($item['prodi'] || empty($item['angkatan']))) {
+      if (empty($item['nim']) || empty($item['nama']) || empty($item['prodi']) || empty($item['angkatan'])) {
         $errors[] = "Data pada baris ke-$index tidak lengkap.";
       }
     }
 
+    // If there are any errors, return them in the response
     if (!empty($errors)) {
       echo json_encode(['status' => 'error', 'message' => $errors]);
       return;
     }
 
+    // Call the model to process the data
     $result = $this->TagihanModel->prosesInvoice($inputData);
 
+    // Return success or error response based on the result of the processing
     if ($result) {
-      echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan.', 'data' => $result]);
+      echo json_encode([
+        'status' => 'success',
+        'message' => 'Data berhasil diproses!',
+        'data' => $result
+      ]);
     } else {
-      echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpann data.', 'data' => $result]);
+      echo json_encode([
+        'status' => 'error',
+        'message' => 'Gagal memproses data.',
+        'data' => null
+      ]);
     }
   }
 }
