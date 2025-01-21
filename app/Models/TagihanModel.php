@@ -37,13 +37,9 @@ class TagihanModel
 
   public function getTagihanMhs()
   {
-    $query = "SELECT vh.nim AS Nim, vh.NamaLengkap, vh.prodi AS prodi_name, vh.angkatan, vh.tagihan AS nominal, vh.periode FROM vw_hit_tagihan vh 
-    LEFT JOIN mhs_paymentva mp ON vh.nim = mp.nim 
-    LEFT JOIN mhs_pembayaran_header mph ON vh.nim = mph.nim 
-    WHERE 
-    mp.nim IS NULL 
-    OR mph.nim IS NULL
-    OR vh.tagihan > mp.nominal+mph.jumlah_pembayaran";
+    $query = "SELECT vh.nim AS Nim, vh.NamaLengkap, vh.prodi AS prodi_name, vh.angkatan, vh.tagihan AS nominal, vh.periode, ifnull(tagihan_mhs,0) AS tagihan_mhs FROM vw_hit_tagihan vh 
+    LEFT JOIN (SELECT nim, periode, SUM(tagihan) AS tagihan_mhs FROM mhs_transaksi GROUP BY nim, periode) AS tagih ON vh.nim=tagih.nim AND vh.periode=tagih.periode 
+	WHERE vh.tagihan > ifnull(tagihan_mhs,0)";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -65,7 +61,7 @@ class TagihanModel
 
   public function getTransaksiMhs()
   {
-    $query = "SELECT nim, nama, prodi, angkatan, tagihan, va_number, trans_id, pay_type FROM $this->mhs_transaksi";
+    $query = "SELECT tr.nim, nama, prodi, angkatan, tagihan, tr.va_number, trans_id, pay_type, pay.nominal AS payment FROM $this->mhs_transaksi tr LEFT JOIN vw_paymentva pay ON tr.va_number=pay.va_number";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -221,26 +217,26 @@ class TagihanModel
   public function prosesInvoice($data)
   {
     try {
-      require "../../../va/function.php";
-      require "../../../va/bni/crvac.php";
+      require "../../../va/function.php";     
 
 
       foreach ($data as $item) {
         if (isset($item['nim'], $item['nama'], $item['prodi'], $item['angkatan'])) {
           $nominal = isset($item['nominal']) && $item['nominal'] !== '' ? $item['nominal'] : 0;
-
-          $payType = "c";
-          $TransID = get_transid($item['nim'], "MHS");
-          //$VA = "98822054".DATE("Ymd");
-          $VA = CRVAC($item['nim'], $TransID, 30, $nominal, $payType);
-
-          $checkQuery = "SELECT tagihan FROM $this->mhs_transaksi WHERE nim = ? AND periode = ?";
+		  
+          $checkQuery = "SELECT trans_id, tagihan, pay.va_number FROM $this->mhs_transaksi tr LEFT JOIN mhs_paymentva pay ON tr.va_number = pay.va_number WHERE tr.nim = ? AND tr.periode = ?";
           $stmtCheck = $this->db->prepare($checkQuery);
           $stmtCheck->execute([$item['nim'], $item['periode']]);
-          $existingRecord = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+          $existingRecord = $stmtCheck->fetch(PDO::FETCH_ASSOC);		  
 
-          if ($existingRecord) {
-            $newTagihan = $existingRecord['tagihan'] + $nominal;
+          if ($existingRecord and (!$existingRecord['va_number'])) {
+			$newTagihan = $existingRecord['tagihan'] + $nominal;
+			
+			require "../../../va/bni/ecrvac.php";  
+			 
+            $payType = "c";
+            $TransID = $existingRecord['trans_id'];
+            $VA = CRVAC($item['nim'], $TransID, 30, $newTagihan, $payType, $item['nama']);          
 
             $updateQuery = "UPDATE $this->mhs_transaksi 
                                     SET tagihan = ? 
@@ -248,7 +244,13 @@ class TagihanModel
             $stmtUpdate = $this->db->prepare($updateQuery);
             $req = $stmtUpdate->execute([$newTagihan, $item['nim'], $item['periode']]);
           } else {
-
+			require "../../../va/bni/crvac.php";  
+			 
+            $payType = "c";
+            $TransID = get_transid($item['nim'], "MHS");
+            //$VA = "98822054".DATE("Ymd");
+            $VA = CRVAC($item['nim'], $TransID, 30, $nominal, $payType, $item['nama']);
+		  
             $insertQuery = "INSERT INTO $this->mhs_transaksi (nim, nama, prodi, angkatan, tagihan, periode, trans_id, va_number, pay_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmtInsert = $this->db->prepare($insertQuery);
             $req = $stmtInsert->execute([
