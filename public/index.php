@@ -33,6 +33,7 @@ $controllers = [
     'FakultasController',
     'RuanganController',
     'KelasController',
+    'ProfileController',
 ];
 foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/Controllers/$controller.php";
@@ -55,6 +56,7 @@ $models = [
     'FakultasModel',
     'RuanganModel',
     'KelasModel',
+    'ProfileModel',
 
 ];
 foreach ($models as $model) {
@@ -279,6 +281,13 @@ addRouteGroup('/kelas', 'KelasController', [
     '/update' => 'updateData',
     '/delete' => 'deleteData',
     '/include' => 'includeData',
+]);
+
+
+//profile router
+addRouteGroup('/profile', 'ProfileController', [
+    '' => 'index',
+    '/changes' => 'changesData',
 ]);
 
 
