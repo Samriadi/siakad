@@ -62,12 +62,19 @@
                         <th scope="col">Tagihan</th>
                         <th scope="col">Periode</th>
                         <th scope="col">Virtual Account</th>
+                        <th scope="col">Jumlah Pembayaran</th>
+                        <th scope="col">Status</th>
                       </tr>
                       <?php foreach ($data as $key => $value) : ?>
                         <tr>
                           <td>Rp. <?= $value->tagihan ?></td>
                           <td><?= $value->periode ?></td>
                           <td><?= $value->va_number ?></td>
+                          <td>Rp. <?= $value->nominal_pembayaran ?></td>
+                          <?php
+                          $value->tagihan < $value->nominal_pembayaran ? $status = 'Belum Lunas' : $status = 'Lunas';
+                          echo '<td>' . $status . '</td>';
+                          ?>
                         </tr>
                       <?php endforeach ?>
                     </table>
