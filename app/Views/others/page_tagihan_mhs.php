@@ -82,7 +82,7 @@
                                     <th scope="col">Angkatan</th>
                                     <th scope="col">Periode</th>
                                     <th scope="col">Tagihan</th>
-									<th scope="col">Terbit</th>
+                                    <th scope="col">Terbit</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -91,7 +91,7 @@
                                   foreach ($data as $value) :
                                     // Memastikan data yang ditampilkan sesuai dengan prodi pada tab yang aktif
                                     if ($value->prodi_name == $item->deskripsi) :
-									$jml_tagihan = $value->nominal - $value->tagihan_mhs;
+                                      $jml_tagihan = $value->nominal - $value->tagihan_mhs;
                                   ?>
                                       <tr>
                                         <td>
@@ -114,7 +114,7 @@
                                         <td><?= $value->angkatan ?></td>
                                         <td><?= $value->periode ?></td>
                                         <td><?= 'Rp. ' . number_format($jml_tagihan, 0, ',', '.') ?></td>
-										<td><?= 'Rp. ' . number_format($value->tagihan_mhs ?? 0, 0, ',', '.') ?></td>
+                                        <td><?= 'Rp. ' . number_format($value->tagihan_mhs ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
                                     endif;
@@ -187,8 +187,9 @@
                 },
               });
 
+
               $.ajax({
-                url: '/siakad/invoice-selected/proses-va',
+                url: '/admin/siakad/invoice-selected/proses-va',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(selectedData),
