@@ -222,6 +222,8 @@ class TagihanModel
 
   public function prosesInvoice($data)
   {
+
+    error_log(json_encode($data));
     try {
       require "../../../va/function.php";
 

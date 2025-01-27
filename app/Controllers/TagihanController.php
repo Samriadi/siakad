@@ -323,6 +323,8 @@ class TagihanController
     // Decode the incoming JSON request
     $inputData = json_decode(file_get_contents('php://input'), true);
 
+    error_log("Input data: " . print_r($inputData, true));
+
     // Check if the input data is empty
     if (empty($inputData)) {
       echo json_encode(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
