@@ -291,7 +291,7 @@ addRouteGroup('/profile', 'ProfileController', [
 ]);
 
 
-addRouteGroup('/myinvoice', 'TagihanController', ['' => 'myInvoice']);
+addRouteGroup('/portal-mhs', 'TagihanController', ['' => 'myInvoice']);
 
 
 // Dispatch URL
