@@ -24,7 +24,7 @@
           <h1>Penerbitan Data Tagihan</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="/siakad/invoice">Invoice</a></div>
+            <div class="breadcrumb-item"><a href="/admin/siakad/invoice">Invoice</a></div>
             <div class="breadcrumb-item">Selected</div>
           </div>
         </div>
@@ -81,30 +81,28 @@
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Angkatan</th>
                                     <th scope="col">Periode</th>
-                                    <th scope="col">Tagihan</th>
-                                    <th scope="col">Terbit</th>
+                                    <th scope="col">Nominal</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <?php
-                                  $counter = 1; // Menggunakan variabel untuk nomor urut
+                                  $counter = 1;
                                   foreach ($data as $value) :
-                                    // Memastikan data yang ditampilkan sesuai dengan prodi pada tab yang aktif
                                     if ($value->prodi_name == $item->deskripsi) :
-                                      $jml_tagihan = $value->nominal - $value->tagihan_mhs;
                                   ?>
                                       <tr>
                                         <td>
                                           <input type="checkbox" class="row-checkbox-<?= $item->ID ?>"
                                             id="checkbox-<?= $item->ID ?>"
-                                            data-unique="<?= $value->Nim ?>-<?= $value->periode ?>"
+                                            data-unique="<?= $value->Nim ?>-<?= $item->periode ?>"
                                             value='<?= json_encode([
                                                       "nim" => $value->Nim,
                                                       "nama" => $value->NamaLengkap,
                                                       "prodi" => $value->prodi_name,
                                                       "angkatan" => $value->angkatan,
                                                       "periode" => $value->periode,
-                                                      "nominal" => $jml_tagihan
+                                                      "nominal" => $value->nominal,
+													  "fakultas" => $value->fak_id
                                                     ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
                                         </td>
                                         <th scope="row"><?= $counter++ ?></th>
@@ -113,8 +111,7 @@
                                         <td><?= $value->prodi_name ?></td>
                                         <td><?= $value->angkatan ?></td>
                                         <td><?= $value->periode ?></td>
-                                        <td><?= 'Rp. ' . number_format($jml_tagihan, 0, ',', '.') ?></td>
-                                        <td><?= 'Rp. ' . number_format($value->tagihan_mhs ?? 0, 0, ',', '.') ?></td>
+                                        <td><?= 'Rp. ' . number_format($value->nominal ?? 0, 0, ',', '.') ?></td>
                                       </tr>
                                   <?php
                                     endif;
@@ -168,6 +165,7 @@
             });
             return;
           }
+          console.log(selectedData);
           Swal.fire({
             title: 'Konfirmasi Proses',
             text: `Anda akan memproses ${selectedData.length} data. Lanjutkan?`,
@@ -187,15 +185,15 @@
                 },
               });
 
-
               $.ajax({
-                url: '/admin/siakad/invoice-selected/proses-va',
+                url: '/siakad/invoice-selected/proses-va',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(selectedData),
                 success: function(data) {
                   Swal.close();
                   button.disabled = false;
+                  console.log('response : ', data);
                   Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
@@ -206,10 +204,7 @@
                     customClass: {
                       timerProgressBar: 'custom-progress-bar',
                     },
-                  }).then(() => {
-                    location.reload();
                   });
-
                   const style = document.createElement('style');
                   style.innerHTML = `
                   .swal2-timer-progress-bar.custom-progress-bar {
