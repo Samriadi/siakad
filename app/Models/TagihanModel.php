@@ -69,7 +69,7 @@ class TagihanModel
 
   public function getTransaksiMhs()
   {
-    $query = "SELECT tr.nim, nama, prodi, angkatan, tagihan, tr.va_number, trans_id, pay_type, pay.nominal AS payment FROM $this->mhs_transaksi tr LEFT JOIN vw_paymentva pay ON tr.va_number=pay.va_number";
+    $query = "SELECT tr.nim, nama, prodi, angkatan, tagihan, tr.va_number, trans_id, pay_type, pay.nominal AS payment FROM $this->mhs_transaksi tr LEFT JOIN mhs_paymentva pay ON tr.va_number=pay.va_number";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -238,7 +238,7 @@ class TagihanModel
           if (isset($item['nim'], $item['nama'], $item['prodi'], $item['angkatan'])) {
             $nominal = isset($item['nominal']) && $item['nominal'] !== '' ? $item['nominal'] : 0;
 
-            writeLog("DT -> " . $item['nim'] . ", ". $item['fakultas'] ."\r\n");
+            writeLog("DT -> " . $item['nim'] . ", " . $item['fakultas'] . "\r\n");
 
             $checkQuery = "SELECT trans_id, tagihan, pay.va_number 
                                    FROM $this->mhs_transaksi tr 
@@ -288,19 +288,18 @@ class TagihanModel
                 $VA,
                 $payType
               ]);
-			  
-			  // Ambil ID record yang baru dimasukkan
-			  if ($req) {
-				 $lastInsertId = $this->db->lastInsertId();				
-				
-				 $updateQuery = "UPDATE mhs_adjustment SET trans_id = ? WHERE trans_id Is NUll AND nim = ?";
-				 $stmtUpdate = $this->db->prepare($updateQuery);
-				 $stmtUpdate->execute([$lastInsertId, $item['nim']]);
-			  } else {
-				 error_log("Gagal memasukkan data.");
-				 return false;
-			  }			  
-			  
+
+              // Ambil ID record yang baru dimasukkan
+              if ($req) {
+                $lastInsertId = $this->db->lastInsertId();
+
+                $updateQuery = "UPDATE mhs_adjustment SET trans_id = ? WHERE trans_id Is NUll AND nim = ?";
+                $stmtUpdate = $this->db->prepare($updateQuery);
+                $stmtUpdate->execute([$lastInsertId, $item['nim']]);
+              } else {
+                error_log("Gagal memasukkan data.");
+                return false;
+              }
             }
 
             sleep(1);
