@@ -4,6 +4,7 @@ class ProfileModel
 {
   private $db;
   private $table = 'usrapp';
+  private $tablemhs = 'mhs_mahasiswa';
 
   public function __construct()
   {
@@ -13,6 +14,31 @@ class ProfileModel
   public function getProfile($where = [])
   {
     $query = "SELECT * FROM {$this->table}";
+
+    if (!empty($where)) {
+      $conditions = [];
+      foreach ($where as $column => $value) {
+        $conditions[] = "$column = :$column";
+      }
+      $query .= " WHERE " . implode(" AND ", $conditions);
+    }
+
+    $stmt = $this->db->prepare($query);
+
+    if (!empty($where)) {
+      foreach ($where as $column => $value) {
+        $stmt->bindValue(":$column", $value);
+      }
+    }
+
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public function getProfileMhs($where = [])
+  {
+    $query = "SELECT * FROM {$this->tablemhs}";
 
     if (!empty($where)) {
       $conditions = [];
@@ -50,12 +76,21 @@ class ProfileModel
   public function changesData(array $data): bool
   {
     try {
-      $query = "UPDATE {$this->table} SET userpass = :userpass WHERE userid = :userid";
-      $stmt = $this->db->prepare($query);
-      return $stmt->execute([
-        ':userpass' => $this->getPassword($data['userpass']),
-        ':userid' => $data['userid']
-      ]);
+      if ($_SESSION['user_type'] == 'mahasiswa') {
+        $query = "UPDATE {$this->tablemhs} SET UserPass = :userpass WHERE ID = :userid";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([
+          ':userpass' => $this->getPassword($data['userpass']),
+          ':userid' => $data['userid']
+        ]);
+      } else {
+        $query = "UPDATE {$this->table} SET userpass = :userpass WHERE userid = :userid";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([
+          ':userpass' => $this->getPassword($data['userpass']),
+          ':userid' => $data['userid']
+        ]);
+      }
     } catch (PDOException $e) {
       error_log("Update Data Error: " . $e->getMessage());
       return false;
