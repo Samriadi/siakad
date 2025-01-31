@@ -102,7 +102,7 @@
                                                       "angkatan" => $value->angkatan,
                                                       "periode" => $value->periode,
                                                       "nominal" => $value->nominal,
-													  "fakultas" => $value->fak_id
+                                                      "fakultas" => $value->fak_id
                                                     ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
                                         </td>
                                         <th scope="row"><?= $counter++ ?></th>
@@ -204,6 +204,8 @@
                     customClass: {
                       timerProgressBar: 'custom-progress-bar',
                     },
+                  }).then(() => {
+                    location.reload();
                   });
                   const style = document.createElement('style');
                   style.innerHTML = `
