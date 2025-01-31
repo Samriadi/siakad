@@ -46,22 +46,24 @@
                     <div class="table-responsive">
                       <table class="table table-bordered table-md">
                         <tr>
-                          <th scope="col">Tagihan</th>
-                          <th scope="col">Periode</th>
                           <th scope="col">Virtual Account</th>
-                          <th scope="col">Jumlah Pembayaran</th>
+                          <th scope="col">Periode</th>
+                          <th scope="col">Tagihan Baru</th>
+                          <th scope="col">Total Pembayaran</th>
                           <th scope="col">Status</th>
                         </tr>
-                        <?php foreach ($data as $key => $value) : ?>
+                        <?php foreach ($data as $key => $value) :
+                          if ($value->total_pembayaran >= $value->tagihan)
+                            $status = "Lunas";
+                          else
+                            $status = "Belum Lunas";
+                        ?>
                           <tr>
-                            <td>Rp. <?= $value->tagihan ?></td>
-                            <td><?= $value->periode ?></td>
                             <td><?= $value->va_number ?></td>
-                            <td>Rp. <?= $value->nominal_pembayaran ?></td>
-                            <?php
-                            $value->tagihan < $value->nominal_pembayaran ? $status = 'Belum Lunas' : $status = 'Lunas';
-                            echo '<td>' . $status . '</td>';
-                            ?>
+                            <td><?= $value->periode ?></td>
+                            <td>Rp. <?= number_format($value->tagihan, 0) ?></td>
+                            <td>Rp. <?= number_format($value->total_pembayaran, 0) ?></td>
+                            <td>Rp. <?= $status ?></td>
                           </tr>
                         <?php endforeach ?>
                       </table>
