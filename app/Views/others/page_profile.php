@@ -38,31 +38,59 @@
                   <div class="card-header">
                     <h4>Edit Profile</h4>
                   </div>
-                  <?php foreach ($data as $item) : ?>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="form-group col-md-6 col-12">
-                          <input type="hidden" class="form-control" name="user_id" id="user_id" value="<?php echo $item->userid; ?>">
-                          <label>Full Name</label>
-                          <input type="text" class="form-control" value="<?php echo $item->full_name; ?>" disabled>
+                  <?php if ($_SESSION['user_type'] == 'mahasiswa') : ?>
+                    <?php foreach ($data as $item) : ?>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="form-group col-md-6 col-12">
+                            <input type="hidden" class="form-control" name="user_id" id="user_id" value="<?php echo $item->ID; ?>">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" value="<?php echo $item->NamaLengkap; ?>" disabled>
+                          </div>
+                          <div class="form-group col-md-6 col-12">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" value="<?php echo $item->UserName; ?>" disabled>
+                          </div>
                         </div>
-                        <div class="form-group col-md-6 col-12">
-                          <label>User Name</label>
-                          <input type="text" class="form-control" value="<?php echo $item->username; ?>" disabled>
+                        <div class="row">
+                          <div class="form-group col-md-6 col-12">
+                            <label>User Email</label>
+                            <input type="email" class="form-control" value="<?php echo $item->Email; ?>" disabled>
+                          </div>
+                          <div class="form-group col-md-6 col-12">
+                            <label>Reset User Pass</label>
+                            <input type="tel" class="form-control" name="user_pass" id="user_pass" value="">
+                          </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="form-group col-md-6 col-12">
-                          <label>User Email</label>
-                          <input type="email" class="form-control" value="<?php echo $item->useremail; ?>" disabled>
+                    <?php endforeach; ?>
+                  <?php else : ?>
+                    <?php foreach ($data as $item) : ?>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="form-group col-md-6 col-12">
+                            <input type="hidden" class="form-control" name="user_id" id="user_id" value="<?php echo $item->userid; ?>">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" value="<?php echo $item->full_name; ?>" disabled>
+                          </div>
+                          <div class="form-group col-md-6 col-12">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" value="<?php echo $item->username; ?>" disabled>
+                          </div>
                         </div>
-                        <div class="form-group col-md-6 col-12">
-                          <label>User Pass</label>
-                          <input type="tel" class="form-control" name="user_pass" id="user_pass" value="">
+                        <div class="row">
+                          <div class="form-group col-md-6 col-12">
+                            <label>User Email</label>
+                            <input type="email" class="form-control" value="<?php echo $item->useremail; ?>" disabled>
+                          </div>
+                          <div class="form-group col-md-6 col-12">
+                            <label>User Pass</label>
+                            <input type="tel" class="form-control" name="user_pass" id="user_pass" value="">
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  <?php endforeach; ?>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
                   <div class="card-footer text-right">
                     <button class="btn btn-primary btn-changes" type="button">Save Changes</button>
                   </div>
