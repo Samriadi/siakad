@@ -18,6 +18,9 @@
         <div class="d-sm-none d-lg-inline-block"><?= $_SESSION['user_loged'] ?></div>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
+        <a href="/admin/siakad/profile" class="dropdown-item has-icon">
+          <i class="far fa-user"></i> Profile
+        </a>
         <a id="logoutButton" href="javascript:void(0);" class="dropdown-item has-icon text-danger">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
