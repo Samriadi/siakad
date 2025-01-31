@@ -23,7 +23,11 @@ class ProfileController
   public function index()
   {
 
-    $data = $this->dataProfile;
+    if ($_SESSION['user_type'] == 'mahasiswa') {
+      $data = $this->ProfileModel->getProfileMhs(['UserName' => $_SESSION['user_loged']]);
+    } else {
+      $data = $this->dataProfile;
+    }
 
     include __DIR__ . '/../Views/others/page_profile.php';
   }
