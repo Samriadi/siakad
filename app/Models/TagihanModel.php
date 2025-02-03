@@ -53,7 +53,7 @@ class TagihanModel
     $nim = $_SESSION['user_loged'];
 
     $query = "SELECT mt.*, 
-                     COALESCE(vh.tagihan, 0) AS nominal_pembayaran 
+                     COALESCE(vh.tagihan, 0) AS total_pembayaran 
               FROM mhs_transaksi mt
               LEFT JOIN vw_hit_tagihan vh 
               ON mt.nim = vh.nim AND mt.periode = vh.periode
