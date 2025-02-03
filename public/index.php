@@ -34,6 +34,9 @@ $controllers = [
     'RuanganController',
     'KelasController',
     'ProfileController',
+    'ScheduleController',
+
+
 ];
 foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/Controllers/$controller.php";
@@ -57,6 +60,8 @@ $models = [
     'RuanganModel',
     'KelasModel',
     'ProfileModel',
+    'ScheduleModel',
+
 
 ];
 foreach ($models as $model) {
@@ -290,6 +295,11 @@ addRouteGroup('/profile', 'ProfileController', [
     '/changes' => 'changesData',
 ]);
 
+addRouteGroup('/schedule', 'ScheduleController', [
+    '' => 'index',
+    '/prepare' => 'prepareData',
+
+]);
 
 addRouteGroup('/portal-mhs', 'TagihanController', ['' => 'myInvoice']);
 
