@@ -52,29 +52,21 @@
                           <th scope="col">Hari</th>
                           <th scope="col">Jam Mulai</th>
                           <th scope="col">Jam Selesai</th>
-                          <th class="w-15">Action</th>
+                          <th scope="col">Dosen</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($ScheduleData as $key => $value) :
-                        ?>
+                        <?php foreach ($ScheduleData as $key => $value):
+                          ?>
                           <tr>
                             <th scope="row"><?= ++$key ?></th>
-                            <td><?= $value->ruangan ?></td>
-                            <td><?= $value->mata_kuliah ?></td>
+                            <td><?= $value->nama_ruangan ?></td>
+                            <td><?= $value->nama_matkul ?></td>
                             <td><?= $value->jumlah_sks ?></td>
                             <td><?= $value->hari ?></td>
                             <td><?= $value->jam_mulai ?></td>
                             <td><?= $value->jam_selesai ?></td>
-                            <td><?= $value->dosen ?></td>
-                            <td style="white-space: nowrap;">
-                              <a class="btn btn-primary btn-action mr-1" data-toggle="modal" data-target="#editModal" data-id="<?= $value->recid ?>">
-                                <i class="fas fa-pencil-alt"></i>
-                              </a>
-                              <a class="btn btn-danger btn-action mr-1" data-id="<?= $value->recid ?>" onclick="confirmDelete(this)">
-                                <i class="fas fa-trash-alt"></i>
-                              </a>
-                            </td>
+                            <td><?= $value->nama_dosen ?></td>
 
                           </tr>
                         <?php endforeach ?>
@@ -90,7 +82,8 @@
     </section>
 
     <!-- Modal Structure -->
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -152,7 +145,8 @@
     </div>
 
 
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -199,43 +193,106 @@
     <?php include '../app/Views/others/layouts/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      $(document).ready(function() {
+      $(document).ready(function () {
 
-        $('.btn-add').on('click', function() {
+        $('.btn-add').on('click', function () {
           $.ajax({
             url: '/admin/siakad/schedule/prepare',
             type: 'POST',
             data: {},
             dataType: 'json',
-            success: function(response) {
-              // console.log(response.dataMataKuliah);
-
+            success: function (response) {
               $('#add_ruangan').empty().append('<option value="">Pilih Ruangan</option>');
               $('#add_mata_kuliah').empty().append('<option value="">Pilih Mata Kuliah</option>');
               $('#add_dosen').empty().append('<option value="">Pilih Dosen</option>');
 
               // Tambahkan data ruangan ke dropdown
-              $.each(response.dataRuangan, function(index, item) {
+              $.each(response.dataRuangan, function (index, item) {
                 $('#add_ruangan').append('<option value="' + item.ID_ruangan + '">' + item.name + '</option>');
               });
 
               // Tambahkan data mata kuliah ke dropdown
-              $.each(response.dataMataKuliah, function(index, item) {
-                $('#add_mata_kuliah').append('<option value="' + item.course_id + '">' + item.course_name + '</option>');
+              $.each(response.dataMataKuliah, function (index, item) {
+                $('#add_mata_kuliah').append('<option value="' + item.course_id + '" data-credits="' + item.credits + '">' + item.course_name + '</option>');
               });
 
+              $('#add_mata_kuliah').on('change', function () {
+                var selectedOption = $(this).find(':selected');
+                var credits = selectedOption.attr('data-credits');
+                $('#add_sks').val(credits);
+              });
+
+
               // Tambahkan data dosen ke dropdown
-              $.each(response.dataDosen, function(index, item) {
+              $.each(response.dataDosen, function (index, item) {
                 $('#add_dosen').append('<option value="' + item.recid + '">' + item.Nama + '</option>');
               })
+
+              let days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+              let select = $("#add_hari");
+
+              days.forEach(function (day) {
+                select.append(`<option value="${day}">${day}</option>`);
+              });
             }
           });
+        });
+
+        //add data
+        $('#add_submit').on('click', function () {
+          var arrayData = [{
+            ruangan: $('#add_ruangan').val(),
+            matkul: $('#add_mata_kuliah').val(),
+            sks: $('#add_sks').val(),
+            hari: $('#add_hari').val(),
+            jam_mulai: $('#add_jam_mulai').val(),
+            jam_selesai: $('#add_jam_selesai').val(),
+            dosen: $('#add_dosen').val(),
+          }];
+
+          console.log(arrayData);
+
+          $.ajax({
+            url: '/admin/siakad/schedule/add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(arrayData),
+            dataType: 'json',
+            success: function (response) {
+              console.log(response);
+              if (response.success) {
+                Swal.fire({
+                  text: 'Your data has been added.',
+                  icon: 'success',
+                  showConfirmButton: false,
+                  willClose: () => {
+                    window.location.reload();
+                  }
+                });
+              } else {
+                Swal.fire({
+                  text: 'An error occurred during the add.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error('AJAX Error:', textStatus, errorThrown);
+              Swal.fire({
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+
         });
 
       });
 
       // Edit data
-      $('.btn-action').on('click', function() {
+      $('.btn-action').on('click', function () {
         var id = $(this).data('id');
 
         $.ajax({
@@ -245,7 +302,7 @@
             id: id
           },
           dataType: 'json',
-          success: function(response) {
+          success: function (response) {
             if (response.success) {
               var data = response.data;
               $('#nama_tagihan').val(data.nama_tagihan);
@@ -257,7 +314,7 @@
           }
         });
 
-        $('#submit').off('click').on('click', function() {
+        $('#submit').off('click').on('click', function () {
           var arrayData = [{
             id: id,
             nama_tagihan: $('#nama_tagihan').val(),
@@ -271,7 +328,7 @@
             contentType: 'application/json',
             data: JSON.stringify(arrayData),
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
               if (response.success) {
                 Swal.fire({
                   text: 'Your data has been updated.',
@@ -311,7 +368,7 @@
               data: {
                 id: id
               },
-              success: function(response) {
+              success: function (response) {
                 console.log(response);
                 if (response.success) {
                   Swal.fire(
@@ -329,7 +386,7 @@
                   );
                 }
               },
-              error: function() {
+              error: function () {
                 Swal.fire(
                   'Error!',
                   'Failed to send request.',
@@ -343,7 +400,7 @@
     </script>
 
     <script>
-      $(document).ready(function() {
+      $(document).ready(function () {
         $('.table').DataTable({
           "paging": true,
           "searching": true,
@@ -352,6 +409,44 @@
         });
       });
     </script>
+
+    <script>
+      function hitungJamSelesai() {
+        let jamMulai = document.getElementById("add_jam_mulai").value;
+        let sks = parseInt(document.getElementById("add_sks").value) || 0; // Ambil nilai SKS
+
+        if (jamMulai && sks > 0) {
+          let [jam, menit] = jamMulai.split(":").map(Number);
+
+          // Hitung durasi berdasarkan SKS (1 SKS = 50 menit)
+          let tambahanMenit = sks * 50;
+          menit += tambahanMenit;
+
+          if (menit >= 60) {
+            jam += Math.floor(menit / 60);
+            menit = menit % 60;
+          }
+
+          // Format hasil ke dalam 2 digit
+          let jamSelesai = `${String(jam).padStart(2, "0")}:${String(menit).padStart(2, "0")}`;
+          document.getElementById("add_jam_selesai").value = jamSelesai;
+        }
+      }
+
+      // Saat mata kuliah dipilih, isi add_sks otomatis
+      $('#add_mata_kuliah').on('change', function () {
+        var selectedOption = $(this).find(':selected');
+        var credits = selectedOption.attr('data-credits'); // Ambil nilai SKS dari data-credits
+        $('#add_sks').val(credits).trigger('change'); // Isi add_sks & trigger change agar jam selesai ikut berubah
+      });
+
+      // Saat SKS atau Jam Mulai berubah, hitung ulang jam selesai
+      $('#add_sks, #add_jam_mulai').on('change input', hitungJamSelesai);
+    </script>
+
+
+
+
 
 
 </body>

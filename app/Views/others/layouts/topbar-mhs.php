@@ -39,7 +39,7 @@
       </li>
     </ul>
   </div>
-</nav>">
+</nav>
 
 </ul>
 </nav>
