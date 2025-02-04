@@ -47,4 +47,32 @@ class ScheduleController
       ]);
     }
   }
+
+  public function addData()
+  {
+    $dataArray = json_decode(file_get_contents('php://input'), true);
+    if (empty($dataArray) || !isset($dataArray[0])) {
+      $response = [
+        'success' => false,
+        'message' => 'No data provided',
+      ];
+    } else {
+      $request = $this->ScheduleModel->addData($dataArray[0]);
+
+      if ($request) {
+        $response = [
+          'success' => true,
+          'message' => 'Data berhasil ditambahkan',
+        ];
+      } else {
+        $response = [
+          'success' => false,
+          'message' => 'Gagal menambahkan data',
+        ];
+      }
+    }
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+  }
 }
