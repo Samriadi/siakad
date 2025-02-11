@@ -16,7 +16,12 @@ class ScheduleModel
 
   public function getAll()
   {
-    $query = "SELECT * FROM $this->mhs_schedule";
+    $query = "SELECT a.*, b.course_name AS nama_matkul, c.Nama AS nama_dosen, d.name AS nama_ruangan
+    FROM $this->mhs_schedule a
+    LEFT JOIN $this->mhs_matakuliah b ON b.course_id = a.mata_kuliah
+    LEFT JOIN $this->mhs_dosen c ON c.recid = a.dosen
+    LEFT JOIN $this->mhs_ruangan d ON d.ID_ruangan = a.ruangan
+    ";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -25,7 +30,7 @@ class ScheduleModel
   public function getAllMataKuliah()
   {
     try {
-      $query = "SELECT course_id, course_code, course_name FROM {$this->mhs_matakuliah}";
+      $query = "SELECT course_id, course_code, course_name, credits FROM {$this->mhs_matakuliah}";
       $stmt = $this->db->prepare($query);
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -58,6 +63,30 @@ class ScheduleModel
     } catch (PDOException $e) {
       error_log("Error in getAllMataKuliah: " . $e->getMessage());
       return [];
+    }
+  }
+
+  public function addData(array $data): bool
+  {
+    try {
+      $query = "INSERT INTO {$this->mhs_schedule} (ruangan, mata_kuliah, jumlah_sks,hari,jam_mulai,jam_selesai,dosen) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      $stmt = $this->db->prepare($query);
+      $req = $stmt->execute([
+        $data['ruangan'],
+        $data['matkul'],
+        $data['sks'],
+        $data['hari'],
+        $data['jam_mulai'],
+        $data['jam_selesai'],
+        $data['dosen']
+      ]);
+
+      if ($req) {
+        return true;
+      }
+    } catch (PDOException $e) {
+      error_log("Add Data Error: " . $e->getMessage());
+      return false;
     }
   }
 }
