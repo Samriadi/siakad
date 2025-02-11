@@ -206,12 +206,14 @@
               $('#add_mata_kuliah').empty().append('<option value="">Pilih Mata Kuliah</option>');
               $('#add_dosen').empty().append('<option value="">Pilih Dosen</option>');
 
-              $.each(response.dataRuangan, function (index, item) {
+              // Tambahkan data ruangan ke dropdown
+              $.each(response.dataRuangan, function(index, item) {
                 $('#add_ruangan').append('<option value="' + item.ID_ruangan + '">' + item.name + '</option>');
               });
 
-              $.each(response.dataMataKuliah, function (index, item) {
-                $('#add_mata_kuliah').append('<option value="' + item.course_id + '" data-credits="' + item.credits + '">' + item.course_name + '</option>');
+              // Tambahkan data mata kuliah ke dropdown
+              $.each(response.dataMataKuliah, function(index, item) {
+                $('#add_mata_kuliah').append('<option value="' + item.course_id + '">' + item.course_name + '</option>');
               });
 
               $('#add_mata_kuliah').on('change', function () {
@@ -221,7 +223,8 @@
               });
 
 
-              $.each(response.dataDosen, function (index, item) {
+              // Tambahkan data dosen ke dropdown
+              $.each(response.dataDosen, function(index, item) {
                 $('#add_dosen').append('<option value="' + item.recid + '">' + item.Nama + '</option>');
               })
 
@@ -235,8 +238,32 @@
           });
         });
 
-        //add data
-        $('#add_submit').on('click', function () {
+      });
+
+      // Edit data
+      $('.btn-action').on('click', function() {
+        var id = $(this).data('id');
+
+        $.ajax({
+          url: '/admin/siakad/pembayaran/fetch',
+          type: 'POST',
+          data: {
+            id: id
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              var data = response.data;
+              $('#nama_tagihan').val(data.nama_tagihan);
+              $('#jenis_tagihan').val(data.jenis_tagihan);
+              $('#catgy_tagihan').val(data.catgy_tagihan);
+            } else {
+              console.log('Data tidak ditemukan');
+            }
+          }
+        });
+
+        $('#submit').off('click').on('click', function() {
           var arrayData = [{
             ruangan: $('#add_ruangan').val(),
             matkul: $('#add_mata_kuliah').val(),
@@ -255,8 +282,7 @@
             contentType: 'application/json',
             data: JSON.stringify(arrayData),
             dataType: 'json',
-            success: function (response) {
-              console.log(response);
+            success: function(response) {
               if (response.success) {
                 Swal.fire({
                   text: 'Your data has been added.',
@@ -273,20 +299,58 @@
                   confirmButtonText: 'OK'
                 });
               }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              console.error('AJAX Error:', textStatus, errorThrown);
-              Swal.fire({
-                text: 'An unexpected error occurred.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-              });
             }
           });
-
         });
-
       });
+
+      function confirmDelete(element) {
+        const id = element.getAttribute('data-id');
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '/admin/siakad/pembayaran/delete',
+              type: 'POST',
+              data: {
+                id: id
+              },
+              success: function(response) {
+                console.log(response);
+                if (response.success) {
+                  Swal.fire(
+                    'Deleted!',
+                    'The record has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  Swal.fire(
+                    'Error!',
+                    'There was an issue deleting the record.',
+                    'error'
+                  );
+                }
+              },
+              error: function() {
+                Swal.fire(
+                  'Error!',
+                  'Failed to send request.',
+                  'error'
+                );
+              }
+            });
+          }
+        });
+      }
     </script>
 
     <script>
@@ -299,40 +363,6 @@
         });
       });
     </script>
-
-    <script>
-      function hitungJamSelesai() {
-        let jamMulai = document.getElementById("add_jam_mulai").value;
-        let sks = parseInt(document.getElementById("add_sks").value) || 0;
-
-        if (jamMulai && sks > 0) {
-          let [jam, menit] = jamMulai.split(":").map(Number);
-
-          let tambahanMenit = sks * 50;
-          menit += tambahanMenit;
-
-          if (menit >= 60) {
-            jam += Math.floor(menit / 60);
-            menit = menit % 60;
-          }
-
-          let jamSelesai = `${String(jam).padStart(2, "0")}:${String(menit).padStart(2, "0")}`;
-          document.getElementById("add_jam_selesai").value = jamSelesai;
-        }
-      }
-
-      $('#add_mata_kuliah').on('change', function () {
-        var selectedOption = $(this).find(':selected');
-        var credits = selectedOption.attr('data-credits');
-        $('#add_sks').val(credits).trigger('change');
-      });
-
-      $('#add_sks, #add_jam_mulai').on('change input', hitungJamSelesai);
-    </script>
-
-
-
-
 
 
 </body>

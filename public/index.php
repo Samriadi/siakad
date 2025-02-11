@@ -209,13 +209,13 @@ addRouteGroup('/invoice-selected-paying', 'TagihanController', [
 ]);
 
 addRouteGroup('/multi-transaksi', 'AdjustmentController', [
-    ''         => 'multiTagihan',
+    '' => 'multiTagihan',
     '/getPaytype' => 'getPaytypeMultiTagihan',
     '/getTotalNominal' => 'getTotalNominal',
     '/add' => 'addDataMultiTagihan',
 ]);
 addRouteGroup('/pelunasan', 'TagihanController', [
-    ''         => 'pelunasanTagihan',
+    '' => 'pelunasanTagihan',
     '/search' => 'searchTagihan',
     '/save' => 'saveTagihan',
 ]);
@@ -298,7 +298,7 @@ addRouteGroup('/profile', 'ProfileController', [
 addRouteGroup('/schedule', 'ScheduleController', [
     '' => 'index',
     '/prepare' => 'prepareData',
-
+    '/add' => 'addData',
 ]);
 
 addRouteGroup('/portal-mhs', 'TagihanController', ['' => 'myInvoice']);

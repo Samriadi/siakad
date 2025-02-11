@@ -6,15 +6,16 @@
     <div class="sidebar-brand sidebar-brand-sm">
     </div>
 
-    <?php if ($_SESSION['level_loged'] == 'superadmin') : ?>
+    <?php if ($_SESSION['level_loged'] == 'superadmin'): ?>
 
       <ul class="sidebar-menu">
         <li class="menu-header">Member Area</li>
         <li class="dropdown">
-          <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+          <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+              class="fas fa-fire"></i><span>Dashboard</span></a>
           <ul class="dropdown-menu">
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/">General Information</a></li>
-            <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
+            <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin'): ?>
               <li class="nav-item"><a class="nav-link" href="/admin/siakad/setting">Setup</a></li>
             <?php endif ?>
 
@@ -27,10 +28,11 @@
     <ul class="sidebar-menu">
       <li class="menu-header">TRANSAKSI</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Pembayaran</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i>
+          <span>Pembayaran</span></a>
         <ul class="dropdown-menu">
 
-          <?php if ($_SESSION['level_loged'] == 'admin' || $_SESSION['level_loged'] == 'superadmin') : ?>
+          <?php if ($_SESSION['level_loged'] == 'admin' || $_SESSION['level_loged'] == 'superadmin'): ?>
 
 
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/pembayaran">Payment Type</a></li>
@@ -42,7 +44,7 @@
 
           <?php endif ?>
 
-          <?php if ($_SESSION['level_loged'] == 'mahasiswa') : ?>
+          <?php if ($_SESSION['level_loged'] == 'mahasiswa'): ?>
 
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/myinvoice">Tagihan Saya</a></li>
           <?php endif ?>
@@ -51,7 +53,8 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Akademik</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i>
+          <span>Akademik</span></a>
         <ul class="dropdown-menu">
           <li class="nav-item"><a class="nav-link" href="/admin/siakad/krs">Kartu Rencana Studi</a></li>
           <li class="nav-item"><a class="nav-link" href="">Detail Mata Kuliah KRS</a></li>
@@ -62,23 +65,25 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Kurikulum</span></a>
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i>
+          <span>Kurikulum</span></a>
         <ul class="dropdown-menu">
 
 
-          <li class="nav-item"><a class="nav-link" href="/admin/siakad/perkuliahan">Perkuliahan</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/siakad/schedule">Schedule</a></li>
         </ul>
       </li>
 
     </ul>
 
-    <?php if ($_SESSION['level_loged'] == 'superadmin') : ?>
+    <?php if ($_SESSION['level_loged'] == 'superadmin'): ?>
 
       <ul class="sidebar-menu">
 
         <li class="menu-header">Setup</li>
         <li class="dropdown mb-4">
-          <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master Data</span></a>
+          <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Master
+              Data</span></a>
           <ul class="dropdown-menu">
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/matkul">Mata Kuliah</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/mahasiswa">Mahasiswa</a></li>
@@ -89,7 +94,7 @@
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/angkatan">Angkatan</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/ruangan">Ruangan</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/siakad/kelas">Kelas</a></li>
-            <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin') : ?>
+            <?php if ($_SESSION['user_loged'] == 'kaprodi' || $_SESSION['user_loged'] == 'superadmin'): ?>
               <!-- <li class="nav-item"><a class="nav-link" href="/admin/siakad/staff">Staff</a></li> -->
             <?php endif ?>
           </ul>
